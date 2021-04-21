@@ -15,7 +15,7 @@ public class RunMeMethods extends ParentClass {
 	@RunMe
 	private void findMe3 () {
 		System.out.println("I am not invocable");
-		//InvocationTargetException?
+		//IllegalAccessException
 	}
 	
 	@RunMe

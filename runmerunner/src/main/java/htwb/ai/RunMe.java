@@ -18,9 +18,5 @@ public @interface RunMe {
 	public boolean enabled () default true;
 	// you can define properties here: for example string name(); int  count ()
 
-//	public String priority();
-//
-//	public String createdBy();
-//
-//	public String[] tags();
+
 }

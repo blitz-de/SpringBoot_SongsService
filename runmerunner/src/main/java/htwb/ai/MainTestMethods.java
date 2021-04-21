@@ -11,20 +11,27 @@ public class MainTestMethods {
 		
 		int success= 0, failed=0, total=0, disabled = 0;
 		
-		Scanner input = new Scanner(System.in);
-		System.out.println("Enter Class Name: " );
-		String packageName = "htwb.ai.";
-		String classInput = input.nextLine();
-		
-		String className = packageName+classInput;
-		System.out.println("Entered Class is: " +className);
-			
-		if (classInput.isEmpty()) {
-			System.out.println("no input");
+//		Scanner input = new Scanner(System.in);
+//		System.out.println("Enter Class Name: " );
+//		String packageName = "htwb.ai.";
+//		String classInput = input.nextLine();
+//		
+//		String className = packageName+classInput;
+//		
+//		if (args.isEmpty()) { //classInput -was
+//			System.out.println("no input");
+//		}
+//		
+		if (args.length ==0 ) {
+			System.out.println("no-input");
+			System.out.println("Proper Usage is: java program filename");
+			System.exit(0);
 		}
 		
-		if (!classInput.isEmpty()) {
-//		String className = "htwb.ai.RunMeMethods";
+		String className = args[0];
+		System.out.println("Entered Class is: " +className);
+		
+		if (args.length >0) { //!classInput.isEmpty -was
 			try {
 				System.out.println("ClassName: " +className);
 				Class<?> clazz = Class.forName(className);
