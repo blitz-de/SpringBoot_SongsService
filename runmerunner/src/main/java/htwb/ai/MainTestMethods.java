@@ -31,11 +31,9 @@ public class MainTestMethods {
 		for(int i = 0; i<args.length;i++){
 			searchForClass(args[i]);
 		}
-		
-
 	}
 	static void searchForClass(String className){
-		System.out.println("> search class:"+ className);
+		System.out.println("> search class: "+ className);
 		System.out.println("---------------");
 		int success= 0, failed=0, total=0, disabled = 0;
 		ArrayList<Method> withoutRunMeMethods = new ArrayList<>();
@@ -47,6 +45,7 @@ public class MainTestMethods {
 				//System.out.println("getDeclaredMethods: ");
 				Method[] declMethods = clazz.getDeclaredMethods();
 				System.out.println("trying to invoke methods with @runMe...");
+				System.out.println();
 				for (Method m: declMethods) {
 
 					// RUNME
@@ -81,7 +80,7 @@ public class MainTestMethods {
 						disabled++;
 					}
 				}
-				System.out.println("###############");
+				System.out.println();
 				System.out.println("printing method groups...");
 				printMethods(withoutRunMeMethods, "Methods without @RunMe:");
 				printMethods(runMeMethods, "Methods with @RunMe:");
@@ -102,6 +101,7 @@ public class MainTestMethods {
 	static void printMethods(ArrayList<Method> methods, String message){
 		System.out.println("---------------");
 		System.out.println(message);
+		System.out.println();
 		for (Method m: methods) {
 			System.out.println(m.getName());
 		}
