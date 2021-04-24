@@ -1,4 +1,4 @@
-package htwb.ai.app;
+package htwb.ai;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -6,9 +6,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-
-import htwb.ai.ParentClass;
-import htwb.ai.RunMe;
 
 public class MainTestMethods {
 
@@ -56,9 +53,12 @@ public class MainTestMethods {
                 RunMe runMeMethod = (RunMe) annotation;
 
                 try {
+                	
+                    m.setAccessible(true);
                     m.invoke(clazz.getDeclaredConstructor().newInstance());
                     // RUNME
                     if (m.isAnnotationPresent(RunMe.class)) {
+//                    		m.setAccessible(true);
 	                    	runMeMethods.add(m);
 	                        ++total;
 	                        success++; 
@@ -70,9 +70,12 @@ public class MainTestMethods {
                     }
                 } catch (IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException  | SecurityException | NoSuchMethodException ex) {
                     if (m.isAnnotationPresent(RunMe.class)) {
+                    	if (m.isAccessible()==true) {
+                    		m.setAccessible(false);
 		            	notInvokeableMethods.add(m);
 		                _notInvokeableMethods.add(m.getName()+ " " + ex.getClass().getSimpleName());
 		                if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
+                    }
                     } 		                
                     if (!m.isAnnotationPresent(RunMe.class)) withoutRunMeMethods.add(m);
 
