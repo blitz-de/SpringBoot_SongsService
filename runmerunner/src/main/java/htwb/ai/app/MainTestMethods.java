@@ -1,4 +1,4 @@
-package htwb.ai;
+package htwb.ai.app;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -7,22 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import htwb.ai.ParentClass;
+import htwb.ai.RunMe;
+
 public class MainTestMethods {
 
     public static void main(String[] args) {
 
 
-//		Scanner input = new Scanner(System.in);
-//		System.out.println("Enter Class Name: " );
-//		String packageName = "htwb.ai.";
-//		String classInput = input.nextLine();
-//		
-//		String className = packageName+classInput;
-//		
-//		if (args.isEmpty()) { //classInput -was
-//			System.out.println("no input");
-//		}
-//
         if (args.length == 0) {
             System.out.println("no-input");
             System.out.println("Proper Usage is: java program filename");
@@ -32,6 +24,7 @@ public class MainTestMethods {
         for (int i = 0; i < args.length; i++) {
             searchForClass(args[i]);
         }
+//    	searchForClass("htwb.ai.RunMeMethods");
     }
 
     static void searchForClass(String className) {
@@ -49,65 +42,46 @@ public class MainTestMethods {
         //ArrayList<Method> notAccessable = new ArrayList<>();
         try {
             Class<?> clazz = Class.forName(className);
-
+            Object clazzy = clazz.newInstance();
+            
+            ParentClass.create(className);
+            
             //System.out.println("getDeclaredMethods: ");
             Method[] declMethods = clazz.getDeclaredMethods();
             System.out.println("invoking methods...");
             String result = "n/a";
 
             for (Method m : declMethods) {
-                try {
+                Annotation annotation = m.getAnnotation(RunMe.class);
+                RunMe runMeMethod = (RunMe) annotation;
 
-                    //result = (String)
+                try {
                     m.invoke(clazz.getDeclaredConstructor().newInstance());
                     // RUNME
                     if (m.isAnnotationPresent(RunMe.class)) {
-                        Annotation annotation = m.getAnnotation(RunMe.class);
-                        RunMe runMeMethod = (RunMe) annotation;
-                        if (runMeMethod.enabled()) {
-                            runMeMethods.add(m);
-                            ++total;
-                            success++;
-
-                        }
+	                    	runMeMethods.add(m);
+	                        ++total;
+	                        success++; 
                     } else {
-                        withoutRunMeMethods.add(m);
-                        ++total;
-                        disabled++;
+                    		// add even if access is not possible
+	                        withoutRunMeMethods.add(m);
+                            ++total;
+                            disabled++;
                     }
-                } catch (IllegalAccessException | InstantiationException ex) {
-                    System.out.println("Error: Could not instantiate or access class " + className);
-                    notInvokeableMethods.add(m);
-                    _notInvokeableMethods.add(m.getName()+": IllegalAccessException");
-                    if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
-                    ++total;
-                    failed++;
-                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
+                } catch (IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException  | SecurityException | NoSuchMethodException ex) {
+                    if (m.isAnnotationPresent(RunMe.class)) {
+		            	notInvokeableMethods.add(m);
+		                _notInvokeableMethods.add(m.getName()+ " " + ex.getClass().getSimpleName());
+		                if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
+                    } 		                
+                    if (!m.isAnnotationPresent(RunMe.class)) withoutRunMeMethods.add(m);
 
-                } catch (InvocationTargetException e) {
+//                    withoutRunMeMethods.add(m);
+                    ++total;
+                    failed++;
+//                    /System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
 
-                    System.out.println("Error: Could not invoke class " + className);
-                    notInvokeableMethods.add(m);
-
-                    _notInvokeableMethods.add(m.getName()+": InvocationTargetException");
-                    ++total;
-                    failed++;
-                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
-                } catch (NoSuchMethodException e) {
-                    System.out.println("Error: Could not instantiate class "+ className);
-                    ++total;
-                    failed++;
-                    notInvokeableMethods.add(m);
-                    _notInvokeableMethods.add(m.getName()+": NoSuchMethodException");
-                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Error: Could not invoke method with without argument -> "+ m.getName());
-                    ++total;
-                    failed++;
-                    notInvokeableMethods.add(m);
-                    _notInvokeableMethods.add(m.getName()+": IllegalArgumentException");
-                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
-                }
+                } 
             }
             System.out.println();
             System.out.println("printing report...");
@@ -122,8 +96,9 @@ public class MainTestMethods {
                     disabled);
 
 
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error: Could not find class " + className);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            System.out.println("Error: " + className + " --- " + e.getClass().getSimpleName());
             System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
         }
     }

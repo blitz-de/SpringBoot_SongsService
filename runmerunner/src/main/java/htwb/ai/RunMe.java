@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 //@Target(ElementType.TYPE)
 public @interface RunMe {
 
-	public boolean enabled () default true;
+//	public boolean enabled () default true;
 	// you can define properties here: for example string name(); int  count ()
 
 
