@@ -95,7 +95,7 @@ public class MainTestMethods {
 
 			} catch (ClassNotFoundException e) {
 				System.out.println("Error: Could not find class "+className);
-				System.out.println("Usage: java -jar runmerunner-TEAMNAME.jar className");
+				System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
 			}
 	}
 	static void printMethods(ArrayList<Method> methods, String message){
