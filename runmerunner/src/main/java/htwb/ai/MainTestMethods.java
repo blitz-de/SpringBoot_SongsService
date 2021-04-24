@@ -52,8 +52,9 @@ public class MainTestMethods {
 
             //System.out.println("getDeclaredMethods: ");
             Method[] declMethods = clazz.getDeclaredMethods();
-            System.out.println();
+            System.out.println("invoking methods...");
             String result = "n/a";
+
             for (Method m : declMethods) {
                 try {
 
@@ -81,6 +82,7 @@ public class MainTestMethods {
                     if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
                     ++total;
                     failed++;
+                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
 
                 } catch (InvocationTargetException e) {
 
@@ -90,21 +92,20 @@ public class MainTestMethods {
                     _notInvokeableMethods.add(m.getName()+": InvocationTargetException");
                     ++total;
                     failed++;
+                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
                 } catch (NoSuchMethodException e) {
                     System.out.println("Error: Could not instantiate class "+ className);
                     ++total;
                     failed++;
                     notInvokeableMethods.add(m);
-
                     _notInvokeableMethods.add(m.getName()+": NoSuchMethodException");
+                    System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
                 } catch (IllegalArgumentException e) {
                     System.out.println("Error: Could not invoke method with without argument -> "+ m.getName());
                     ++total;
                     failed++;
                     notInvokeableMethods.add(m);
-
                     _notInvokeableMethods.add(m.getName()+": IllegalArgumentException");
-                } finally {
                     System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
                 }
             }
@@ -123,7 +124,6 @@ public class MainTestMethods {
 
         } catch (ClassNotFoundException e) {
             System.out.println("Error: Could not find class " + className);
-        } finally {
             System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
         }
     }

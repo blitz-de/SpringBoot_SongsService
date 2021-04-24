@@ -94,7 +94,7 @@ public class RunMeMethods extends ParentClass {
 	}
 	
 	public void noRunMe3 () {
-		System.out.println("noRunMe3");
+		System.out.println("noRunMe3: done");
 	}
 	
 }
