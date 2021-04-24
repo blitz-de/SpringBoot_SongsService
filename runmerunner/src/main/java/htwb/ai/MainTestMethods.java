@@ -54,7 +54,7 @@ public class MainTestMethods {
 
                 try {
                 	
-                    m.setAccessible(true);
+//                    m.setAccessible(true);
                     m.invoke(clazz.getDeclaredConstructor().newInstance());
                     // RUNME
                     if (m.isAnnotationPresent(RunMe.class)) {
@@ -70,12 +70,12 @@ public class MainTestMethods {
                     }
                 } catch (IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException  | SecurityException | NoSuchMethodException ex) {
                     if (m.isAnnotationPresent(RunMe.class)) {
-                    	if (m.isAccessible()==true) {
-                    		m.setAccessible(false);
+//                    	if (m.isAccessible()==true) {
+//	                	m.setAccessible(false);
 		            	notInvokeableMethods.add(m);
 		                _notInvokeableMethods.add(m.getName()+ " " + ex.getClass().getSimpleName());
 		                if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
-                    }
+//                    }
                     } 		                
                     if (!m.isAnnotationPresent(RunMe.class)) withoutRunMeMethods.add(m);
 
