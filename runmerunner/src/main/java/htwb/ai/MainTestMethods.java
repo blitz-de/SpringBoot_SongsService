@@ -41,6 +41,11 @@ public class MainTestMethods {
         ArrayList<Method> withoutRunMeMethods = new ArrayList<>();
         ArrayList<Method> runMeMethods = new ArrayList<>();
         ArrayList<Method> notInvokeableMethods = new ArrayList<>();
+
+
+        ArrayList<String> _withoutRunMeMethods = new ArrayList<>();
+        ArrayList<String> _runMeMethods = new ArrayList<>();
+        ArrayList<String> _notInvokeableMethods = new ArrayList<>();
         //ArrayList<Method> notAccessable = new ArrayList<>();
         try {
             Class<?> clazz = Class.forName(className);
@@ -52,7 +57,8 @@ public class MainTestMethods {
             for (Method m : declMethods) {
                 try {
 
-                    result = (String) m.invoke(clazz.getDeclaredConstructor().newInstance());
+                    //result = (String)
+                    m.invoke(clazz.getDeclaredConstructor().newInstance());
                     // RUNME
                     if (m.isAnnotationPresent(RunMe.class)) {
                         Annotation annotation = m.getAnnotation(RunMe.class);
@@ -71,6 +77,8 @@ public class MainTestMethods {
                 } catch (IllegalAccessException | InstantiationException ex) {
                     System.out.println("Error: Could not instantiate or access class " + className);
                     notInvokeableMethods.add(m);
+                    _notInvokeableMethods.add(m.getName()+": IllegalAccessException");
+                    if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
                     ++total;
                     failed++;
 
@@ -78,13 +86,24 @@ public class MainTestMethods {
 
                     System.out.println("Error: Could not invoke class " + className);
                     notInvokeableMethods.add(m);
+
+                    _notInvokeableMethods.add(m.getName()+": InvocationTargetException");
                     ++total;
                     failed++;
                 } catch (NoSuchMethodException e) {
-                    System.out.println("Error: Could not instantiate class " + className + " - constructor not accessible or method not found");
+                    System.out.println("Error: Could not instantiate class "+ className);
                     ++total;
                     failed++;
                     notInvokeableMethods.add(m);
+
+                    _notInvokeableMethods.add(m.getName()+": NoSuchMethodException");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error: Could not invoke method with without argument -> "+ m.getName());
+                    ++total;
+                    failed++;
+                    notInvokeableMethods.add(m);
+
+                    _notInvokeableMethods.add(m.getName()+": IllegalArgumentException");
                 } finally {
                     System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
                 }
@@ -93,7 +112,7 @@ public class MainTestMethods {
             System.out.println("printing report...");
             if (withoutRunMeMethods.size() != 0) printMethods(withoutRunMeMethods, "Methods without @RunMe:");
             if (runMeMethods.size() != 0) printMethods(runMeMethods, "Methods with @RunMe:");
-            if (notInvokeableMethods.size() != 0) printMethods(notInvokeableMethods, "not invocable:");
+            if (notInvokeableMethods.size() != 0) _printMethods(_notInvokeableMethods, "not invocable:");
 
             System.out.printf("%nResult: Total : %d, Successful: %d, failed %d, Disabled %d%n",
                     total,
@@ -115,6 +134,15 @@ public class MainTestMethods {
         System.out.println();
         for (Method m : methods) {
             System.out.println(m.getName());
+        }
+
+    }
+    static void _printMethods(ArrayList<String> methods, String message) {
+        System.out.println("---------------");
+        System.out.println(message);
+        System.out.println();
+        for (String m : methods) {
+            System.out.println(m);
         }
 
     }
