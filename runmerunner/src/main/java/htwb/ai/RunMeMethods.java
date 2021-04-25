@@ -1,7 +1,5 @@
 package htwb.ai;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class RunMeMethods extends ParentClass {
 	
 	@RunMe
@@ -67,7 +65,7 @@ public class RunMeMethods extends ParentClass {
 	
 	@Override
 	@RunMe
-	int methodBOOM(){
+	public int methodBOOM(){
 		System.out.println("methodBOOM: done");
 		return 1/0;
 	}
@@ -99,5 +97,7 @@ public class RunMeMethods extends ParentClass {
 	public void noRunMe3 () {
 		System.out.println("noRunMe3: done");
 	}
-	
+
+
+
 }
