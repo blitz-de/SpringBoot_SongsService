@@ -1,11 +1,14 @@
-package htwb.ai;
+package htwb.ai.app;
+
+import htwb.ai.ParentClass;
+import htwb.ai.RunMe;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class MainTestMethods {
+public class App {
 
     public static void main(String[] args) {
 
@@ -81,7 +84,7 @@ public class MainTestMethods {
                     ++total;
                     failed++;
 //                    /System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
-                    throw ex;
+
 
                 } 
             }

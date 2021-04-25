@@ -33,7 +33,7 @@
 			          <manifest>
 			            <addClasspath>true</addClasspath>
 			            <classpathPrefix>lib/</classpathPrefix>
-			            <mainClass>htwb.ai.MainTestMethods</mainClass>
+			            <mainClass>htwb.ai.app.App</mainClass>
 			          </manifest>
 			        </archive>
 			      </configuration>
