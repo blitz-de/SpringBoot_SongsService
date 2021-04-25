@@ -11,7 +11,7 @@ import htwb.ai.RunMe;
 public class AnnoVsNoAnnoMethods {
 
     public static boolean searchForClass(String className) {
-        int runme = 0, norunme = 0, total = 0, disabled = 0;
+        int runme = 0, norunme = 0, total = 0;
         ArrayList<Method> withoutRunMeMethods = new ArrayList<>();
         ArrayList<Method> runMeMethods = new ArrayList<>();
         ArrayList<Method> notInvokeableMethods = new ArrayList<>();

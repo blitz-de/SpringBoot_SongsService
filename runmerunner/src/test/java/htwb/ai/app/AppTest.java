@@ -57,6 +57,8 @@ public class AppTest {
         assertThrows(NoSuchMethodException.class, () -> {
             ParentClass.create("java.io.Closeable");
         });
+        System.out.println("noSuchMethodException test succeded...");
+
     }
 
     @Test
@@ -64,6 +66,7 @@ public class AppTest {
         assertThrows(InstantiationException.class, () -> {
             ParentClass.create("htwb.ai.ParentClass");
         });
+        System.out.println("InstantiantionException test succeded...");
     }
 
     @Test
@@ -71,6 +74,7 @@ public class AppTest {
         assertThrows(NullPointerException.class, () -> {
             ParentClass.create(null);
         });
+        System.out.println("Null test succeded...");
     }
 
     @Test
@@ -85,7 +89,7 @@ public class AppTest {
     }
 
     @Test
-    public void InvocationTargetExceptionTest() {
+    public void invocationTargetExceptionTest() {
         assertThrows(InvocationTargetException.class, () -> {
 
             Class<?> c = Class.forName("htwb.ai.RunMeMethods");
@@ -155,8 +159,6 @@ public class AppTest {
     public void classFoundReturnTrue() {
         boolean result = allMethods.searchForClass("htwb.ai.RunMeMethods");
         assertTrue(result);
-        System.out.println("searchForClass success test succeeded...");
+        System.out.println("searchForRightClass test succeeded...");
     }
-
-
 }
