@@ -37,7 +37,6 @@ public class MainTestMethods {
         //ArrayList<Method> notAccessable = new ArrayList<>();
         try {
             Class<?> clazz = Class.forName(className);
-            Object clazzy = clazz.newInstance();
             
             ParentClass.create(className);
             
@@ -103,9 +102,9 @@ public class MainTestMethods {
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
             System.out.println("Error: " + className + " --- " + e.getClass().getSimpleName());
             System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
+
         }
     }
-
     static void printMethods(ArrayList<Method> methods, String message) {
         System.out.println("---------------");
         System.out.println(message);
