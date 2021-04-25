@@ -4,8 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class MainTestMethods {
 
@@ -72,6 +70,7 @@ public class MainTestMethods {
                     if (m.isAnnotationPresent(RunMe.class)) {
 //                    	if (m.isAccessible()==true) {
 //	                	m.setAccessible(false);
+
 		            	notInvokeableMethods.add(m);
 		                _notInvokeableMethods.add(m.getName()+ " " + ex.getClass().getSimpleName());
 		                if (m.isAnnotationPresent(RunMe.class)) runMeMethods.add(m);
@@ -83,6 +82,7 @@ public class MainTestMethods {
                     ++total;
                     failed++;
 //                    /System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
+                    throw ex;
 
                 } 
             }
