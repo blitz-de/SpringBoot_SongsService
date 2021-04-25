@@ -11,7 +11,7 @@
 
 1. Lokal Repository klonen:
     ```bash
-    git clone LINK_ZUM_TEMPLATE_REPOSITORY
+    git clone https://github.com/htw-kbe-sose2021
     ```
 1. Ersetzen Sie die Überschrift in `README.md `mit `TEAMNAME`
 1. Geben Sie Ihre Teammitglieder in die Tabelle der `README.md` ein
