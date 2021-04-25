@@ -5,9 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class ParentClass {
   
     abstract int methodBOOM();
-    
-    abstract int methodInt();
-    
+        
     /**
      * Creates an instance of a Foo class
      * 
@@ -30,7 +28,7 @@ public abstract class ParentClass {
 	        NoSuchMethodException, 
 	        SecurityException {
 		
-		System.out.println("Foo.create: " + className);
+		System.out.println("ParentClass.create: " + className);
 		Class<?> c = Class.forName(className);
 		return  c.getDeclaredConstructor().newInstance();
 	}
