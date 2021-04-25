@@ -2,67 +2,58 @@ package htwb.ai;
 
 public class RunMeMethods extends ParentClass {
 	
+	// -------------RUNME - METHODS --------------//
+	
+	// PUBLIC
 	@RunMe
 	public void findMe1 () {
-		System.out.println("findMe1 - public method: done");
+		System.out.println("findMe1 - RnR - public method: done");
 	}
 	
 	@RunMe
 	public void findMe2 () {
-		System.out.println("findMe2 - public method: done");
+		System.out.println("findMe2 - RnR - public method: done");
 	}
 	
-	@RunMe
-	private void findMe3 () {
-		System.out.println("findMe3 - private  method: done");
-		//IllegalAccessException
-	}
-//	
-	@RunMe
-	void findMe4 () {
-		System.out.println("findMe4 - package-private method: done");
-	}
-	
-	@RunMe
-	public static String findMe5 () {
-		System.out.println("findMe5 - public and static: done");
-		return "findMe5".toUpperCase();
-	}
-//	
-//	@RunMe
-//	public void findMe6 () {
-//		System.out.println("findMe6: done");
-//	}
-	
-	//didn't run
-	public void testWithoutRunMe() {
-		System.out.println("testWithoutRunMe: done");
-	}
-	
-	void testNoRM() {
-		System.out.println("testNoRM: done");
-	}
 	@RunMe
 	public void methodOk1 () {
 
-		System.out.println("methodOk1: done");
+		System.out.println("RnR - methodOk1: done");
 	}
 	
 	@RunMe
 	public void methodOk2 () {
 
-		System.out.println("methodOk2: done");
-	}
-	private void methodPackagePrivate() {
-
-		System.out.println("methodPackagePrivate: done");
+		System.out.println("RnR - methodOk2: done");
 	}
 	
+	// PUBLIC - STATIC
+	@RunMe
+	public static String findMe3 () {
+		System.out.println("findMe3 - RnR - public and static: done");
+		return "findMe3".toUpperCase();
+	}
+	
+	// PRIVATE
+	@RunMe
+	private void findMe4 () {
+		System.out.println("findMe4 - RnR - private  method: done");
+		//IllegalAccessException
+	}
+	
+	// PACKAGE-PRIVATE
+	@RunMe
+	void findMe5 () {
+		System.out.println("findMe5 - RnR - package-private method: done");
+	}
+	
+	// PROTECTED
 	@RunMe
 	protected void methodProtected() {
-		System.out.println("methodProtected: done");
+		System.out.println("RnR - methodProtected: done");
 	}
 	
+	// PRIVATE-PROTECTED & throws InvocationTargetException
 	@Override
 	@RunMe
 	public int methodBOOM(){
@@ -70,21 +61,33 @@ public class RunMeMethods extends ParentClass {
 		return 1/0;
 	}
 	
+	// WITH ARGUMENTS
 	@RunMe 
 	public void methodWithArg (String str) {
-		System.out.println("methodWithArg: done");
+		System.out.println("RnR - methodWithArg: done");
 		
 	}
 
-	@Override
-	@RunMe
-	int methodInt() {
-		System.out.println("methodInt: done");
-		// TODO Auto-generated method stub
-		return 0;
+	// -------------NON-RUNME - METHODS --------------//
+	
+	// PUBLIC 1
+	public void testWithoutRunMe() {
+		System.out.println("nonRnR - testWithoutRunMe: done");
 	}
 	
-	void noRunMe1() {
+	// PACKAGE-PROTECTED
+	void testNoRM() {
+		System.out.println("nonRnR - testNoRM: done");
+	}
+
+	// PRIVATE
+	private void nonRunMePrivate() {
+
+		System.out.println("nonRnR - private: done");
+	}
+	 
+	// PUBLIC 2
+	public void noRunMe1() {
 
 		System.out.println("noRunMe1: done");
 	}
@@ -94,10 +97,13 @@ public class RunMeMethods extends ParentClass {
 		System.out.println("noRunMe2: done");
 	}
 	
-	public void noRunMe3 () {
-		System.out.println("noRunMe3: done");
+	// PACKAGE-PROTECTED
+	void noRunMe3 () {
+		System.out.println("noRunMe3 - package protected: done");
 	}
-
-
-
+	
+	// PROTECTED
+	protected void noRunMe4 () {
+		System.out.println("noRunMe4 - protected: done");
+	}
 }

@@ -2,8 +2,8 @@
 
 | Name          | Matrikelnummer  |
 | :------------ | --------------- |
-| TEAMMITGLIED1 | MATRIKELNUMMER1 |
-| TEAMMITGLIED2 | MATRIKELNUMMER2 |
+| Davis  | MATRIKELNUMMER1 |
+| Sakhr Al-absi | 562218 |
 
 
 
@@ -57,7 +57,7 @@ In diesem Repository werden die Belegaufgaben und die Testdateien hochgeladen. D
 cd PFAD_ZUM_REPOSITORY
 
 # den kbe Remote setzen (muss man nur einmal machen)
-git remote add kbe https://github.com/htw-kbe-sose2021/htw-kbe-sose2021-template
+git remote add kbe git@github.com:htw-kbe-sose2021/sakvis.git
 ```
 
 ### Für Belegaufgaben
