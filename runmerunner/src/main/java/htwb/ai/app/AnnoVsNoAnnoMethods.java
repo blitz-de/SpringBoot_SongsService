@@ -78,7 +78,11 @@ public class AnnoVsNoAnnoMethods {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
             System.out.println("Error: " + className + " --- " + e.getClass().getSimpleName());
-            System.out.println("Usage: java -jar runmerunner-sakvis.jar className");
+            System.out.println("Usage: java -jar runmerunner-sakvis.jar htwb.ai.className" + "\n \n"
+            		+"Examples: \n"
+            		+"1. java -jar runmerunner-sakvis.jar htwb.ai.RunMeMethods --> Correct Usage" +"\n" 
+            		+"2. java -jar runmerunner-sakvis.jar htwb.ai.ParentClass --> will throw NonInstantiable" +"\n"
+            		+"3. java -jar runmerunner-sakvis.jar java.io.Closeable  --> will throw NonInstantiable");
             return false;
         }
 		return true;
