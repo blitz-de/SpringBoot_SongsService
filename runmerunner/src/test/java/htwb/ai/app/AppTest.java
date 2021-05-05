@@ -3,9 +3,11 @@ package htwb.ai.app;
 import htwb.ai.ParentClass;
 import htwb.ai.RunMeMethods;
 import htwb.ai.ex.NoInputException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,12 +28,30 @@ public class AppTest {
 
     private final String path = "htwb.ai.";
 
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
+
     @BeforeEach
     public void setUp() throws Exception {
         classWithMethods = path + "RunMeMethods";
         extraClass = path + "ExtraClass";
         classNotFound = path + "N/A";
         results = new ArrayList[2];
+
+
+    }
+    @BeforeEach
+    public void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
+    }
+
+    @AfterEach
+    public void restoreStreams() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     @Test
@@ -41,7 +61,35 @@ public class AppTest {
         assertThrows(NoInputException.class, () -> {
             a.main(emptyArr);
         });
-        System.out.println("no input test succeded...");
+    }
+    @Test
+    public void noInputTestUsageMessage() throws NoInputException {
+        App a = new App();
+        String[] emptyArr = {};
+        assertThrows(NoInputException.class, () -> {
+            a.main(emptyArr);
+            assertEquals(true, outContent.toString().contains("usage:"));
+        });
+
+    }
+
+    @Test
+    public void areExceptionsCatched() throws NoInputException {
+        App a = new App();
+        String[] arr = {"htwb.ai.RunMeMethods"};
+        a.main(arr);
+        assertEquals(true, outContent.toString().contains("Exception"));
+    }
+    @Test
+    public void usageOutprinted() throws NoInputException {
+        App a = new App();
+        String[] arr = {"htwb.ai.RunMeMethods"};
+
+        a.main(arr);
+        boolean b = false;
+        System.out.println(outContent.toString());
+        //if(outContent.toString().contains("usage")) b = true;
+        //assertEquals(true, b);
     }
 
     @Test
@@ -49,7 +97,6 @@ public class AppTest {
         assertThrows(ClassNotFoundException.class, () -> {
             ParentClass.create("blub");
         });
-        System.out.println("classNotFoundException test succeded...");
     }
 
     @Test
@@ -57,8 +104,6 @@ public class AppTest {
         assertThrows(NoSuchMethodException.class, () -> {
             ParentClass.create("java.io.Closeable");
         });
-        System.out.println("noSuchMethodException test succeded...");
-
     }
 
     @Test
@@ -66,7 +111,6 @@ public class AppTest {
         assertThrows(InstantiationException.class, () -> {
             ParentClass.create("htwb.ai.ParentClass");
         });
-        System.out.println("InstantiantionException test succeded...");
     }
 
     @Test
@@ -74,7 +118,6 @@ public class AppTest {
         assertThrows(NullPointerException.class, () -> {
             ParentClass.create(null);
         });
-        System.out.println("Null test succeded...");
     }
 
     @Test
@@ -85,80 +128,47 @@ public class AppTest {
             Method method = c.getDeclaredMethod("findMe4");
             method.invoke(c.getDeclaredConstructor().newInstance());
         });
-        System.out.println("Private-Method IllegalAccessException test succeded...");
     }
 
     @Test
-    public void invocationTargetExceptionTest() {
-        assertThrows(InvocationTargetException.class, () -> {
+    public void invocationTargetExceptionTest() throws NoInputException {
 
-            Class<?> c = Class.forName("htwb.ai.RunMeMethods");
-            Method method = c.getDeclaredMethod("methodBOOM");
-            method.invoke(c.getDeclaredConstructor().newInstance());
-        });
-        System.out.println("BOOM-Method- InvocationTargetException test succeded...");
-
-    } //IllegalArgumentException
-
-    @Test
-    public void illegalArgumentExceptionTest() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Class<?> c = Class.forName("htwb.ai.RunMeMethods");
-            Method method = c.getDeclaredMethod("methodWithArg", String.class);
-            method.invoke(c.getDeclaredConstructor().newInstance());
-        });
-
-        System.out.println("IllegalArgumentException test succeded...");
-    }
-
-    @Test
-    public void protectedIllegalAccessExceptionTest() {
-        assertThrows(IllegalAccessException.class, () -> {
-
-            Class<?> c = Class.forName("htwb.ai.RunMeMethods");
-
-            System.out.println(c);
-            try {
-                Method method = c.getDeclaredMethod("methodProtected");
-                System.out.println(method);
-                method.invoke(RunMeMethods.class, "");
-            } catch (IllegalAccessException ex) {
-                throw ex;
-            }
-        });
-        System.out.println("Protected-Method IllegalAccessException test succeded...");
+        App a = new App();
+        String[] arr = {"htwb.ai.RunMeMethods"};
+        a.main(arr);
+        assertEquals(true, outContent.toString().contains("InvocationTargetException"));
 
     }
 
+
     @Test
-    public void packagePrivateIllegalAccessException () {
-        assertThrows(IllegalAccessException.class, () -> {
+    public void illegalArgumentExceptionTest() throws NoInputException {
 
-            Class<?> c = Class.forName("htwb.ai.RunMeMethods");
+        App a = new App();
+        String[] arr = {"htwb.ai.RunMeMethods"};
+        a.main(arr);
+        assertEquals(true, outContent.toString().contains("IllegalArgumentException"));
+    }
 
-            System.out.println(c);
-            try {
-                Method method = c.getDeclaredMethod("findMe5");
-                method.invoke(RunMeMethods.class, "");
-            } catch (IllegalAccessException ex) {
-                throw ex;
-            }
-        });
+    @Test
+    public void protectedIllegalAccessExceptionTest() throws NoInputException {
 
-        System.out.println("Package-pirvate-Method IllegalAccessException test succeded...");
+        App a = new App();
+        String[] arr = {"htwb.ai.RunMeMethods"};
+        a.main(arr);
+        assertEquals(true, outContent.toString().contains("IllegalAccessException"));
+
     }
 
     @Test
     public void noSuchClassName()  {
         boolean result = allMethods.searchForClass("");
         assertFalse(result);
-        System.out.println("no such className succeded...");
     }
     
     @Test
     public void classFoundReturnTrue() {
         boolean result = allMethods.searchForClass("htwb.ai.RunMeMethods");
         assertTrue(result);
-        System.out.println("searchForRightClass test succeeded...");
     }
 }
