@@ -1,9 +1,9 @@
-# KBE Projekt Template
+	# KBE Projekt Template
 
 | Name          | Matrikelnummer  |
 | :------------ | --------------- |
-| TEAMMITGLIED1 | MATRIKELNUMMER1 |
-| TEAMMITGLIED2 | MATRIKELNUMMER2 |
+| Davis  | 570978 |
+| Sakhr Al-absi | 562218 |
 
 
 
@@ -11,7 +11,7 @@
 
 1. Lokal Repository klonen:
     ```bash
-    git clone LINK_ZUM_TEMPLATE_REPOSITORY
+    git clone https://github.com/htw-kbe-sose2021/sakvis.git
     ```
 1. Ersetzen Sie die Überschrift in `README.md `mit `TEAMNAME`
 1. Geben Sie Ihre Teammitglieder in die Tabelle der `README.md` ein
@@ -57,7 +57,7 @@ In diesem Repository werden die Belegaufgaben und die Testdateien hochgeladen. D
 cd PFAD_ZUM_REPOSITORY
 
 # den kbe Remote setzen (muss man nur einmal machen)
-git remote add kbe https://github.com/htw-kbe-sose2021/htw-kbe-sose2021-template
+git remote add kbe git@github.com:htw-kbe-sose2021/sakvis.git
 ```
 
 ### Für Belegaufgaben
