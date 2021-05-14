@@ -4,8 +4,8 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <servlet>
-        <servlet-name>EchoingServlet</servlet-name>
-        <servlet-class>htwb.ai.teames.EchoServlet</servlet-class>
+        <servlet-name>EchoServlet</servlet-name>
+        <servlet-class>htwb.ai.EchoServlet</servlet-class>
         <init-param>
             <param-name>uriToDB</param-name>
             <param-value>db-uri:mysql.server.de:3306/dbId</param-value>
@@ -13,15 +13,15 @@
     </servlet>
 
     <!--  DIE URL AN DAS SERVLET, WELCHES IN EINEM TOMCAT_SERVER LAEUFT IST:
-          http://localhost:8080/echoServlet/echo
-          echoServlet ist die Bezeichnung der App,
-          echoServlet/echo -> Pfad welcher auf htwb.ai.teames.EchoServlet abgebildet wird
-          echoServlet.war wird von uns gebaut, ins webapp-Verzeichnis von Tomcat kopiert
+          http://localhost:8080/songsservlet/echo
+          EchoServlet ist die Bezeichnung der App,
+          songsservlet/echo -> Pfad welcher auf htwb.ai.teames.EchoServlet abgebildet wird
+          songsservlet.war wird von uns gebaut, ins webapp-Verzeichnis von Tomcat kopiert
           von Tomcat depoyed
 
      -->
     <servlet-mapping>
-        <servlet-name>EchoingServlet</servlet-name>
+        <servlet-name>EchoServlet</servlet-name>
         <url-pattern>/echo</url-pattern>
     </servlet-mapping>
 </web-app>

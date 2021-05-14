@@ -5,10 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +13,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
 
-public class AppServletTest {
+public class EchoServletTest {
 
-    private AppServlet servlet;
+    private EchoServlet servlet;
     private MockServletConfig config;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -27,7 +24,7 @@ public class AppServletTest {
 
     @BeforeEach
     public void setUp() throws ServletException {
-        servlet = new AppServlet();
+        servlet = new EchoServlet();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
         config = new MockServletConfig();

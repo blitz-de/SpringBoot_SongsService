@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-@WebServlet("/songs")
-public class AppServlet extends HttpServlet {
+//@WebServlet("/echo")
+public class EchoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private String uriToDB = null;
