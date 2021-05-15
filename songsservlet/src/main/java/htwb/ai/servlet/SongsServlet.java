@@ -1,9 +1,9 @@
 package htwb.ai.servlet;
 
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import htwb.ai.dao.SongsDao;
 import htwb.ai.model.Song;
 
@@ -30,50 +33,61 @@ public class SongsServlet extends HttpServlet {
 
     public SongsServlet() {
         super();
+        //readJSONToSongs("songs.json");
+    }
+
+    public String SongsToJSON() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return objectMapper.writeValueAsString(Song.values());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NumberFormatException {
         System.out.println("################### new get ######################");
+        emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        SongsDao dao = new SongsDao(emf);
         if (request.getParameterMap().containsKey("all")) {
-
+            // 1.) get all songs
+            List<Song> list = dao.findAll();
+            // 2.) pack it to json
+            String payload = SongsToJSON();
+            // 3.) response it
+            reponseString(payload, response, HttpServletResponse.SC_FOUND);
         } else if (request.getParameterMap().containsKey("songId")) {
-
             int id = Integer.parseInt(request.getParameter("id"));
-
-            emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-            SongsDao dao = new SongsDao(emf);
             Song song = dao.find(id);
             if (emf != null) {
                 emf.close();
             }
+            try (PrintWriter out = response.getWriter()) {
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_FOUND);
+                // TODO:
+                // now parse song to json and send it in response back as payload
+                out.flush();
+                out.close();
+            }
+            response.getWriter().append("Server at: ").append(request.getContextPath());
         }
-        try (PrintWriter out = response.getWriter()) {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_FOUND);
-            // TODO:
-            // now parse song to json and send it in response back as payload
-            out.flush();
-            out.close();
-        }
-        response.getWriter().append("Server at: ").append(request.getContextPath());
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        Song song = new Song();
         System.out.println("################### new post ######################");
         String title = request.getParameter("title");
         String artist = request.getParameter("artist");
         String label = request.getParameter("label");
-
-        Song song = new Song();
         try {
             int released = Integer.parseInt(request.getParameter("released"));
             song.setReleased(released);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+        // set params
         song.setTitle(title);
         song.setArtist(artist);
         song.setLabel(label);
@@ -105,5 +119,39 @@ public class SongsServlet extends HttpServlet {
             out.flush();
             out.close();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Song> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+            return (List<Song>) objectMapper.readValue(is, new TypeReference<List<Song>>() {
+            });
+        }
+    }
+
+    public void reponseString(String payload, HttpServletResponse response, int status) throws IOException {
+        try (PrintWriter out = response.getWriter()) {
+            response.setContentType("application/json");
+            response.setStatus(status);
+            out.write(payload);
+            out.flush();
+            out.close();
+        }
+    }
+
+    private boolean initSongs() {
+        try {
+            this.emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+            SongsDao dao = new SongsDao(this.emf);
+            List<Song> songs = readJSONToSongs("songs.json");
+            for (Song s : songs) {
+                dao.save(s);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

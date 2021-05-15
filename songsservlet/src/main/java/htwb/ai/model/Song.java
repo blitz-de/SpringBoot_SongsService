@@ -1,5 +1,7 @@
 package htwb.ai.model;
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+
 @Entity @Table(name="songs")
 public class Song {
 
@@ -7,14 +9,23 @@ public class Song {
     private String title;
     @Column(length = 100)
     private String artist;
-
     @Column(length = 100)
     private String label;
     private int released;
-
     @Id @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
+    public Song(Integer id, String title, String artist, String label, Integer released){
+
+    }
+    public Song(){
+
+    }
+
+    public static String values() {
+        return "";
+    }
+
     public int getId() {
         return id;
     }

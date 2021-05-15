@@ -21,7 +21,7 @@ public class SongsDao {
     }
 
 
-    public int save(Song song) throws PersistenceException {
+    public synchronized int save(Song song) throws PersistenceException {
 
         EntityManager em = null;
         EntityTransaction transaction = null;
