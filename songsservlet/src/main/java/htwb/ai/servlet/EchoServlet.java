@@ -1,4 +1,5 @@
-package htwb.ai;
+package htwb.ai.servlet;
+
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

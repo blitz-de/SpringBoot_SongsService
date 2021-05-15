@@ -1,4 +1,4 @@
-package htwb.ai;
+package htwb.ai.servlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import htwb.ai.servlet.EchoServlet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
