@@ -3,22 +3,23 @@ package htwb.ai.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+
 @Table(name = "songs")
 @Entity
 public class Song implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", unique =true, nullable=false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", unique = true)
     private Integer id;
-    @Column(name="title", length = 100, nullable = false)
+    @Column(name = "title", length = 100, nullable = false)
     private String title;
-    @Column(name="artist", length = 100)
+    @Column(name = "artist", length = 100)
     private String artist;
-    @Column(name="label", length = 100)
+    @Column(name = "label", length = 100)
     private String label;
-    @Column(name="released")
+    @Column(name = "released")
     private int released;
 
     public Song(Integer id, String title, String artist, String label, Integer released) {
@@ -36,9 +37,9 @@ public class Song implements Serializable {
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
-    	this.id = id;
+        this.id = id;
     }
 
     public void setTitle(String title) {
@@ -71,5 +72,10 @@ public class Song implements Serializable {
 
     public void setReleased(int released) {
         this.released = released;
+    }
+
+    public String toSting() {
+        return "id: " + this.id + ", title: " + this.title + ", artist: " + this.artist + ", label:" + this.label + ", released:"
+                + this.released;
     }
 }

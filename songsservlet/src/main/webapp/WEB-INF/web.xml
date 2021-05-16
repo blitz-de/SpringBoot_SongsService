@@ -4,14 +4,6 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <servlet>
-        <servlet-name>EchoServlet</servlet-name>
-        <servlet-class>htwb.ai.servlet.EchoServlet</servlet-class>
-        <init-param>
-            <param-name>uriToDB</param-name>
-            <param-value>jdbc:h2:~/test</param-value>
-        </init-param>
-    </servlet>
-    <servlet>
         <servlet-name>SongsServlet</servlet-name>
         <servlet-class>htwb.ai.servlet.SongsServlet</servlet-class>
 
@@ -30,11 +22,6 @@
           von Tomcat depoyed
 
      -->
-    <servlet-mapping>
-        <servlet-name>EchoServlet</servlet-name>
-        <url-pattern>/echo</url-pattern>
-    </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>SongsServlet</servlet-name>
         <url-pattern>/songs</url-pattern>

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import com.sun.istack.NotNull;
 import htwb.ai.dao.SongsDao;
 import htwb.ai.model.Song;
 
@@ -38,118 +39,131 @@ public class SongsServlet extends HttpServlet {
         //readJSONToSongs("songs.json");
     }
 
-
-
-
-    public String songToJson(Song song) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        return objectMapper.writeValueAsString(song);
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.initSongs();
     }
 
+    // GET SECTION
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NumberFormatException {
         System.out.println("################### new get ######################");
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         SongsDao dao = new SongsDao(emf);
         if (request.getParameterMap().containsKey("all")) {
-            // 1.) get all songs
-            List<Song> list = dao.findAll();
-            // 2.) pack it to json - imported Gson library to convert List to JSON
-            //String payload = SongsToJSON();
-            String jsonPayload = new Gson().toJson(list);
-            // 3.) response it
-            response.setContentType("application/json");
-            PrintWriter out = response.getWriter();
-            out.print(jsonPayload);
-            out.flush();
 
-            //reponseString(payload, response, HttpServletResponse.SC_FOUND);
-
+            this.initSongs();
+            this.getAll(dao, response);
         } else if (request.getParameterMap().containsKey("songId")) {
             int id = Integer.parseInt(request.getParameter("songId"));
-            Song song = dao.find(id);
-            if (emf != null) {
-                emf.close();
-            }
-            try (PrintWriter out = response.getWriter()) {
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_FOUND);
-                //
-                //out.append(song.getArtist()).append("test");
-                response.getWriter().append(song.getArtist()).append(request.getContextPath());
-                // now parse song to json and send it in response back as payload
-                out.flush();
-                out.close();
-            }
-            //response.getWriter().append("Server at: ").append(request.getContextPath());
+            this.getSong(id, dao, response);
         }
     }
+
+    private void getSong(int id, SongsDao dao, HttpServletResponse response) {
+        Song song = dao.getSong(id);
+        String jsonPayload = new Gson().toJson(song);
+        response.setContentType("application/json");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.print(jsonPayload);
+        out.flush();
+        out.close();
+    }
+
+    private void getAll(SongsDao dao, HttpServletResponse response) {
+        List<Song> list = dao.getSongs();
+        // 2.) pack it to json - imported Gson library to convert List to JSON
+        //String payload = SongsToJSON();
+        String jsonPayload = new Gson().toJson(list);
+        // 3.) response it
+        response.setContentType("application/json");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.print(jsonPayload);
+        out.flush();
+        out.close();
+    }
+    //
+    //
+    // POST SECTION
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Song song = new Song();
         System.out.println("################### new post ######################");
-        String title = request.getParameter("title");
         String artist = request.getParameter("artist");
         String label = request.getParameter("label");
         try {
+
+            String title = request.getParameter("title");
             int released = Integer.parseInt(request.getParameter("released"));
-            song.setReleased(released);
-        } catch (NumberFormatException e) {
+            System.out.println("test -> " + title);
+            if (title != null && !title.equals("")) {
+
+                create(response, title, artist, label, released);
+            } else {
+                sendResponse("-", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            // return bad request 400 or something with wrong format
+            //sendResponse("", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
             e.printStackTrace();
         }
-        // set params
-        song.setTitle(title);
-        song.setArtist(artist);
-        song.setLabel(label);
 
+
+    }
+
+    // HELPER
+    private void create(HttpServletResponse response, @NotNull String title, String artist, String label, Integer released) {
         try {
+            Song song = new Song();
+            song.setTitle(title);
+            song.setArtist(artist);
+            song.setReleased(released);
+            song.setLabel(label);
             emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(emf);
             int id = dao.save(song);
             this.id = id;
             try (PrintWriter out = response.getWriter()) {
                 //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
-
-
                 response.setHeader("Location", "/songsservlet/songs?id= " + id);
-
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_CREATED);
                 //out.write(id.intValue()+"");
                 out.flush();
                 out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         } catch (PersistenceException pex) {
             // TODO Auto-generated catch block
             System.out.println("###ERROR### PersistenceException: " + pex.getMessage());
-//		} finally {
-//			if (emf != null ) {
-//				emf.close();
-//			}
-        }
-
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Song> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
-            return (List<Song>) objectMapper.readValue(is, new TypeReference<List<Song>>() {
-            });
+        } finally {
+            if (emf != null) {
+                emf.close();
+            }
         }
     }
 
-    public void reponseString(String payload, HttpServletResponse response, int status) throws IOException {
+    public void sendResponse(String payload, HttpServletResponse response, int status) throws IOException {
         try (PrintWriter out = response.getWriter()) {
             response.setContentType("application/json");
             response.setStatus(status);
             out.write(payload);
             out.flush();
-            out.close();
+        } finally {
+            response.getWriter().close();
         }
     }
 
@@ -161,7 +175,7 @@ public class SongsServlet extends HttpServlet {
 
             for (Song song : songs) {
 
-                System.out.println("artist -> " + song.getArtist());
+                System.out.println("song -> " + song.toSting());
                 dao.save(song);
             }
         } catch (IOException e) {
@@ -169,5 +183,14 @@ public class SongsServlet extends HttpServlet {
             return false;
         }
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Song> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+            return (List<Song>) objectMapper.readValue(is, new TypeReference<List<Song>>() {
+            });
+        }
     }
 }
