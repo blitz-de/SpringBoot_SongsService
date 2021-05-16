@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
+import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode.*;
 import org.apache.commons.io.IOUtils;
 
 //@WebServlet("/echo")
@@ -29,6 +31,7 @@ public class EchoServlet extends HttpServlet {
         // aus der web.xml
         this.uriToDB = servletConfig
                 .getInitParameter("uriToDB");
+        //PhysicalConnectionHandlingMode.DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT
     }
 
     @Override

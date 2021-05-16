@@ -5,6 +5,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Table(name = "Songs")
 @Entity
 public class Song {
 
