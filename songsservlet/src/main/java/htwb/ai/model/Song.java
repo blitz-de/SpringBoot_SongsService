@@ -1,25 +1,25 @@
 package htwb.ai.model;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import java.io.Serializable;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-@Table(name = "Songs")
+@Table(name = "songs")
 @Entity
-public class Song {
-
-    @Column(length = 100, nullable = false)
-    private String title;
-    @Column(length = 100)
-    private String artist;
-    @Column(length = 100)
-    private String label;
-    private int released;
-    @Column(nullable = false)
+public class Song implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", unique =true, nullable=false)
     private Integer id;
+    @Column(name="title", length = 100, nullable = false)
+    private String title;
+    @Column(name="artist", length = 100)
+    private String artist;
+    @Column(name="label", length = 100)
+    private String label;
+    @Column(name="released")
+    private int released;
 
     public Song(Integer id, String title, String artist, String label, Integer released) {
 
@@ -35,6 +35,10 @@ public class Song {
 
     public int getId() {
         return id;
+    }
+    
+    public void setId(int id) {
+    	this.id = id;
     }
 
     public void setTitle(String title) {
