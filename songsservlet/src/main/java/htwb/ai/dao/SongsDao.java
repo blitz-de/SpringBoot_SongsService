@@ -24,7 +24,7 @@ public class SongsDao {
     }
 
 
-    public synchronized int save(Song song) throws PersistenceException {
+    public Integer save(Song song) throws PersistenceException {
 
         EntityManager em = null;
         EntityTransaction transaction = null;
@@ -34,9 +34,9 @@ public class SongsDao {
             transaction = em.getTransaction();
             transaction.begin();
             em.persist(song);
+
             transaction.commit();
 
-            return song.getId();
         } catch (IllegalStateException | EntityExistsException | RollbackException ex) {
             System.out.println("#############################################");
             System.out.println("exception in tomcat log ->" + ex.getMessage());
@@ -45,10 +45,10 @@ public class SongsDao {
             }
             throw new PersistenceException(ex.getMessage());
         } finally {
-            if (em != null) {
-                em.close();
-            }
+            em.close();
+            return song.getId();
         }
+
     }
 
     public Song find(int id) {

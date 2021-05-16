@@ -72,6 +72,8 @@ public class SongsServlet extends HttpServlet {
                 out.close();
             }
             //response.getWriter().append("Server at: ").append(request.getContextPath());
+        } else {
+            initSongs();
         }
 
     }
@@ -148,7 +150,10 @@ public class SongsServlet extends HttpServlet {
             this.emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(this.emf);
             List<Song> songs = readJSONToSongs("songs.json");
+
             for (Song s : songs) {
+
+                System.out.println("artist -> "+ s.getArtist());
                 dao.save(s);
             }
         } catch (IOException e) {

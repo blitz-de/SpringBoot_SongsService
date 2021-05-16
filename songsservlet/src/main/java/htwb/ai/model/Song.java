@@ -1,8 +1,11 @@
 package htwb.ai.model;
+
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
-
-@Entity @Table(name="songs")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Entity
 public class Song {
 
     @Column(length = 100, nullable = false)
@@ -12,18 +15,21 @@ public class Song {
     @Column(length = 100)
     private String label;
     private int released;
-    @Id @Column(nullable = false)
+    @Column(nullable = false)
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    public Song(Integer id, String title, String artist, String label, Integer released){
+
+    public Song(Integer id, String title, String artist, String label, Integer released) {
 
     }
-    public Song(){
+
+    public Song() {
 
     }
 
     public String values() {
-        return "";
+        return "'value':'test'";
     }
 
     public int getId() {
