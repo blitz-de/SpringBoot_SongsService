@@ -10,6 +10,7 @@ import javax.persistence.*;
 
 import htwb.ai.model.Song;
 
+
 public class SongsDao {
     EntityManagerFactory emf;
     EntityManager em;
@@ -31,6 +32,7 @@ public class SongsDao {
             em.persist(song);
 
             transaction.commit();
+            return song.getId();
 
         } catch (IllegalStateException | EntityExistsException | RollbackException ex) {
             System.out.println("#############################################");
@@ -39,11 +41,14 @@ public class SongsDao {
                 em.getTransaction().rollback();
             }
             throw new PersistenceException(ex.getMessage());
+
         } finally {
             em.close();
-            return song.getId();
-        }
 
+            if (song != null)
+                return song.getId();
+            else return null;
+        }
     }
 
     public Song find(int id) {
@@ -71,27 +76,7 @@ public class SongsDao {
             }
         }
     }
-    public Integer add(Song song) {
 
-        em = emf.createEntityManager();
-        EntityTransaction et = null;
-        System.out.println("before adding");
-        try {
-            System.out.println("adding block");
-            et = em.getTransaction();
-            et.begin();
-
-            em.persist(song);
-            System.out.println("persised-------------------");
-            et.commit();
-            System.out.println("added successfully");
-        } catch (Exception ex) { if( et != null) { et.rollback(); }
-            ex.printStackTrace();
-        } finally {
-            em.close();
-            return song.getId();
-        }
-    }
 
     public Song getSong(int id) {
         EntityManager em = emf.createEntityManager();
@@ -100,7 +85,7 @@ public class SongsDao {
         TypedQuery<Song> tq = em.createQuery(query, Song.class);
         tq.setParameter("id"
                 + "", id);
-        Song song = null;
+        Song song = new Song(); //war null
         try {
             song = tq.getSingleResult();
 //			System.out.println("=====================================================");
@@ -108,8 +93,7 @@ public class SongsDao {
             return song;
         } catch (NoResultException ex) {
             ex.printStackTrace();
-        }
-        finally {
+        } finally {
             em.close();
         }
         return null;
@@ -122,7 +106,7 @@ public class SongsDao {
         List<Song> songs;
         try {
             songs = tq.getResultList();
-            songs.forEach(song -> System.out.println(song.getArtist() + ", " + song.getId()));
+            songs.forEach(song -> System.out.println(song.toSting()));
             return songs;
         } catch (NoResultException ex) {
             ex.printStackTrace();
@@ -130,5 +114,28 @@ public class SongsDao {
             em.close();
         }
         return null;
+    }
+
+    public void replaceId(Integer oldId, Integer id) {
+        EntityManager em = emf.createEntityManager();
+
+        if (oldId != null && id != null && oldId != id) {
+            Song s = getSong(oldId);
+
+            em.getTransaction().begin();
+            s.setId(id);
+            em.persist(s);
+            em.getTransaction().commit();
+
+            em.close();
+        }
+
+    }
+
+    public Integer getFreeId() {
+
+        EntityManager em = emf.createEntityManager();
+        Integer nextId = em.unwrap(Session.class).getNextSequenceNumberValue(Song.class);
+        return 0;
     }
 }

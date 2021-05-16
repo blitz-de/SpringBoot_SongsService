@@ -10,7 +10,6 @@ public class Song implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", unique = true)
     private Integer id;
     @Column(name = "title", length = 100, nullable = false)
@@ -38,7 +37,7 @@ public class Song implements Serializable {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

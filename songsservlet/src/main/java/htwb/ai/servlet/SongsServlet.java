@@ -2,21 +2,17 @@ package htwb.ai.servlet;
 
 
 import java.io.*;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 //import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -42,7 +38,15 @@ public class SongsServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        this.initSongs();
+        emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        List<Song> list = new SongsDao(emf).getSongs();
+        System.out.println("########################################");
+        System.out.println("how many songs in db? => " + list.size());
+        System.out.println("########################################");
+        if (list.size() == 0)
+            this.initSongs();
+
+        emf.close();
     }
 
     // GET SECTION
@@ -53,7 +57,6 @@ public class SongsServlet extends HttpServlet {
         SongsDao dao = new SongsDao(emf);
         if (request.getParameterMap().containsKey("all")) {
 
-            this.initSongs();
             this.getAll(dao, response);
         } else if (request.getParameterMap().containsKey("songId")) {
             int id = Integer.parseInt(request.getParameter("songId"));
@@ -133,16 +136,20 @@ public class SongsServlet extends HttpServlet {
             song.setLabel(label);
             emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(emf);
-            int id = dao.save(song);
-            this.id = id;
+
+            Integer freeId = dao.getFreeId();
+            song.setId(freeId);
+                    Integer id = dao.save(song);
             try (PrintWriter out = response.getWriter()) {
-                //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
-                response.setHeader("Location", "/songsservlet/songs?id= " + id);
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_CREATED);
-                //out.write(id.intValue()+"");
-                out.flush();
-                out.close();
+                if (id != null) {
+                    //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
+                    response.setHeader("Location", "/songsservlet/songs?id= " + id);
+                    response.setContentType("application/json");
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                    out.flush();
+                } else {
+                    sendResponse("", response, HttpServletResponse.SC_CONFLICT);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -154,6 +161,7 @@ public class SongsServlet extends HttpServlet {
                 emf.close();
             }
         }
+
     }
 
     public void sendResponse(String payload, HttpServletResponse response, int status) throws IOException {
@@ -174,9 +182,16 @@ public class SongsServlet extends HttpServlet {
             List<Song> songs = readJSONToSongs("src/main/resources/songs.json");
 
             for (Song song : songs) {
-
+                System.out.println();
                 System.out.println("song -> " + song.toSting());
-                dao.save(song);
+                Integer jsonId = song.getId();
+                //song.setId(null);
+
+                Integer oldId = dao.save(song);
+                // here set id
+                System.out.println("###################");
+                System.out.println("id -> "+oldId+ ",json id -> "+jsonId);
+                //dao.replaceId(oldId, jsonId);
             }
         } catch (IOException e) {
             e.printStackTrace();
