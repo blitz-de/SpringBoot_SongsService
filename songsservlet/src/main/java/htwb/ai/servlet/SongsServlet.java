@@ -18,10 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+
 import htwb.ai.dao.SongsDao;
 import htwb.ai.model.Song;
 
-//@WebServlet("/register")
 public class SongsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -50,9 +51,15 @@ public class SongsServlet extends HttpServlet {
         if (request.getParameterMap().containsKey("all")) {
             // 1.) get all songs
             List<Song> list = dao.findAll();
-            // 2.) pack it to json
+            // 2.) pack it to json - imported Gson library to convert List to JSON
             //String payload = SongsToJSON();
+            String jsonPayload = new Gson().toJson(list);
             // 3.) response it
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            out.print(jsonPayload);
+            out.flush();
+            
             //reponseString(payload, response, HttpServletResponse.SC_FOUND);
 
         } else if (request.getParameterMap().containsKey("songId")) {
