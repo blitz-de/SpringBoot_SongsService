@@ -22,7 +22,7 @@ public class Song {
 
     }
 
-    public static String values() {
+    public String values() {
         return "";
     }
 

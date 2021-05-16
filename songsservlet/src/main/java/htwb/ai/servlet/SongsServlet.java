@@ -36,10 +36,10 @@ public class SongsServlet extends HttpServlet {
         //readJSONToSongs("songs.json");
     }
 
-    public String SongsToJSON() throws JsonProcessingException {
+    public String songToJson(Song song) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        return objectMapper.writeValueAsString(Song.values());
+        return objectMapper.writeValueAsString(song);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -51,11 +51,12 @@ public class SongsServlet extends HttpServlet {
             // 1.) get all songs
             List<Song> list = dao.findAll();
             // 2.) pack it to json
-            String payload = SongsToJSON();
+            //String payload = SongsToJSON();
             // 3.) response it
-            reponseString(payload, response, HttpServletResponse.SC_FOUND);
+            //reponseString(payload, response, HttpServletResponse.SC_FOUND);
+
         } else if (request.getParameterMap().containsKey("songId")) {
-            int id = Integer.parseInt(request.getParameter("id"));
+            int id = Integer.parseInt(request.getParameter("songId"));
             Song song = dao.find(id);
             if (emf != null) {
                 emf.close();
@@ -63,12 +64,14 @@ public class SongsServlet extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_FOUND);
-                // TODO:
+                //
+                //out.append(song.getArtist()).append("test");
+                response.getWriter().append(song.getArtist()).append(request.getContextPath());
                 // now parse song to json and send it in response back as payload
                 out.flush();
                 out.close();
             }
-            response.getWriter().append("Server at: ").append(request.getContextPath());
+            //response.getWriter().append("Server at: ").append(request.getContextPath());
         }
 
     }
@@ -97,9 +100,20 @@ public class SongsServlet extends HttpServlet {
             SongsDao dao = new SongsDao(emf);
             int id = dao.save(song);
             this.id = id;
+            try (PrintWriter out = response.getWriter()) {
+                //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
+
+
+                response.setHeader("Location", "/songsservlet/songs?id= " + id);
+
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_CREATED);
+                //out.write(id.intValue()+"");
+                out.flush();
+                out.close();
+            }
         } catch (PersistenceException pex) {
             // TODO Auto-generated catch block
-            this.id = -1;
             System.out.println("###ERROR### PersistenceException: " + pex.getMessage());
 //		} finally {
 //			if (emf != null ) {
@@ -107,18 +121,7 @@ public class SongsServlet extends HttpServlet {
 //			}
         }
 
-        try (PrintWriter out = response.getWriter()) {
-            //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
 
-
-            response.setHeader("Location", "/songsservlet/songs?id= " + this.id);
-
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            //out.write(id.intValue()+"");
-            out.flush();
-            out.close();
-        }
     }
 
     @SuppressWarnings("unchecked")
