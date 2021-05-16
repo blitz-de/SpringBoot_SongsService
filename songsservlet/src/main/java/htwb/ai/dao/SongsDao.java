@@ -69,9 +69,7 @@ public class SongsDao {
         EntityManager em = null;
         try {
             em = emf.createEntityManager();
-            Query q = em.createQuery("SELECT * FROM songs"); //JPQL
-            List<Song> songs = q.getResultList();
-            return songs;
+            return em.createQuery("select a from Songs a", Song.class).getResultList();
         } finally {
             if (em != null) {
                 em.close();

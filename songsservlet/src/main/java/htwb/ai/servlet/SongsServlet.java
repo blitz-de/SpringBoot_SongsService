@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 //import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +38,9 @@ public class SongsServlet extends HttpServlet {
         //readJSONToSongs("songs.json");
     }
 
+
+
+
     public String songToJson(Song song) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -59,7 +63,7 @@ public class SongsServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             out.print(jsonPayload);
             out.flush();
-            
+
             //reponseString(payload, response, HttpServletResponse.SC_FOUND);
 
         } else if (request.getParameterMap().containsKey("songId")) {
@@ -79,10 +83,7 @@ public class SongsServlet extends HttpServlet {
                 out.close();
             }
             //response.getWriter().append("Server at: ").append(request.getContextPath());
-        } else {
-            initSongs();
         }
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -156,12 +157,12 @@ public class SongsServlet extends HttpServlet {
         try {
             this.emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(this.emf);
-            List<Song> songs = readJSONToSongs("songs.json");
+            List<Song> songs = readJSONToSongs("src/main/resources/songs.json");
 
-            for (Song s : songs) {
+            for (Song song : songs) {
 
-                System.out.println("artist -> "+ s.getArtist());
-                dao.save(s);
+                System.out.println("artist -> " + song.getArtist());
+                dao.save(song);
             }
         } catch (IOException e) {
             e.printStackTrace();
