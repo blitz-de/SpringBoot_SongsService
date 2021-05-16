@@ -1,14 +1,20 @@
 package htwb.ai.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.math.BigInteger;
+import java.sql.*;
 import java.util.List;
 
 import javax.persistence.*;
 
 import htwb.ai.model.Song;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
+import org.hibernate.jdbc.ReturningWork;
+import org.hibernate.jdbc.Work;
+import org.hibernate.type.StandardBasicTypes;
 
 
 public class SongsDao {
@@ -132,10 +138,16 @@ public class SongsDao {
 
     }
 
-    public Integer getFreeId() {
 
-        EntityManager em = emf.createEntityManager();
-        Integer nextId = em.unwrap(Session.class).getNextSequenceNumberValue(Song.class);
-        return 0;
-    }
+        public Integer getFreeId() {
+            String hql = "from songs";
+            Query query = em.createQuery(hql);
+            List<Song> results = query.getResultList();
+
+            int key = results.size()-1;
+
+            //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
+           // return (Integer)q.getSingleResult();
+            return key;
+        }
 }

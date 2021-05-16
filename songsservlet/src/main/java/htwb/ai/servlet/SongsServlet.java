@@ -137,7 +137,7 @@ public class SongsServlet extends HttpServlet {
             emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(emf);
 
-            Integer freeId = dao.getFreeId();
+            Integer freeId = dao.getFreeId().intValue();
             song.setId(freeId);
                     Integer id = dao.save(song);
             try (PrintWriter out = response.getWriter()) {
