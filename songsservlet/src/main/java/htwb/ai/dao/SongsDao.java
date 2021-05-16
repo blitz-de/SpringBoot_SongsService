@@ -140,11 +140,12 @@ public class SongsDao {
 
 
         public Integer getFreeId() {
-            String hql = "from songs";
+            String hql = "SELECT s FROM Song s WHERE s.id IN (SELECT MAX(s.id) FROM Song s)";
+            em = emf.createEntityManager();
             Query query = em.createQuery(hql);
             List<Song> results = query.getResultList();
 
-            int key = results.size()-1;
+            int key = results.get(0).getId()+1;
 
             //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
            // return (Integer)q.getSingleResult();
