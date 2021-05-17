@@ -51,15 +51,21 @@ public class SongsServlet extends HttpServlet {
 
     // GET SECTION
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, NumberFormatException {
+            throws ServletException, IOException {
         System.out.println("################### new get ######################");
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         SongsDao dao = new SongsDao(emf);
         if (request.getParameterMap().containsKey("all")) {
             this.getAll(dao, response);
         } else if (request.getParameterMap().containsKey("songId")) {
-            int id = Integer.parseInt(request.getParameter("songId"));
-            this.respondSong(id, dao, response);
+            try {
+
+                int id = Integer.parseInt(request.getParameter("songId"));
+                this.respondSong(id, dao, response);
+            } catch (NumberFormatException ex) {
+
+                this.sendResponse("wrong format of id", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+            }
         }
     }
 
@@ -70,18 +76,17 @@ public class SongsServlet extends HttpServlet {
         PrintWriter out = null;
         try {
             out = response.getWriter();
+            if (jsonPayload != null && !jsonPayload.equals("null")) {
+                out.print(jsonPayload);
+            } else {
+                sendResponse("no song found with this id: "+id, response, HttpServletResponse.SC_NO_CONTENT);
+            }
+            out.flush();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(jsonPayload!=null){
 
-            out.print(jsonPayload);
-        } else {
-
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        }
-        out.flush();
-        out.close();
     }
 
     private void getAll(SongsDao dao, HttpServletResponse response) {
@@ -120,7 +125,7 @@ public class SongsServlet extends HttpServlet {
 
                 create(response, title, artist, label, released);
             } else {
-                sendResponse("-", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+                sendResponse("set title to create new song", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
             }
         } catch (NumberFormatException | NullPointerException e) {
             // return bad request 400 or something with wrong format
