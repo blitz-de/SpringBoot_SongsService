@@ -4,11 +4,9 @@ package htwb.ai.servlet;
 import java.io.*;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 import javax.servlet.ServletException;
 //import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -51,96 +49,60 @@ public class SongsServlet extends HttpServlet {
         emf.close();
     }
 
-    /**
-     * Controls if an object is an integer r not
-     * @param object
-     * @return
-     */
-    public static boolean isInteger (Object object) {
-    	if (object instanceof Integer) {
-    		return true;
-    	} else {
-    		String string = object.toString();
-    		try {
-    			Integer.parseInt(string);
-    		} catch (NumberFormatException e) {
-    			e.getStackTrace();
-    			return false;
-    		}
-    	}
-    	return true;
-    }
-    
     // GET SECTION
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NumberFormatException {
         System.out.println("################### new get ######################");
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         SongsDao dao = new SongsDao(emf);
-        
-        //=================================================
-        //===============new===============================
-        String artist = request.getParameter("artist");
-        String label = request.getParameter("label");
-        int released = Integer.parseInt(request.getParameter("released"));
-        Integer id = Integer.parseInt(request.getParameter("id"));
-
-        String title = request.getParameter("title");
-        
-        String unbekannteParameter = null; 
-        // -?     --> negative sign, could have none or one
-        //\\d+ 	  --> one or more digits
-        unbekannteParameter.matches("-?\\d+");
-        String paramWithUnbekannteParam = request.getParameter(unbekannteParameter);
-        System.out.println("test -> " + id);
-        // request mit leerer songid or id >< nrOfIds 
-        if (id.equals("") || id == 0 || id > dao.getNrOfIdsInDB() || id < dao.getNrOfIdsInDB()) {
-        	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
-        
-        // request ohne Parameter -- Rückgabe dispatcher - status 200
-        
-        // request mit string statt int (wrong format test): response status 406
-        	//string is not numeric ->  Integer.parseInt() - throws NumberFormatException
-        if (!isInteger(id)) {
-        	response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
-        
-        // request mit unbekannten parametern: response status 417 - 400 bad request(indicating the request sent by client was syntactically incorrect)
-        /*
-         * 		
-		while (paramNames.hasMoreElements()) {
-			param = paramNames.nextElement();
-			// param: is the request I write on the url: /echo?passdsfd in this case it's passds
-			// request.getParameter(param): is what comes after the equal sign. For ex.: echo?passdsd=asd - return value: asd
-			responseStr = responseStr + param + "=" 
-			+ request.getParameter(param) + "\n";
-		}
-		
-		if (paramWithUnbekannteParam != null && paramWithUnbekannteParam.equals(unbekannteParameter.matches("-?\\d+"))) {
-        	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
-         */
-
-        
-        // request title ist empty 
-        System.out.println("test -> " + title);
-        if (title != null && !title.equals("")) {
-
-            create(response, title, artist, label, released);
-        } else {
-            sendResponse("-", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
-        }
-        //=================================================end of new additions ======///
         if (request.getParameterMap().containsKey("all")) {
-
             this.getAll(dao, response);
         } else if (request.getParameterMap().containsKey("songId")) {
-            id = Integer.parseInt(request.getParameter("songId"));
-            this.getSong(id, dao, response);
+            int id = Integer.parseInt(request.getParameter("songId"));
+            this.respondSong(id, dao, response);
         }
     }
 
+    private void respondSong(int id, SongsDao dao, HttpServletResponse response) {
+        Song song = dao.getSong(id);
+        String jsonPayload = new Gson().toJson(song);
+        response.setContentType("application/json");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(jsonPayload!=null){
+
+            out.print(jsonPayload);
+        } else {
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        }
+        out.flush();
+        out.close();
+    }
+
+    private void getAll(SongsDao dao, HttpServletResponse response) {
+        List<Song> list = dao.getSongs();
+        // 2.) pack it to json - imported Gson library to convert List to JSON
+        //String payload = SongsToJSON();
+        String jsonPayload = new Gson().toJson(list);
+        // 3.) response it
+        response.setContentType("application/json");
+        PrintWriter out = null;
+        try {
+            out = response.getWriter();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.print(jsonPayload);
+        out.flush();
+        out.close();
+    }
+    //
+    //
     // POST SECTION
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -169,39 +131,6 @@ public class SongsServlet extends HttpServlet {
 
     }
 
-    private void getSong(int id, SongsDao dao, HttpServletResponse response) {
-        Song song = dao.getSong(id);
-        String jsonPayload = new Gson().toJson(song);
-        response.setContentType("application/json");
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        out.print(jsonPayload);
-        out.flush();
-        out.close();
-    }
-
-    private void getAll(SongsDao dao, HttpServletResponse response) {
-        List<Song> list = dao.getSongs();
-        // 2.) pack it to json - imported Gson library to convert List to JSON
-        //String payload = SongsToJSON();
-        String jsonPayload = new Gson().toJson(list);
-        // 3.) response it
-        response.setContentType("application/json");
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        out.print(jsonPayload);
-        out.flush();
-        out.close();
-    }
-
     // HELPER
     private void create(HttpServletResponse response, @NotNull String title, String artist, String label, Integer released) {
         try {
@@ -215,7 +144,7 @@ public class SongsServlet extends HttpServlet {
 
             Integer freeId = dao.generateId().intValue();
             song.setId(freeId);
-                    Integer id = dao.save(song);
+            Integer id = dao.save(song);
             try (PrintWriter out = response.getWriter()) {
                 if (id != null) {
                     //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
@@ -266,7 +195,7 @@ public class SongsServlet extends HttpServlet {
                 Integer oldId = dao.save(song);
                 // here set id
                 System.out.println("###################");
-                System.out.println("id -> "+oldId+ ",json id -> "+jsonId);
+                System.out.println("id -> " + oldId + ",json id -> " + jsonId);
                 //dao.replaceId(oldId, jsonId);
             }
         } catch (IOException e) {
