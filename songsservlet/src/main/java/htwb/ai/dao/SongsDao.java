@@ -135,9 +135,6 @@ public class SongsDao {
         List<Song> results = query.getResultList();
 
         int key = results.get(0).getId()+1;
-
-        //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
-       // return (Integer)q.getSingleResult();
         return key;
     }
     

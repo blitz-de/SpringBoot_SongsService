@@ -55,6 +55,8 @@ public class SongsServlet extends HttpServlet {
         System.out.println("################### new get ######################");
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         SongsDao dao = new SongsDao(emf);
+        
+        response.setContentType("application/json");
         if (request.getParameterMap().containsKey("all")) {
             this.getAll(dao, response);
         } else if (request.getParameterMap().containsKey("songId")) {
@@ -64,22 +66,24 @@ public class SongsServlet extends HttpServlet {
                 this.respondSong(id, dao, response);
             } catch (NumberFormatException ex) {
 
-                this.sendResponse("wrong format of id", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+                this.sendResponse("wrong format of id", response, HttpServletResponse.SC_BAD_REQUEST);
             }
+        } else {
+            this.sendResponse("not known parameter in request", response, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
     private void respondSong(int id, SongsDao dao, HttpServletResponse response) {
         Song song = dao.getSong(id);
         String jsonPayload = new Gson().toJson(song);
-        response.setContentType("application/json");
         PrintWriter out = null;
+
         try {
             out = response.getWriter();
             if (jsonPayload != null && !jsonPayload.equals("null")) {
                 out.print(jsonPayload);
             } else {
-                sendResponse("no song found with this id: "+id, response, HttpServletResponse.SC_NO_CONTENT);
+                sendResponse("no song found with this id: " + id, response, HttpServletResponse.SC_NO_CONTENT);
             }
             out.flush();
             out.close();
@@ -116,6 +120,7 @@ public class SongsServlet extends HttpServlet {
         System.out.println("################### new post ######################");
         String artist = request.getParameter("artist");
         String label = request.getParameter("label");
+        response.setContentType("application/json");
         try {
 
             String title = request.getParameter("title");
