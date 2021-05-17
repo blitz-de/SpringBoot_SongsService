@@ -138,17 +138,16 @@ public class SongsDao {
 
     }
 
-
-        public Integer getFreeId() {
-            String hql = "SELECT s FROM Song s WHERE s.id IN (SELECT MAX(s.id) FROM Song s)";
-            em = emf.createEntityManager();
-            Query query = em.createQuery(hql);
-            List<Song> results = query.getResultList();
-
-            int key = results.get(0).getId()+1;
-
-            //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
-           // return (Integer)q.getSingleResult();
-            return key;
-        }
+    // weil in der json datei eine id vorkommt, ist im datenmodell von Song
+    // keine automatisch generierte Id angegeben, weil dies sonst zu fehlern
+    // bei der Initialisierung führt, außer wenn man die ID auf NULL setzt
+    // und dann die ID nach dem hinzufügen in die Datenbank ändert
+    public Integer generateId() {
+        String hql = "SELECT s FROM Song s WHERE s.id IN (SELECT MAX(s.id) FROM Song s)";
+        em = emf.createEntityManager();
+        Query query = em.createQuery(hql);
+        List<Song> results = query.getResultList();
+        int key = results.get(0).getId() + 1;
+        return key;
+    }
 }
