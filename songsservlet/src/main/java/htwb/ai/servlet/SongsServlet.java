@@ -203,7 +203,7 @@ public class SongsServlet extends HttpServlet {
 
             try (PrintWriter out = response.getWriter()) {
                 if (existing == null) {
-                    sendResponse("", response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+                    sendResponse("parameter to large", response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
                 } else if (id != null) {
                     //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
                     response.setHeader("Location", "/songsservlet/songs?id= " + id);
