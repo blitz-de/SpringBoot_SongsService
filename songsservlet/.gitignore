@@ -29,6 +29,8 @@
 hs_err_pid*
 
 
-# exclude scrips
+# exclude scripts
 
 /songsservlet/*.sh
+/songsservlet/*.bat
+/songsservlet/*.bash

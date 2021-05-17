@@ -2,6 +2,7 @@ package htwb.ai.servlet;
 
 
 import java.io.*;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -55,22 +56,34 @@ public class SongsServlet extends HttpServlet {
         System.out.println("################### new get ######################");
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         SongsDao dao = new SongsDao(emf);
-        
+
         response.setContentType("application/json");
-        if (request.getParameterMap().containsKey("all")) {
-            this.getAll(dao, response);
-        } else if (request.getParameterMap().containsKey("songId")) {
-            try {
+        Boolean acceptJSON = this.acceptOnlyJson(request.getHeader("Accept"));
 
-                int id = Integer.parseInt(request.getParameter("songId"));
-                this.respondSong(id, dao, response);
-            } catch (NumberFormatException ex) {
+        if (acceptJSON) {
+            if (request.getParameterMap().containsKey("all")) {
+                this.getAll(dao, response);
+            } else if (request.getParameterMap().containsKey("songId")) {
+                try {
 
-                this.sendResponse("wrong format of id", response, HttpServletResponse.SC_BAD_REQUEST);
+                    int id = Integer.parseInt(request.getParameter("songId"));
+                    this.respondSong(id, dao, response);
+                } catch (NumberFormatException ex) {
+
+                    this.sendResponse("wrong format of id", response, HttpServletResponse.SC_BAD_REQUEST);
+                }
+            } else {
+                this.sendResponse("not known parameter in request", response, HttpServletResponse.SC_BAD_REQUEST);
             }
         } else {
-            this.sendResponse("not known parameter in request", response, HttpServletResponse.SC_BAD_REQUEST);
+
+            this.sendResponse("not acceptable header information in request", response, HttpServletResponse.SC_BAD_REQUEST);
         }
+    }
+
+    private boolean acceptOnlyJson(String header) {
+        if (header.equals("application/json")) return true;
+        else return false;
     }
 
     private void respondSong(int id, SongsDao dao, HttpServletResponse response) {
@@ -121,39 +134,69 @@ public class SongsServlet extends HttpServlet {
         String artist = request.getParameter("artist");
         String label = request.getParameter("label");
         response.setContentType("application/json");
-        try {
+        if (checkParamsPost(request)) {
+            try {
+                String title = request.getParameter("title");
+                String released = request.getParameter("released");
+                System.out.println("released -> " + released);
+                if (title != null && !title.equals("")) {
 
-            String title = request.getParameter("title");
-            int released = Integer.parseInt(request.getParameter("released"));
-            System.out.println("test -> " + title);
-            if (title != null && !title.equals("")) {
+                    create(response, title, artist, label, released);
+                } else {
+                    sendResponse("set title to create new song", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+                }
 
-                create(response, title, artist, label, released);
-            } else {
-                sendResponse("set title to create new song", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
+            } catch (NumberFormatException | NullPointerException e) {
+                // return bad request 400 or something with wrong format
+                sendResponse("", response, HttpServletResponse.SC_BAD_REQUEST);
+                e.printStackTrace();
             }
-        } catch (NumberFormatException | NullPointerException e) {
-            // return bad request 400 or something with wrong format
-            //sendResponse("", response, HttpServletResponse.SC_NOT_ACCEPTABLE);
-            e.printStackTrace();
+        } else {
+            sendResponse("", response, HttpServletResponse.SC_BAD_REQUEST);
         }
 
 
     }
 
+
+    private boolean checkParamsPost(HttpServletRequest request) {
+        boolean b = true;
+        Enumeration<String> paramNames = request.getParameterNames();
+        String i;
+        while (paramNames.hasMoreElements()) {
+            i = paramNames.nextElement();
+            if (i.equals("title")) {
+
+            } else if (i.equals("artist")) {
+
+            } else if (i.equals("label")) {
+
+            } else if (i.equals("released")) {
+
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // HELPER
-    private void create(HttpServletResponse response, @NotNull String title, String artist, String label, Integer released) {
+    private void create(HttpServletResponse response, @NotNull String title, String artist, String label, String released) {
         try {
             Song song = new Song();
             song.setTitle(title);
             song.setArtist(artist);
-            song.setReleased(released);
-            song.setLabel(label);
+            Integer _released = null;
+            if (released != null) {
+                _released = Integer.parseInt(released);
+                song.setReleased(_released);
+            } else song.setReleased(null);
+
             emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
             SongsDao dao = new SongsDao(emf);
 
-            Integer freeId = dao.generateId().intValue();
-            song.setId(freeId);
+            Integer newId = dao.generateId().intValue();
+            song.setId(newId);
             Integer id = dao.save(song);
             try (PrintWriter out = response.getWriter()) {
                 if (id != null) {

@@ -3,6 +3,7 @@ package htwb.ai.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Table(name = "songs")
 @Entity
@@ -19,7 +20,7 @@ public class Song implements Serializable {
     @Column(name = "label", length = 100)
     private String label;
     @Column(name = "released")
-    private int released;
+    private Integer released;
 
     public Song(Integer id, String title, String artist, String label, Integer released) {
 
@@ -69,7 +70,7 @@ public class Song implements Serializable {
         return released;
     }
 
-    public void setReleased(int released) {
+    public void setReleased(Integer released) {
         this.released = released;
     }
 
