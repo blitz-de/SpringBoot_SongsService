@@ -186,6 +186,7 @@ public class SongsServlet extends HttpServlet {
             Song song = new Song();
             song.setTitle(title);
             song.setArtist(artist);
+            song.setLabel(label);
             Integer _released = null;
             if (released != null) {
                 _released = Integer.parseInt(released);
@@ -198,8 +199,12 @@ public class SongsServlet extends HttpServlet {
             Integer newId = dao.generateId().intValue();
             song.setId(newId);
             Integer id = dao.save(song);
+            Song existing = dao.getSong(id);
+
             try (PrintWriter out = response.getWriter()) {
-                if (id != null) {
+                if (existing == null) {
+                    sendResponse("", response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+                } else if (id != null) {
                     //fetcht alles was hinter dem Fragezeichen (die Parameter) im URL kommt
                     response.setHeader("Location", "/songsservlet/songs?id= " + id);
                     response.setContentType("application/json");

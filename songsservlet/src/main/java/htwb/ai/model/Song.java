@@ -78,4 +78,9 @@ public class Song implements Serializable {
         return "id: " + this.id + ", title: " + this.title + ", artist: " + this.artist + ", label:" + this.label + ", released:"
                 + this.released;
     }
+    public boolean validate(Song s, String title, String artist, String label, Integer released){
+
+
+        return false;
+    }
 }
