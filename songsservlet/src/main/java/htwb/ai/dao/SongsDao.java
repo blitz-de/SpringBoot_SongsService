@@ -1,21 +1,8 @@
 package htwb.ai.dao;
 
-import java.math.BigInteger;
-import java.sql.*;
 import java.util.List;
-
 import javax.persistence.*;
-
 import htwb.ai.model.Song;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolver;
-import org.hibernate.jdbc.ReturningWork;
-import org.hibernate.jdbc.Work;
-import org.hibernate.type.StandardBasicTypes;
-
 
 public class SongsDao {
     EntityManagerFactory emf;
@@ -83,7 +70,6 @@ public class SongsDao {
         }
     }
 
-
     public Song getSong(int id) {
         EntityManager em = emf.createEntityManager();
         String query = "SELECT s FROM Song s WHERE s.id = :id";
@@ -138,17 +124,24 @@ public class SongsDao {
 
     }
 
+    public Integer getFreeId() {
+        String hql = "SELECT s FROM Song s WHERE s.id IN (SELECT MAX(s.id) FROM Song s)";
+        em = emf.createEntityManager();
+        Query query = em.createQuery(hql);
+        List<Song> results = query.getResultList();
 
-        public Integer getFreeId() {
-            String hql = "SELECT s FROM Song s WHERE s.id IN (SELECT MAX(s.id) FROM Song s)";
-            em = emf.createEntityManager();
-            Query query = em.createQuery(hql);
-            List<Song> results = query.getResultList();
+        int key = results.get(0).getId()+1;
 
-            int key = results.get(0).getId()+1;
-
-            //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
-           // return (Integer)q.getSingleResult();
-            return key;
-        }
+        //Query q = em.createNativeQuery("select seq_name.nextval from Songs");
+       // return (Integer)q.getSingleResult();
+        return key;
+    }
+    
+    //counts the amount of id's in db
+    public int getNrOfIdsInDB() {
+    	String sql = "SELECT COUNT(s.id) FROM Song s";
+    	Query q = em.createQuery(sql);
+    	int count = (int)q.getSingleResult();
+    	return count;
+    }
 }
