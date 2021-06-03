@@ -5,7 +5,7 @@
 | Davis  | 570978 |
 | Sakhr Al-absi | 562218 |
 
-
+- Für Beleg 2 muss die h2database installiert sein.
 
 ## KBE Repository einrichten
 
