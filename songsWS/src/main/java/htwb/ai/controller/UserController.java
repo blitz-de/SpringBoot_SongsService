@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -41,6 +42,11 @@ public class UserController {
 	public User addUser(@RequestBody User user) {
 		userDAO.save(user);
 		return user;
+	}
+	
+	@GetMapping(value="/users")
+	public List<User> getUsers(){
+		return userDAO.getAllUsers();
 	}
 
 }

@@ -1,14 +1,16 @@
 package htwb.ai.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
-
-import htwb.ai.model.Song;
+import javax.persistence.TypedQuery;
 import htwb.ai.model.User;
 
 
@@ -17,6 +19,7 @@ public class DBUserDAO implements IUserDAO {
     // private static EMF emf;
     //private String persistenceUnit;
     EntityManagerFactory emf;
+    EntityManager em;
    // public DBUserDAO(){}
 
 //    public void setPersistenceUnit(String pUnit) {
@@ -55,7 +58,7 @@ public class DBUserDAO implements IUserDAO {
     }
     
     public User getUserByUserId(String userId) {
-        EntityManager em = null;
+        em = null;
         try {
             em = emf.createEntityManager();
             return em.find(User.class, userId);
@@ -65,6 +68,23 @@ public class DBUserDAO implements IUserDAO {
             }
         }
       
+    }
+    
+    public List<User> getAllUsers() {
+    	em = emf.createEntityManager();
+        String strQuery = "SELECT u FROM User u WHERE u.id is NOT NULL";
+        TypedQuery<User> tq = em.createQuery(strQuery, User.class);
+        List<User> users;
+        try {
+            users = tq.getResultList();
+            users.forEach(user -> System.out.println(user.toString()));
+            return users;
+        } catch (NoResultException ex) {
+            ex.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return null;
     }
     
 //    public User getUserByUserId(String userId) {
