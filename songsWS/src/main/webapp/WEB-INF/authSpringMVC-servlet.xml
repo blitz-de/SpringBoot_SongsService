@@ -24,9 +24,10 @@
     <!-- Es kann nur eine Implementierung von IUserDAO angegeben werden:-->
     <!-- <bean id="userDAO" class="htwb.ai.dao.UserDAO"/> -->
 
-   <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
+
+    <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
         <property name="persistenceUnit" value="PU-UserDB"></property>
-    </bean> 
+    </bean>
 
     <!-- Wir nutzen Jackson: -->
     <bean id="jsonMessageConverter"
