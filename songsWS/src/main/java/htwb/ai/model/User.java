@@ -1,19 +1,23 @@
 package htwb.ai.model;
 
-import javax.persistence.*;
+import java.io.Serializable;
 
-@Entity
+import javax.persistence.*;
 @Table(name="users")
-public class User {
+@Entity
+public class User implements Serializable {
+	
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", unique =true)
     private int id;
     @Override
     public String toString() {
         return "User [id=" + id + ", userId=" + username + ", firstname=" + firstname + ", lastname=" + lastname + "]";
     }
-    @Id
+    
     @Column(name = "username", length = 100, nullable = false)
     private String username;
     @Column(name = "firstname", length = 100, nullable = false)
@@ -122,5 +126,6 @@ public class User {
         public User build() {
             return new User(this);
         }
+        
     }
 }

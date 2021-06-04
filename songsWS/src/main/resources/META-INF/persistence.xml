@@ -7,14 +7,16 @@
 
         <properties>
 
-            <property name="hibernate.connection.url" value="jdbc:postgresql://ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/>
+           <!--  <property name="hibernate.connection.url" value="jdbc:postgresql://ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/> -->
             <!--<property name="hibernate.connection.driver_class"
                       value="org.postgresql.Driver"/>-->
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/kbe"/>
+                      
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
             <property name="hibernate.connection.username"
                       value="root"/>
             <property name="hibernate.connection.password"
-                      value="pass"/>
+                      value="MyNewPass"/>
             <!--<property name="hibernate.archive.autodetection"
                       value="class"/>-->
             <property name="hibernate.show_sql"

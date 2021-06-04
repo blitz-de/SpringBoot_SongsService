@@ -24,11 +24,15 @@
     <!-- Es kann nur eine Implementierung von IUserDAO angegeben werden:-->
     <!-- <bean id="userDAO" class="htwb.ai.dao.UserDAO"/> -->
 
-
+<!-- 
     <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
         <property name="persistenceUnit" value="PU-UserDB"></property>
     </bean>
-
+ -->
+	<bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO" destroy-method="closeEMF">
+        <constructor-arg value="PU-UserDB"/>
+    </bean>
+	
     <!-- Wir nutzen Jackson: -->
     <bean id="jsonMessageConverter"
           class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
