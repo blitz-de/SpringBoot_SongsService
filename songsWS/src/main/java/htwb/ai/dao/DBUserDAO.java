@@ -2,6 +2,7 @@ package htwb.ai.dao;
 
 import htwb.ai.model.User;
 
+
 public class DBUserDAO implements IUserDAO {
 
     // private static EMF emf;

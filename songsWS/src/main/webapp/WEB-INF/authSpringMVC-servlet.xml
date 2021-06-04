@@ -25,9 +25,10 @@
     <!-- Es kann nur eine Implementierung von IUserDAO angegeben werden:-->
     <!-- <bean id="userDAO" class="htwb.ai.dao.UserDAO"/> -->
 
-   <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
+
+    <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
         <property name="persistenceUnit" value="PU-UserDB"></property>
-    </bean> 
+    </bean>
 
 <!-- 
 	<bean class="java.net.URI" id="dbUrl">
