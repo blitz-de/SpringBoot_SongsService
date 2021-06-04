@@ -32,4 +32,30 @@
     <!-- Wir nutzen Jackson: -->
     <bean id="jsonMessageConverter"
           class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+    <!--
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+
+        <property name="driverClassName" value="org.postgresql.Driver" />
+
+        <property name="url" value="jdbc:postgresql://ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/>
+        <property name="username" value="skwuvhlnkwbhjv"/>
+        <property name="password" value="83e878bd31a074843512b0acab4c5de9b158d3f85751776565e64cc472a8cfe2"/>
+    </bean> -->
+    <!--
+	<bean class="java.net.URI" id="dbUrl">
+	    <constructor-arg value="postgres://skwuvhlnkwbhjv:83e878bd31a074843512b0acab4c5de9b158d3f85751776565e64cc472a8cfe2@ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/>
+	</bean>
+ -->
+    <bean class="java.net.URI" id="dbUrl">
+        <constructor-arg value="postgres://skwuvhlnkwbhjv:83e878bd31a074843512b0acab4c5de9b158d3f85751776565e64cc472a8cfe2@ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/>
+    </bean>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="jdbc:postgresql://ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/>
+        <property name="username" value="skwuvhlnkwbhjv"/>
+        <property name="password" value="83e878bd31a074843512b0acab4c5de9b158d3f85751776565e64cc472a8cfe2"/>
+    </bean>
+
+
 </beans>
