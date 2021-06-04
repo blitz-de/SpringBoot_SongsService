@@ -18,7 +18,7 @@ public class UserDAO implements IUserDAO {
                 .withUserId("aschmidt")
                 .withPassword("geheim").build();
 
-        myUsers.put(alfred.getUserId(), alfred);
+        myUsers.put(alfred.getUsername(), alfred);
     }
 
     public User getUserById (int id) {

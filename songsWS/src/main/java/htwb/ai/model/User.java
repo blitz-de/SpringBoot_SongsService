@@ -1,22 +1,31 @@
 package htwb.ai.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="users")
 public class User {
 
-
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
     @Override
     public String toString() {
-        return "User [id=" + id + ", userId=" + userId + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        return "User [id=" + id + ", userId=" + username + ", firstname=" + firstname + ", lastname=" + lastname + "]";
     }
-
-    private String userId;
+    @Id
+    @Column(name = "username", length = 100, nullable = false)
+    private String username;
+    @Column(name = "firstname", length = 100, nullable = false)
     private String firstname;
+    @Column(name = "lastname", length = 100, nullable = false)
     private String lastname;
+    @Column(name = "password", length = 100, nullable = false)
     private String password;
 
     private User(Builder builder) {
         this.id = builder.id;
-        this.userId = builder.userId;
+        this.username = builder.username;
         this.firstname = builder.firstname;
         this.lastname = builder.lastname;
         this.password = builder.password;
@@ -24,8 +33,8 @@ public class User {
 
     public User() {}
 
-    public User(String userId) {
-        this.userId = userId;
+    public User(String username) {
+        this.username = username;
     }
 
     public int getId() {
@@ -36,12 +45,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(String userid) {
-        this.userId = userid;
+    public void setUsername(String userid) {
+        this.username = userid;
     }
 
     public String getFirstname() {
@@ -77,7 +86,7 @@ public class User {
      */
     public static final class Builder {
         private int id;
-        private String userId;
+        private String username;
         private String firstname;
         private String lastname;
         private String password;
@@ -91,7 +100,7 @@ public class User {
         }
 
         public Builder withUserId(String userId) {
-            this.userId = userId;
+            this.username = userId;
             return this;
         }
 

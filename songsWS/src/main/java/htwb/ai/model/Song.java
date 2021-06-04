@@ -1,32 +1,29 @@
 package htwb.ai.model;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 public class Song {
     private int id;
+
     @Override
     public String toString() {
-        return "Song [id=" + id + ", songId=" + songId + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        return "Song [songId=" + id + ", title=" + title + ", artist=" + artist + "]";
     }
 
-    private Integer songId;
-    private String firstname;
-    private String lastname;
-    private String password;
+
+    private String title;
+    private String artist;
+    private String label;
 
     private Song(Song.Builder builder) {
         this.id = builder.id;
-        this.songId = builder.songId;
-        this.firstname = builder.firstname;
-        this.lastname = builder.lastname;
-        this.password = builder.password;
+        this.title = builder.firstname;
+        this.artist = builder.lastname;
+        this.label = builder.password;
     }
 
-    public Song() {}
-
-    public Song(Integer songId) {
-        this.songId = songId;
+    public Song() {
     }
+
 
     public int getId() {
         return id;
@@ -36,36 +33,30 @@ public class Song {
         this.id = id;
     }
 
-    public Integer getSongId() {
-        return songId;
-    }
-
-    public void setSongId(Integer songid) {
-        this.songId = songid;
-    }
 
     public String getFirstname() {
-        return firstname;
+        return title;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.title = firstname;
     }
 
     public String getLastname() {
-        return lastname;
+        return artist;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.artist = lastname;
     }
 
-    public String getPassword() {
-        return password;
+    public String getLabel() {
+        return label;
     }
 
     /**
      * Creates builder to build {@link Song}.
+     *
      * @return created builder
      */
     public static Song.Builder builder() {
@@ -77,7 +68,6 @@ public class Song {
      */
     public static final class Builder {
         private int id;
-        private Integer songId;
         private String firstname;
         private String lastname;
         private String password;
@@ -87,11 +77,6 @@ public class Song {
 
         public Song.Builder withId(Integer id) {
             this.id = id;
-            return this;
-        }
-
-        public Song.Builder withSongId(Integer songId) {
-            this.songId = songId;
             return this;
         }
 

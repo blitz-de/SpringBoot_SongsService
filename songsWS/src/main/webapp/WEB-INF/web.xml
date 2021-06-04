@@ -22,4 +22,8 @@
         <servlet-name>authSpringMVC</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/*-servlet.xml</param-value>
+    </context-param>
 </web-app>

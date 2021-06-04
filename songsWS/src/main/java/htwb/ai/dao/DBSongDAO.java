@@ -2,6 +2,7 @@ package htwb.ai.dao;
 
 import htwb.ai.model.Song;
 import htwb.ai.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DBSongDAO {
     private String persistenceUnit;
@@ -11,6 +12,10 @@ public class DBSongDAO {
         this.persistenceUnit = pUnit;
 
     }
+    @Autowired
+    public DBSongDAO(){
+
+    }
 
     public Song getSongById(int id) {
         if (id == 1) {
@@ -18,7 +23,6 @@ public class DBSongDAO {
                     .withId(1)
                     .withFirstname("FRED")
                     .withLastname("Schmidt")
-                    .withSongId(1)
                     .withPassword("geheim").build();
             return fred;
         }
@@ -31,7 +35,6 @@ public class DBSongDAO {
                     .withId(1)
                     .withFirstname("FRED")
                     .withLastname("Schmidt")
-                    .withSongId(1)
                     .withPassword("geheim").build();
         }
         return null;

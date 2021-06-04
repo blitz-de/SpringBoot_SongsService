@@ -8,6 +8,8 @@ public class DBUserDAO implements IUserDAO {
     // private static EMF emf;
     private String persistenceUnit;
 
+    public DBUserDAO(){}
+
     public void setPersistenceUnit(String pUnit) {
         System.out.println("I'm instanciated: " + pUnit);
         this.persistenceUnit = pUnit;
