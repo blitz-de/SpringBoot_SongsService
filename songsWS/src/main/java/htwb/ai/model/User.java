@@ -3,74 +3,64 @@ package htwb.ai.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-@Table(name="users")
+@Table(name="user")
 @Entity
 public class User implements Serializable {
 	
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id", unique =true)
-    private int id;
+
     @Override
     public String toString() {
-        return "User [id=" + id + ", userId=" + username + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        return "User [userId=" + this.userId + ", firstname=" + this.firstName + ", lastname=" + this.lastName + "]";
     }
-    
-    @Column(name = "username", length = 100, nullable = false)
-    private String username;
-    @Column(name = "firstname", length = 100, nullable = false)
-    private String firstname;
-    @Column(name = "lastname", length = 100, nullable = false)
-    private String lastname;
-    @Column(name = "password", length = 100, nullable = false)
+    @Id
+    @Column(name = "userId", length = 50, nullable = false)
+    private String userId;
+    @Column(name = "firstName", length = 50, nullable = false)
+    private String firstName;
+    @Column(name = "lastName", length = 50, nullable = false)
+    private String lastName;
+    @Column(name = "password", length = 50, nullable = false)
     private String password;
 
     private User(Builder builder) {
-        this.id = builder.id;
-        this.username = builder.username;
-        this.firstname = builder.firstname;
-        this.lastname = builder.lastname;
+        this.userId = builder.userId;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
         this.password = builder.password;
     }
 
     public User() {}
 
     public User(String username) {
-        this.username = username;
+        this.userId = username;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getUsername() {
-        return username;
+        return this.userId;
     }
 
     public void setUsername(String userid) {
-        this.username = userid;
+        this.userId = userid;
     }
 
     public String getFirstname() {
-        return firstname;
+        return firstName;
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
+        this.firstName = firstname;
     }
 
     public String getLastname() {
-        return lastname;
+        return lastName;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.lastName = lastname;
     }
 
     public String getPassword() {
@@ -89,32 +79,29 @@ public class User implements Serializable {
      * Builder to build {@link User}.
      */
     public static final class Builder {
-        private int id;
-        private String username;
-        private String firstname;
-        private String lastname;
+
+        private String userId;
+        private String firstName;
+        private String lastName;
         private String password;
 
         private Builder() {
         }
 
-        public Builder withId(int id) {
-            this.id = id;
-            return this;
-        }
+
 
         public Builder withUserId(String userId) {
-            this.username = userId;
+            this.userId = userId;
             return this;
         }
 
         public Builder withFirstname(String firstname) {
-            this.firstname = firstname;
+            this.firstName = firstname;
             return this;
         }
 
         public Builder withLastname(String lastname) {
-            this.lastname = lastname;
+            this.lastName = lastname;
             return this;
         }
 

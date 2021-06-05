@@ -36,7 +36,7 @@ public class SongController {
         return user;
     }
 
-    @GetMapping(value="/users")
+    @GetMapping(value="/songs")
     public List<Song> getAll(){
         return songDAO.getAll();
     }

@@ -45,7 +45,7 @@ public class DBUserDAO implements IUserDAO {
 //        return null;
 //    }
 //
-    public User getUserById(int id) {
+    /*public User getUserById(int id) {
         EntityManager em = null;
         try {
             em = emf.createEntityManager();
@@ -55,7 +55,7 @@ public class DBUserDAO implements IUserDAO {
                 em.close();
             }
         }
-    }
+    }*/
 
     public User getUserByUserId(String userId) {
         em = null;
@@ -72,7 +72,7 @@ public class DBUserDAO implements IUserDAO {
 
     public List<User> getAllUsers() {
         em = emf.createEntityManager();
-        String strQuery = "SELECT u FROM User u WHERE u.id is NOT NULL";
+        String strQuery = "SELECT u FROM User u WHERE u.userId is NOT NULL";
         TypedQuery<User> tq = em.createQuery(strQuery, User.class);
         List<User> users;
         try {
@@ -104,13 +104,10 @@ public class DBUserDAO implements IUserDAO {
 //        return null;
 //    }
 
-    public Integer save(User user) throws PersistenceException {
+    public String save(User user) throws PersistenceException {
         EntityManager em;
         em = null;
         EntityTransaction transaction = null;
-
-//        User sakhr =
-//        User.builder().withId(1).withUserId("sakhr").withFirstname("sakhr").withLastname("nabil").withPassword("1234").build();
         try {
             em = emf.createEntityManager();
             transaction = em.getTransaction();
@@ -118,7 +115,7 @@ public class DBUserDAO implements IUserDAO {
             em.merge(user);
             // em.flush();
             transaction.commit();
-            return user.getId();
+            return user.getUsername();
 
         } catch (IllegalStateException | EntityExistsException | RollbackException ex) {
             System.out.println("#############################################");
@@ -131,7 +128,7 @@ public class DBUserDAO implements IUserDAO {
         } finally {
             em.close();
             if (user != null)
-                return user.getId();
+                return user.getUsername();
             else return null;
         }
     }

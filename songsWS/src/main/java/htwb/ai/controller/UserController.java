@@ -33,8 +33,8 @@ public class UserController {
     //GET http://localhost:8080/authSpring/rest/auth/1
     @GetMapping(value="/{id}")
     public ResponseEntity<User> getUser(
-            @PathVariable(value="id") Integer id) throws IOException {
-        User user = userDAO.getUserById(id);
+            @PathVariable(value="id") String username) throws IOException {
+        User user = userDAO.getUserByUserId(username);
         if (user != null) {
             return new ResponseEntity<User>(user, HttpStatus.OK);
         }
