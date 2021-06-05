@@ -16,7 +16,7 @@
             <property name="hibernate.connection.username"
                       value="root"/>
             <property name="hibernate.connection.password"
-                      value="MyNewPass"/>
+                      value="dSky"/>
             <!--<property name="hibernate.archive.autodetection"
                       value="class"/>-->
             <property name="hibernate.show_sql"

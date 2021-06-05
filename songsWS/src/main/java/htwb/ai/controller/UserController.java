@@ -2,6 +2,7 @@ package htwb.ai.controller;
 
 import htwb.ai.dao.IUserDAO;
 import htwb.ai.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import javax.persistence.RollbackException;
 @RequestMapping(value="/auth")
 public class UserController {
     private IUserDAO userDAO;
+
     public UserController(IUserDAO dao){
         this.userDAO = dao;
     }
