@@ -4,7 +4,7 @@ import java.util.List;
 
 import htwb.ai.model.User;
 
-public class DBSongDAO implements ISongDAO {
+public class DBSongDAO implements ISongDAO 	{
 
 	@Override
 	public User getUserById(int id) {
