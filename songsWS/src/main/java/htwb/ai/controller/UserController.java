@@ -28,6 +28,7 @@ public class UserController {
 
     public UserController(IUserDAO dao){
         this.userDAO = dao;
+
     }
     //GET http://localhost:8080/authSpring/rest/auth/1
     @GetMapping(value="/{id}")
