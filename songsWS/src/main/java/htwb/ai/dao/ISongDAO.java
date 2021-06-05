@@ -10,7 +10,9 @@ public interface ISongDAO{
     public List<Song> getAll();
     //public void updateUser(int id);
     public Song getById (String userId);
-    public Integer save(Song User);
-    public void update(Song User);
-    public void delete(String userId);
+    public Integer save(Song song);
+    public Integer update(Song song);
+    public void delete(Integer id);
+    //wegen einlesen des jsons
+    public Integer generateId();
 }

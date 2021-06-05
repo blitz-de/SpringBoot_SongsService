@@ -1,5 +1,7 @@
 package htwb.ai.dao;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityExistsException;
@@ -11,6 +13,9 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import htwb.ai.model.User;
 
 
@@ -30,7 +35,49 @@ public class DBUserDAO implements IUserDAO {
 
     public DBUserDAO(String pUnit) {
         this.emf = Persistence.createEntityManagerFactory(pUnit);
-//        System.out.println("I am instantiated: " +pUnit);
+
+        System.out.println("########################################");
+        System.out.println("########################################");
+
+            this.initDB();
+
+
+        System.out.println("########################################");
+        System.out.println("########################################");
+
+    }
+    private boolean initDB() {
+
+
+            User u1 = new User("mmuster", "pass1234", "Maxime", "Muster");
+            User u2 = new User("eschuler", "pass1234", "Elena", "Schuler");
+
+            List<User> users = new ArrayList<>();
+            users.add(u1);
+            users.add(u2);
+            for (User user : users) {
+                System.out.println();
+                System.out.println("[init db] user -> " + user.toString());
+                String jsonId = user.getUserId();
+                //song.setId(null);
+
+                String oldId = save(user);
+                // here set id
+                System.out.println("###################");
+                System.out.println("id -> " + oldId + ",json id -> " + jsonId);
+                //dao.replaceId(oldId, jsonId);
+            }
+
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<User> readJSONToSongs(String filename) throws FileNotFoundException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+            return (List<User>) objectMapper.readValue(is, new TypeReference<List<User>>() {
+            });
+        }
     }
     //    public User getUserById(int id) {
 //        if (id == 1) {
@@ -72,7 +119,7 @@ public class DBUserDAO implements IUserDAO {
 
     public List<User> getAllUsers() {
         em = emf.createEntityManager();
-        String strQuery = "SELECT u FROM User u WHERE u.userId is NOT NULL";
+        String strQuery = "SELECT u FROM user u WHERE u.userId is NOT NULL";
         TypedQuery<User> tq = em.createQuery(strQuery, User.class);
         List<User> users;
         try {
@@ -115,7 +162,7 @@ public class DBUserDAO implements IUserDAO {
             em.merge(user);
             // em.flush();
             transaction.commit();
-            return user.getUsername();
+            return user.getUserId();
 
         } catch (IllegalStateException | EntityExistsException | RollbackException ex) {
             System.out.println("#############################################");
@@ -128,7 +175,7 @@ public class DBUserDAO implements IUserDAO {
         } finally {
             em.close();
             if (user != null)
-                return user.getUsername();
+                return user.getUserId();
             else return null;
         }
     }

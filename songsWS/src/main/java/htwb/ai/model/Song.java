@@ -1,59 +1,87 @@
 package htwb.ai.model;
 
+import java.io.Serializable;
 
-public class Song {
-    private int id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="songs")
+public class Song implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {
         return "Song [songId=" + id + ", title=" + title + ", artist=" + artist + "]";
     }
-
-
+    @Id
+    @Column(name = "songId", unique = true)
+    private Integer id;
+    @Column(name = "title", length = 100, nullable = false)
     private String title;
+    @Column(name = "artist", length = 100)
     private String artist;
-    private String label;
+    @Column(name = "album", length = 100)
+    private String album;
+    @Column(name = "released")
+    private Integer released;
+
 
     private Song(Song.Builder builder) {
         this.id = builder.id;
-        this.title = builder.firstname;
-        this.artist = builder.lastname;
-        this.label = builder.password;
+        this.title = builder.title;
+        this.artist = builder.artist;
+        this.album = builder.album;
+        this.released = builder.released;
     }
 
     public Song() {
     }
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
 
-    public String getFirstname() {
+    public String getTitle() {
         return title;
     }
 
-    public void setFirstname(String firstname) {
-        this.title = firstname;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getLastname() {
+    public String getArtist() {
         return artist;
     }
 
-    public void setLastname(String lastname) {
-        this.artist = lastname;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
-    public String getLabel() {
-        return label;
+    public String getAlbum() {
+        return album;
     }
 
+    public void setAlbum (String album) {
+        this.album = album;
+    }
+
+    public Integer getReleased() {
+        return released;
+    }
+
+    public void setReleased(Integer released) {
+        this.released=released;
+    }
     /**
      * Creates builder to build {@link Song}.
      *
@@ -67,10 +95,11 @@ public class Song {
      * Builder to build {@link Song}.
      */
     public static final class Builder {
-        private int id;
-        private String firstname;
-        private String lastname;
-        private String password;
+        private Integer id;
+        private String title;
+        private String artist;
+        private String album;
+        private Integer released;
 
         private Builder() {
         }
@@ -80,18 +109,23 @@ public class Song {
             return this;
         }
 
-        public Song.Builder withFirstname(String firstname) {
-            this.firstname = firstname;
+        public Song.Builder withTitle(String title) {
+            this.title =title;
             return this;
         }
 
-        public Song.Builder withLastname(String lastname) {
-            this.lastname = lastname;
+        public Song.Builder withArtist(String artist) {
+            this.artist = artist;
             return this;
         }
 
-        public Song.Builder withPassword(String password) {
-            this.password = password;
+        public Song.Builder withAlbum(String album) {
+            this.album = album;
+            return this;
+        }
+
+        public Song.Builder withReleased(Integer released){
+            this.released = released;
             return this;
         }
 

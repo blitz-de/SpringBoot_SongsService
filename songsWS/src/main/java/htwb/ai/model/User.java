@@ -33,33 +33,36 @@ public class User implements Serializable {
 
     public User() {}
 
-    public User(String username) {
-        this.userId = username;
+    public User(String userId, String password, String firstName, String lastName) {
+        this.userId = userId;
+        this.password = password;
+        this.lastName = lastName;
+        this.firstName = firstName;
     }
 
 
 
-    public String getUsername() {
+    public String getUserId() {
         return this.userId;
     }
 
-    public void setUsername(String userid) {
+    public void setUserId(String userid) {
         this.userId = userid;
     }
 
-    public String getFirstname() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstname(String firstname) {
+    public void setFirstName(String firstname) {
         this.firstName = firstname;
     }
 
-    public String getLastname() {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastname(String lastname) {
+    public void setLastName(String lastname) {
         this.lastName = lastname;
     }
 
@@ -95,12 +98,12 @@ public class User implements Serializable {
             return this;
         }
 
-        public Builder withFirstname(String firstname) {
+        public Builder withFirstName(String firstname) {
             this.firstName = firstname;
             return this;
         }
 
-        public Builder withLastname(String lastname) {
+        public Builder withLastName(String lastname) {
             this.lastName = lastname;
             return this;
         }
