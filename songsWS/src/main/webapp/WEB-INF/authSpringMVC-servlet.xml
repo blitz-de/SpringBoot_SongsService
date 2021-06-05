@@ -30,7 +30,11 @@
     </bean>
  -->
 	<bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO" destroy-method="closeEMF">
-        <constructor-arg value="PU-UserDB"/>
+        <constructor-arg value="PU-SongDB"/>
+    </bean>
+    
+    	<bean id="dbSongDAO" class="htwb.ai.dao.DBSongDAO" destroy-method="closeEMF">
+        <constructor-arg value="PU-SongDB"/>
     </bean>
 	
     <!-- Wir nutzen Jackson: -->
