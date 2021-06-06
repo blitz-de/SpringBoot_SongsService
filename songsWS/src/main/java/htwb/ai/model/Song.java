@@ -37,6 +37,13 @@ public class Song implements Serializable {
         this.album = builder.album;
         this.released = builder.released;
     }
+    public Song(Integer id, String title, String artist, String album, Integer released) {
+        this.id = id;
+        this.title = title;
+        this.artist = artist;
+        this.album = album;
+        this.released = released;
+    }
 
     public Song() {
     }

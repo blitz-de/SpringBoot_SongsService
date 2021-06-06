@@ -73,7 +73,7 @@ public class SongController {
                 HttpHeaders responseHeaders = new HttpHeaders();
                 responseHeaders.set("Location",
                         "rest/songs/" + songDAO.save(song));
-                return new ResponseEntity<Song>(song, responseHeaders, HttpStatus.OK);
+                return new ResponseEntity<Song>(song, responseHeaders, HttpStatus.CREATED);
             }
         }
         return null;
@@ -118,9 +118,9 @@ public class SongController {
 
         if (id > 0 && id < Integer.MAX_VALUE && id != null) {
             songDAO.delete(id);
-            return new ResponseEntity<String>("good", HttpStatus.OK);
+            return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<String>("bad", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
