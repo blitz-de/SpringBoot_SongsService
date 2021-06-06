@@ -57,14 +57,17 @@ public class DBUserDAO implements IUserDAO {
             users.add(u2);
             for (User user : users) {
                 System.out.println();
-                System.out.println("[init db] user -> " + user.toString());
+                System.out.println("### [init db] user -> " + user.toString());
                 String jsonId = user.getUserId();
                 //song.setId(null);
 
                 String oldId = save(user);
                 // here set id
                 System.out.println("###################");
-                System.out.println("id -> " + oldId + ",json id -> " + jsonId);
+                System.out.println("###################");
+
+
+                System.out.println(user.toString());
                 //dao.replaceId(oldId, jsonId);
             }
 
