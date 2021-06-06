@@ -10,13 +10,13 @@
            <!--  <property name="hibernate.connection.url" value="jdbc:postgresql://ec2-63-34-97-163.eu-west-1.compute.amazonaws.com:5432/d2e07rfn1p16kj"/> -->
             <!--<property name="hibernate.connection.driver_class"
                       value="org.postgresql.Driver"/>-->
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/kbe"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://eu-cdbr-west-01.cleardb.com/heroku_0262800c7d96f44"/>
                       
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
             <property name="hibernate.connection.username"
-                      value="root"/>
+                      value="b6d58a62fcef9b"/>
             <property name="hibernate.connection.password"
-                      value="dSky"/>
+                      value="280d69b6"/>
             <!--<property name="hibernate.archive.autodetection"
                       value="class"/>-->
             <property name="hibernate.show_sql"

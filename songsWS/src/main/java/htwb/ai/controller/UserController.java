@@ -27,7 +27,7 @@ public class UserController {
 
     }
 
-    //GET http://localhost:8080/authSpring/rest/auth/1
+    //GET http://localhost:8080/authSpring/rest/auth/mmschuler
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(
             @PathVariable(value = "id") String username) throws IOException {

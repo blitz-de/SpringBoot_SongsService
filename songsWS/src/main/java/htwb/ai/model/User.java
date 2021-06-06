@@ -3,7 +3,7 @@ package htwb.ai.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-@Table(name="user")
+@Table(name="users")
 @Entity
 public class User implements Serializable {
 	
