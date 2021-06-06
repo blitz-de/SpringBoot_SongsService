@@ -108,7 +108,7 @@ public class SongController {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("Location",
                     "rest/songs/" + songDAO.update(song));
-            return new ResponseEntity<Song>(song, responseHeaders, HttpStatus.OK);
+            return new ResponseEntity<Song>(song, responseHeaders, 201);
         }
     }
 

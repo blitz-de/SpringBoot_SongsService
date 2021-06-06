@@ -44,9 +44,12 @@ public class UserController {
         if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
 
         String sessionId = "not matched...";
-        if (u.getPassword().equals(user.getPassword())) sessionId = user.getUserId() + "-123-session";
+        if (u.getPassword().equals(user.getPassword())) {
+            sessionId = user.getUserId() + "-123-session";
+            return new ResponseEntity<String>(sessionId, HttpStatus.OK);
+        }
 
-        return new ResponseEntity<String>(sessionId, HttpStatus.OK);
+        return new ResponseEntity<String>(sessionId, HttpStatus.NOT_FOUND);
 
 
     }
