@@ -21,6 +21,7 @@ class SongControllerTest {
     private TestSongDAO songDAOMock;
     private Gson gson;
     Song song1;
+    Song song2;
 
 //    private ISongDAO iDAO;
     @BeforeEach
@@ -29,8 +30,14 @@ class SongControllerTest {
         this.songDAOMock = new TestSongDAO();
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new SongController(songDAOMock)).build();
+        song1 = Song.builder().withId(1).withTitle("to the moon")
+        		.withArtist("Frank Senatra")
+        		.withAlbum("Dancing")
+        		.withReleased(2021).build();
+        //        Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
+        song2 = Song.builder().withId(2).withTitle("new song").withArtist("aaa").withAlbum("bbb")
+        		.withReleased(1999).build();
     }
-
 
     @Test
     // GET /auth/1
@@ -42,30 +49,22 @@ class SongControllerTest {
 	//                "firstname":"bob",
 	//                "lastname":"smith",
 	//                "password":"secret" }
-    	songDAOMock = new TestSongDAO();
-    	song1 = songDAOMock.getById(1);
+   // 	song1 = songDAOMock.getById(1);
         System.out.println(song1);
-        Integer songId = 1;
-        String title = "to the moon";
-        String artist = "Frank Senatra";
-        String album = "Dancing";
-        Integer released = 2021;
+
         mockMvc.perform(get("/songs/1").header("Content-Type","application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(songId))
-                .andExpect(jsonPath("$.title").value(title))
-                .andExpect(jsonPath("$.artist").value(artist))
-                .andExpect(jsonPath("$.album").value(album))
-                .andExpect(jsonPath("$.released").value(released));
+                .andExpect(jsonPath("$.id").value(song1.getId()))
+                .andExpect(jsonPath("$.title").value(song1.getTitle()))
+                .andExpect(jsonPath("$.artist").value(song1.getArtist()))
+                .andExpect(jsonPath("$.album").value(song1.getAlbum()))
+                .andExpect(jsonPath("$.released").value(song1.getReleased()));
         System.out.println("###### TEST");
 	}
     @Test
         // GET /auth/1
     void getSongShouldReturnOK() throws Exception {
-      //  when(iDAO.getById(1)).thenReturn(song1);
-        //System.out.println(iDAO.getById(1));
-        String title = "to the moon";
         mockMvc.perform(get("/songs/1").header("Content-Type","application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -79,14 +78,15 @@ class SongControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+
     @Test
     void addSongShouldReturn201() throws Exception {
-        Song song = new Song(null,"new song","aaa", "bbb", 1999);
-        String payload = gson.toJson(song);
+        //Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
+        String payload = gson.toJson(song2);
         mockMvc.perform(post("/songs/").header("Content-Type","application/json").content(payload))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        System.out.println("###### TEST");
+        System.out.println("###### TEST " + payload);
     }
     @Test
     void deleteSongShouldReturn201() throws Exception {
@@ -95,6 +95,28 @@ class SongControllerTest {
                 .andExpect(status().isNoContent());
         System.out.println("###### TEST");
     }
+    
+    @Test
+    void postSongReturn400() throws Exception {
+    	mockMvc.perform(post("/songs/1").header("Content-Type", "application/json"))
+//    		.andExpect(matcher)
+    		.andExpect(status().is4xxClientError());
+    }
+    /*
+     * POST schickt Statuscode 201 und URI (/rest/songs/) zur neuen Ressource im „Location“-Header zurück
+
+     * PUT /songs/1 Statuscode 204 zurückschicken, ansonsten 400 bzw. 404
+
+     * DELETE songs/1: Statuscode 204 zurückschicken, ansonsten 400 bzw. 404
+     */
+    
+    
+    
+    
+    
+    
+    
+    
     /*@Test
     void deleteNoSongShouldReturn400() throws Exception {
 
