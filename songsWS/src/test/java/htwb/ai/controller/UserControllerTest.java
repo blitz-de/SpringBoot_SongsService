@@ -113,9 +113,6 @@ public class UserControllerTest {
                     .andExpect(status().isInternalServerError());
         }
     }
-
-
-
     // Einloggen -> PUT (useriD, pass) im body
 
     // Mit falschen Pass -> bad request
