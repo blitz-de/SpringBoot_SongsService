@@ -30,7 +30,7 @@ public class Song implements Serializable {
     private Integer released;
 
 
-    private Song(Song.Builder builder) {
+    private Song(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
         this.artist = builder.artist;
@@ -94,8 +94,8 @@ public class Song implements Serializable {
      *
      * @return created builder
      */
-    public static Song.Builder builder() {
-        return new Song.Builder();
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
