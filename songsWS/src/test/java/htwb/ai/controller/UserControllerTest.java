@@ -1,6 +1,7 @@
 package htwb.ai.controller;
 
 import htwb.ai.dao.DBUserDAO;
+import htwb.ai.dao.TestUserDAO;
 import htwb.ai.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,22 +27,22 @@ public class UserControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup (
-                new UserController(new DBUserDAO("PU-Songs"))).build();
+                new UserController(new TestUserDAO())).build();
     }
 
     @Test
-        // GET /auth/1
+        // GET /auth/finkin
     void getUserShouldReturnOKAndUserForExistingId() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/auth/finkin")).andExpect(status().isOk());
-//      Validate the response code, content type, and payload:
-//                  { "id":1,
-//                    "userId":"bsmith",
-//                    "firstname":"bob",
-//                    "lastname":"smith",
-//                    "password":"secret" }
 
     }
+    @Test
+        // GET /auth/finkin
+    void getNotExistingUser400() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/auth/abc")).andExpect(status().isNotFound());
+    }
+
 
 
 }
