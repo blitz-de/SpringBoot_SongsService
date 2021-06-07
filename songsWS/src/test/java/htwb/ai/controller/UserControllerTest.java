@@ -100,6 +100,20 @@ public class UserControllerTest {
         mockMvc.perform(post("/auth/").header("Content-Type", "application/json").content(payload))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void postAllNullInternalServerError500() throws Exception{
+        try {
+            user1.setFirstName(null);
+            user1.setLastName(null);
+            user1.setPassword(null);
+            user1.setUserId(null);
+        } catch (NullPointerException ex) {
+            String payload = gson.toJson(user1);
+            mockMvc.perform(post("/auth/").header("Content-Type","application/json").content(payload))
+                    .andExpect(status().isInternalServerError());
+        }
+    }
+
 
 
     // Einloggen -> PUT (useriD, pass) im body

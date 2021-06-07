@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.NestedServletException;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -58,6 +59,9 @@ public class UserController {
 
         return new ResponseEntity<String>(sessionId, HttpStatus.UNAUTHORIZED);
     } catch (NullPointerException e){
+
+        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
+    } catch (Exception e){
 
         return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
     }
