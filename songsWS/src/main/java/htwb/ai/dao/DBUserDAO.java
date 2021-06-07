@@ -3,6 +3,7 @@ package htwb.ai.dao;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -45,6 +46,10 @@ public class DBUserDAO implements IUserDAO {
         System.out.println("########################################");
         System.out.println("########################################");
 
+    }
+    public static String generateString() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid;
     }
     private boolean initDB() {
 
