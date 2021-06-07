@@ -40,17 +40,18 @@ public class UserController {
 
     @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<String> authorize(@RequestBody User user) {
-        if(user==null) return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
+        if (user == null || user.getUserId().equals("") || user.getUserId() == null || user.getPassword().equals("") || user.getPassword() == null)
+            return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
         User u = userDAO.getUserByUserId(user.getUserId());
         if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
-
+        
         String sessionId = "not matched...";
         if (u.getPassword().equals(user.getPassword())) {
             sessionId = userDAO.generateToken();
             return new ResponseEntity<String>(sessionId, HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>(sessionId, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>(sessionId, HttpStatus.UNAUTHORIZED);
 
 
     }
