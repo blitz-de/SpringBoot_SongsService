@@ -103,6 +103,11 @@ public class SongController {
         System.out.println("[onUpdate]: " + song.getId());
         if ((song.getId() == null || song.getId() < 1) && song.getId() < this.songDAO.generateId()
         ) return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
+        // body and pathVar not equal -> 400 (should return 404)
+        // not found
+        if (id>songDAO.getAll().size()) {
+        	System.out.println("################################################################" +songDAO.getAll().size());
+        	return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);}
         else if (song.getTitle() == null || song.getTitle().equals("")) {
             return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
         } else {

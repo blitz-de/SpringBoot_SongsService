@@ -31,6 +31,7 @@ class SongControllerTest {
     private Gson gson;
     Song song1;
     Song song2;
+    Song songNotFound;
 
 //    private ISongDAO iDAO;
     @BeforeEach
@@ -46,6 +47,10 @@ class SongControllerTest {
         //        Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
         song2 = Song.builder().withId(2).withTitle("new song").withArtist("aaa").withAlbum("bbb")
         		.withReleased(1999).build();
+        songNotFound = Song.builder().withId(3).withTitle("update song").withArtist("the update").withAlbum("updateProcess")
+        		.withReleased(2000).build();
+        
+        
     }
 
     @Test
@@ -162,6 +167,18 @@ class SongControllerTest {
                 .andExpect(status().isBadRequest());
         System.out.println("###### TEST " + payload);
     }
+    
+    @Test
+    void putSongReturn404() throws Exception {
+     
+        String payload = gson.toJson(songNotFound);
+        System.out.println(songNotFound);
+        mockMvc.perform(put("/songs/3").header("Content-Type","application/json").content(payload)
+        		.contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        System.out.println("###### TEST " + payload);
+    }
+    
     
     /*
      * POST schickt Statuscode 201 und URI (/rest/songs/) zur neuen Ressource im „Location“-Header zurück
