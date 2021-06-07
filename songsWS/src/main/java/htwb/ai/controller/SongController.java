@@ -83,13 +83,13 @@ public class SongController {
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = "application/json")
-    public ResponseEntity<Song> updateSong(@RequestBody Song song, @PathVariable Integer id) {
+    public ResponseEntity<Song> updateSong(@RequestBody Song song, @PathVariable(value = "id") Integer id) {
 
         // check songId !=null -> bad request
         // check song.id != null -> bad request
         // check songId == song.id -> continue update
-
-        if (id == null) {
+    	// PATHVARIABLE !=BODYVARIABLE
+        if ( id == null) {
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
             // check songId !=null -> bad request
             // check song.id != null -> bad request
@@ -105,7 +105,7 @@ public class SongController {
         ) return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
         // body and pathVar not equal -> 400 (should return 404)
         // not found
-        if (id>songDAO.getAll().size()) {
+        if (songDAO.getById(id)==null) {
         	System.out.println("################################################################" +songDAO.getAll().size());
         	return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);}
         else if (song.getTitle() == null || song.getTitle().equals("")) {
@@ -120,11 +120,12 @@ public class SongController {
     public ResponseEntity<String> deleteSong(
             @PathVariable(value = "id") Integer id) throws IOException {
 
+    	if(songDAO.getById(id)==null) return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
         if (id > 0 && id < Integer.MAX_VALUE && id != null) {
             songDAO.delete(id);
             return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})

@@ -60,7 +60,7 @@ public class TestSongDAO implements ISongDAO {
 
     @Override
     public void delete(Integer id) {
-        mySongs.remove(mySongs.get(id));
+//        mySongs.remove(mySongs.get(id));
     }
 
     @Override

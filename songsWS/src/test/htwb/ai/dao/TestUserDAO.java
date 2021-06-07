@@ -11,12 +11,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TestUserDAO implements IUserDAO {
 
     private Map<String, User> myUsers;
-
+    private User bob;
     public TestUserDAO() {
 
         myUsers = new ConcurrentHashMap<String, User>();
 
-        User bob = User.builder().withUserId("finkin")
+        bob = User.builder().withUserId("finkin")
                 .withPassword("secret")
                 .withFirstName("davis")
                 .withLastName("sky").build();
@@ -56,6 +56,6 @@ public class TestUserDAO implements IUserDAO {
 
     @Override
     public void deleteUser(String userId) {
-        // TODO Auto-generated method stub
+//    	myUsers.remove(userId, bob);
     }
 }
