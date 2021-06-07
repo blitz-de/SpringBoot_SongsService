@@ -13,14 +13,14 @@ import org.junit.jupiter.api.Test;
 public class TestSongDAO implements ISongDAO {
 
     private Map<Integer, Song> mySongs = new ConcurrentHashMap<Integer, Song>();
-
+    
     public TestSongDAO() {
         Song song = Song.builder()
                 .withId(1)
-                .withTitle("title")
+                .withTitle("to the moon")
                 .withArtist("Frank Senatra")
-                .withAlbum("alb")
-                .withReleased(1995).build();
+                .withAlbum("Dancing")
+                .withReleased(2021).build();
 
         mySongs.put(song.getId(),song);
     }
