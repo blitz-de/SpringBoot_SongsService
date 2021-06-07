@@ -82,13 +82,14 @@ public class SongController {
         // return new Resp;
     }
 
-    @PutMapping(value = "/", consumes = {"application/json"}, produces = "application/json")
-    public ResponseEntity<Song> updateSong(@RequestBody Song song, @RequestParam String songId) {
+    @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = "application/json")
+    public ResponseEntity<Song> updateSong(@RequestBody Song song, @PathVariable Integer id) {
 
         // check songId !=null -> bad request
         // check song.id != null -> bad request
         // check songId == song.id -> continue update
-        if (songId == null) {
+
+        if (id == null) {
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
             // check songId !=null -> bad request
             // check song.id != null -> bad request
@@ -96,7 +97,7 @@ public class SongController {
         }
         if (song.getId() == null)
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
-        if (song.getId() != Integer.valueOf(songId))
+        if (song.getId() != Integer.valueOf(id))
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
         //songDAO.getById(song.getId());
         System.out.println("[onUpdate]: " + song.getId());
@@ -105,10 +106,8 @@ public class SongController {
         else if (song.getTitle() == null || song.getTitle().equals("")) {
             return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
         } else {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("Location",
-                    "rest/songs/" + songDAO.update(song));
-            return new ResponseEntity<Song>(song, responseHeaders, 201);
+            songDAO.update(song);
+            return new ResponseEntity<Song>(HttpStatus.NO_CONTENT);
         }
     }
 

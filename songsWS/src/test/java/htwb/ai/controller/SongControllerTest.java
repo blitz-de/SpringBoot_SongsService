@@ -140,22 +140,24 @@ class SongControllerTest {
     		//.andExpect(status().is4xxClientError());
     }
     
+    //bad request if i use song2
     @Test
     void putSongReturn204() throws Exception {
-        String payload = gson.toJson(song2);
-        System.out.println(song2);
-        mockMvc.perform(put("/songs/").header("Content-Type","application/json").content(payload))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        String payload = gson.toJson(song1);
+        System.out.println(song1);
+        mockMvc.perform(put("/songs/1").header("Content-Type","application/json").content(payload)
+        		.contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         System.out.println("###### TEST " + payload);
     }
+
     @Test
     void putSongReturn400() throws Exception {
     	BadSong badSong = BadSong.builder().withId("one").withTitle("title").withArtist("artist")
     			.withAlbum("album").withReleased("thousand nine-hundred").build();
     	
         String payload = gson.toJson(badSong);
-        mockMvc.perform(post("/songs/").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/songs/1").contentType(MediaType.APPLICATION_JSON)
         		.header("Content-Type","application/json").content(payload))
                 .andExpect(status().isBadRequest());
         System.out.println("###### TEST " + payload);
