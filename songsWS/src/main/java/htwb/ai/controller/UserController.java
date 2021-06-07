@@ -31,20 +31,25 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUser(
             @PathVariable(value = "id") String username) throws IOException {
+        try {
         User user = userDAO.getUserByUserId(username);
         if (user == null) {
             return new ResponseEntity<User>(user, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<User>(new User(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<String> authorize(@RequestBody User user) {
-        if (user == null || user.getUserId().equals("") || user.getUserId() == null || user.getPassword().equals("") || user.getPassword() == null)
+    try {
+        if (user == null || user.getUserId().equals("") || user.getUserId() == null)
             return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
         User u = userDAO.getUserByUserId(user.getUserId());
         if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
-        
+
         String sessionId = "not matched...";
         if (u.getPassword().equals(user.getPassword())) {
             sessionId = userDAO.generateToken();
@@ -52,6 +57,11 @@ public class UserController {
         }
 
         return new ResponseEntity<String>(sessionId, HttpStatus.UNAUTHORIZED);
+    } catch (NullPointerException e){
+
+        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
+    }
+
 
 
     }

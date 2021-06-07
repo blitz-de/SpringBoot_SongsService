@@ -39,12 +39,12 @@ public class UserControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new UserController(userDAOMock)).build();
 
-        user1 = User.builder().withUserId("saki")
-                .withFirstName("sakhr").withLastName("al")
-                .withPassword("1234").build();
+        user1 = User.builder().withUserId("finkin")
+                .withFirstName("davis").withLastName("sky")
+                .withPassword("secret").build();
 
-        user2 = User.builder().withUserId("dave")
-                .withFirstName("Davis").withLastName("--")
+        user2 = User.builder().withUserId("saki")
+                .withFirstName("sakhr").withLastName("al")
                 .withPassword("1234").build();
     }
 
@@ -55,12 +55,51 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/auth/finkin")).andExpect(status().isOk());
 
     }
+
     @Test
         // GET /auth/finkin
     void getNotExistingUser400() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/auth/abc")).andExpect(status().isNotFound());
     }
 
+    @Test
+    void postAuthShouldReturn201() throws Exception {
+        //Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
+//    	song2.setTitle("");
+        //User u = new User(user1.getUserId(),user1.getPassword());
+        String payload = gson.toJson(user1);
+        mockMvc.perform(post("/auth/").header("Content-Type", "application/json").content(payload))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void postNotAuthWrongUserShouldReturn404() throws Exception {
+        //Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
+//    	song2.setTitle("");
+        //User u = new User(user1.getUserId(),user1.getPassword());
+
+        user1.setUserId("fari");
+        String payload = gson.toJson(user1);
+        mockMvc.perform(post("/auth/").header("Content-Type", "application/json").content(payload))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void postNotAuthShouldReturn401() throws Exception {
+        user1.setPassword("pass");
+        String payload = gson.toJson(user1);
+        mockMvc.perform(post("/auth/").header("Content-Type", "application/json").content(payload))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void postNullObjektShouldReturn400() throws Exception {
+        user1.setUserId(null);
+        user1.setPassword(null);
+        String payload = gson.toJson(user1);
+        mockMvc.perform(post("/auth/").header("Content-Type", "application/json").content(payload))
+                .andExpect(status().isBadRequest());
+    }
 
 
     // Einloggen -> PUT (useriD, pass) im body

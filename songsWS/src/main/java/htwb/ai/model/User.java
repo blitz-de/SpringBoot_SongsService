@@ -3,10 +3,11 @@ package htwb.ai.model;
 import java.io.Serializable;
 
 import javax.persistence.*;
-@Table(name="users")
+
+@Table(name = "users")
 @Entity
 public class User implements Serializable {
-	
+
     private static final long serialVersionUID = 1L;
 
 
@@ -14,6 +15,7 @@ public class User implements Serializable {
     public String toString() {
         return "User [userId=" + this.userId + ", firstname=" + this.firstName + ", lastname=" + this.lastName + "]";
     }
+
     @Id
     @Column(name = "userId", length = 50, nullable = false)
     private String userId;
@@ -31,7 +33,8 @@ public class User implements Serializable {
         this.password = builder.password;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public User(String userId, String password, String firstName, String lastName) {
         this.userId = userId;
@@ -39,11 +42,11 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.firstName = firstName;
     }
+
     public User(String userId, String password) {
         this.userId = userId;
         this.password = password;
     }
-
 
 
     public String getUserId() {
@@ -74,8 +77,11 @@ public class User implements Serializable {
         return password;
     }
 
+    public void setPassword(String password) { this.password = password; }
+
     /**
      * Creates builder to build {@link User}.
+     *
      * @return created builder
      */
     public static Builder builder() {
@@ -94,7 +100,6 @@ public class User implements Serializable {
 
         private Builder() {
         }
-
 
 
         public Builder withUserId(String userId) {
@@ -120,6 +125,6 @@ public class User implements Serializable {
         public User build() {
             return new User(this);
         }
-        
+
     }
 }
