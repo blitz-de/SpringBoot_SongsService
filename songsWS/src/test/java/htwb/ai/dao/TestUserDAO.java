@@ -2,10 +2,7 @@ package htwb.ai.dao;
 
 import htwb.ai.model.User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TestUserDAO implements IUserDAO {
@@ -57,5 +54,10 @@ public class TestUserDAO implements IUserDAO {
     @Override
     public void deleteUser(String userId) {
         // TODO Auto-generated method stub
+    }
+    @Override
+    public String generateToken() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid;
     }
 }

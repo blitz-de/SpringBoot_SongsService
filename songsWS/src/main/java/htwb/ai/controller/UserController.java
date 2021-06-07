@@ -32,10 +32,10 @@ public class UserController {
     public ResponseEntity<User> getUser(
             @PathVariable(value = "id") String username) throws IOException {
         User user = userDAO.getUserByUserId(username);
-        if (user != null) {
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+        if (user == null) {
+            return new ResponseEntity<User>(user, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<User>(user, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping(value = "/", consumes = {"application/json"})
@@ -45,11 +45,11 @@ public class UserController {
 
         String sessionId = "not matched...";
         if (u.getPassword().equals(user.getPassword())) {
-            sessionId = user.getUserId() + "-123-session";
+            sessionId = userDAO.generateToken();
             return new ResponseEntity<String>(sessionId, HttpStatus.OK);
         }
 
-        return new ResponseEntity<String>(sessionId, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>(sessionId, HttpStatus.BAD_REQUEST);
 
 
     }

@@ -47,10 +47,7 @@ public class DBUserDAO implements IUserDAO {
         System.out.println("########################################");
 
     }
-    public static String generateString() {
-        String uuid = UUID.randomUUID().toString();
-        return uuid;
-    }
+
     private boolean initDB() {
 
 
@@ -193,6 +190,7 @@ public class DBUserDAO implements IUserDAO {
 
     }
 
+
     /*public User updateUser(int id) {
         EntityManager em;
         em = null;
@@ -224,6 +222,12 @@ public class DBUserDAO implements IUserDAO {
 
     public void deleteUser(String userId) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public String generateToken() {
+        String uuid = UUID.randomUUID().toString();
+        return uuid;
     }
 
 
