@@ -179,7 +179,15 @@ class SongControllerTest {
         System.out.println("###### TEST " + payload);
     }
     
-    
+    @Test
+    void deleteSongReturn204() throws Exception {
+        String payload = gson.toJson(song1);
+        System.out.println(song1);
+        mockMvc.perform(delete("/songs/{id}", 1).header("Content-Type","application/json").content(payload)
+        		.contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        System.out.println("###### TEST " + payload);
+    }
     /*
      * POST schickt Statuscode 201 und URI (/rest/songs/) zur neuen Ressource im „Location“-Header zurück
 

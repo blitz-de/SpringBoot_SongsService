@@ -60,7 +60,6 @@ public class TestSongDAO implements ISongDAO {
 
     @Override
     public void delete(Integer id) {
-        // TODO Auto-generated method stub
         mySongs.remove(mySongs.get(id));
     }
 
