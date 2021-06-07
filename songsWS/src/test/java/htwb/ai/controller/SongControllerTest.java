@@ -5,20 +5,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import htwb.ai.dao.TestSongDAO;
 import htwb.ai.model.Song;
 import com.google.gson.*;
+//@ContextConfiguration(classes = {TestContext.class, WebAppContext.class})
+//@WebAppConfiguration
 class SongControllerTest {
-
+	
     private MockMvc mockMvc;
     private TestSongDAO songDAOMock;
+    @Autowired
+    private SongController songControllerMock;
     private Gson gson;
     Song song1;
     Song song2;
@@ -51,10 +59,11 @@ class SongControllerTest {
 	//                "password":"secret" }
    // 	song1 = songDAOMock.getById(1);
         System.out.println(song1);
-
-        mockMvc.perform(get("/songs/1").header("Content-Type","application/json"))
+//        String payload = gson.toJson(song1);
+        mockMvc.perform(get("/songs/{id}", 1).header("Content-Type","application/json"))
+        	.andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                
                 .andExpect(jsonPath("$.id").value(song1.getId()))
                 .andExpect(jsonPath("$.title").value(song1.getTitle()))
                 .andExpect(jsonPath("$.artist").value(song1.getArtist()))
@@ -71,8 +80,16 @@ class SongControllerTest {
         System.out.println("###### TEST");
     }
     @Test
+    void getSongReturn404WhenSongNotFound() throws Exception {
+//    	when 
+        mockMvc.perform(get("/songs/{id}", 3).header("Content-Type","application/json"))
+            	.andExpect(status().isNotFound());     
+        System.out.println("###### TEST");
+    }
+    @Test
         // GET /auth/1
-    void getAllUsersShouldReturnOK() throws Exception {
+ 
+   void getAllUsersShouldReturnOK() throws Exception {
 
         mockMvc.perform(get("/songs/").header("Content-Type","application/json"))
                 .andExpect(status().isOk())
@@ -98,7 +115,7 @@ class SongControllerTest {
     
     @Test
     void postSongReturn400() throws Exception {
-    	mockMvc.perform(post("/songs/1").header("Content-Type", "application/json"))
+    	mockMvc.perform(post("/songs/{id}", 1).header("Content-Type", "application/json"))
 //    		.andExpect(matcher)
     		.andExpect(status().is4xxClientError());
     }
