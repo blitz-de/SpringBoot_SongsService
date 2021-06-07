@@ -1,44 +1,31 @@
 package htwb.ai.model;
 
-import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class BadSong  {
 
-@Entity
-@Table(name="songs")
-public class Song implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     @Override
 	public String toString() {
-		return "Song [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
+		return "BadSong [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
 				+ released + "]";
 	}
-    @Id
-    @Column(name = "songId", unique = true)
-    private Integer id;
-    @Column(name = "title", length = 100, nullable = false)
+
+    private String id;
     private String title;
-    @Column(name = "artist", length = 100)
     private String artist;
-    @Column(name = "album", length = 100)
     private String album;
-    @Column(name = "released")
-    private Integer released;
+
+    private String released;
 
 
-    private Song(Builder builder) {
+    private BadSong(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
         this.artist = builder.artist;
         this.album = builder.album;
         this.released = builder.released;
     }
-    public Song(Integer id, String title, String artist, String album, Integer released) {
+    public BadSong(String id, String title, String artist, String album, String released) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -46,15 +33,15 @@ public class Song implements Serializable {
         this.released = released;
     }
 
-    public Song() {
+    public BadSong() {
     }
 
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -83,15 +70,15 @@ public class Song implements Serializable {
         this.album = album;
     }
 
-    public Integer getReleased() {
+    public String getReleased() {
         return released;
     }
 
-    public void setReleased(Integer released) {
+    public void setReleased(String released) {
         this.released=released;
     }
     /**
-     * Creates builder to build {@link Song}.
+     * Creates builder to build {@link BadSong}.
      *
      * @return created builder
      */
@@ -100,45 +87,45 @@ public class Song implements Serializable {
     }
 
     /**
-     * Builder to build {@link Song}.
+     * Builder to build {@link BadSong}.
      */
     public static final class Builder {
-        private Integer id;
+        private String id;
         private String title;
         private String artist;
         private String album;
-        private Integer released;
+        private String released;
 
         private Builder() {
         }
 
-        public Song.Builder withId(Integer id) {
+        public BadSong.Builder withId(String id) {
             this.id = id;
             return this;
         }
 
-        public Song.Builder withTitle(String title) {
+        public BadSong.Builder withTitle(String title) {
             this.title =title;
             return this;
         }
 
-        public Song.Builder withArtist(String artist) {
+        public BadSong.Builder withArtist(String artist) {
             this.artist = artist;
             return this;
         }
 
-        public Song.Builder withAlbum(String album) {
+        public BadSong.Builder withAlbum(String album) {
             this.album = album;
             return this;
         }
 
-        public Song.Builder withReleased(Integer released){
+        public BadSong.Builder withReleased(String released){
             this.released = released;
             return this;
         }
 
-        public Song build() {
-            return new Song(this);
+        public BadSong build() {
+            return new BadSong(this);
         }
     }
 }

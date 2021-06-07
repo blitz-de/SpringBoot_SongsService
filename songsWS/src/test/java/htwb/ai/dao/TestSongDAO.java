@@ -15,14 +15,19 @@ public class TestSongDAO implements ISongDAO {
     private Map<Integer, Song> mySongs = new ConcurrentHashMap<Integer, Song>();
     
     public TestSongDAO() {
-        Song song = Song.builder()
+        Song song1 = Song.builder()
                 .withId(1)
                 .withTitle("to the moon")
                 .withArtist("Frank Senatra")
                 .withAlbum("Dancing")
-                .withReleased(2021).build();
-
-        mySongs.put(song.getId(),song);
+                .withReleased(2021).build();        
+//        Song song2 =  Song.builder().withId(2)
+//                .withTitle("new song")
+//                .withArtist("aaa")
+//                .withAlbum("bbb")
+//                .withReleased(1999).build();
+        mySongs.put(song1.getId(),song1);
+//        mySongs.put(song2.getId(), song2);
     }
 
     @Override
@@ -49,7 +54,7 @@ public class TestSongDAO implements ISongDAO {
 
     @Override
     public Integer update(Song song) {
-        // TODO Auto-generated method stub
+    	
         return null;
     }
 
