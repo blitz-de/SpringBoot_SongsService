@@ -40,6 +40,7 @@ public class UserController {
 
     @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<String> authorize(@RequestBody User user) {
+        if(user==null) return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
         User u = userDAO.getUserByUserId(user.getUserId());
         if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
 

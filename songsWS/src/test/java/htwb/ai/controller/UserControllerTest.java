@@ -12,6 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.google.gson.Gson;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
@@ -23,11 +27,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserControllerTest {
     private MockMvc mockMvc;
+    private TestUserDAO userDAOMock;
+    private Gson gson;
+    User user1;
+    User user2;
 
     @BeforeEach
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup (
-                new UserController(new TestUserDAO())).build();
+        this.userDAOMock = new TestUserDAO();
+        this.gson = new Gson();
+        mockMvc = MockMvcBuilders.standaloneSetup(
+                new UserController(userDAOMock)).build();
+
+        user1 = User.builder().withUserId("saki")
+                .withFirstName("sakhr").withLastName("al")
+                .withPassword("1234").build();
+
+        user2 = User.builder().withUserId("dave")
+                .withFirstName("Davis").withLastName("--")
+                .withPassword("1234").build();
     }
 
     @Test
@@ -44,5 +62,19 @@ public class UserControllerTest {
     }
 
 
+
+    // Einloggen -> PUT (useriD, pass) im body
+
+    // Mit falschen Pass -> bad request
+
+    // first und lasname -> was kommt zurueck
+
+    // sessionKey -> lange nicht null
+
+    // falsche Object schicken
+
+    // MediaType
+
+    // Header
 
 }

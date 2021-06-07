@@ -111,6 +111,7 @@ public class DBUserDAO implements IUserDAO {
 
     public User getUserByUserId(String userId) {
         em = null;
+        if(userId==null) return null;
         try {
             em = emf.createEntityManager();
             return em.find(User.class, userId);

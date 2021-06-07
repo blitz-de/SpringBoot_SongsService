@@ -56,12 +56,12 @@ Der Prototyp für einen Songs-Webservice ist vom Management der SONGSANDO GmbH g
    ```bash
    curl -X POST \
         -H "Content-Type: application/json" \
-        -v "https://localhost:8080/songsWS-TEAMNAME/rest/auth" \
+        -v "http://localhost:8080/songsWS/rest/auth/" \
         -d '{"userId":"mmuster","password":"pass1234"}'
    
    curl -X POST \
         -H "Content-Type: application/json" \
-        -v "https://localhost:8080/songsWS-TEAMNAME/rest/auth" \
+        -v "http://localhost:8080/songsWS/rest/auth/" \
         -d '{"userId":"eschuler","password":"pass1234"}'
    ```
 
