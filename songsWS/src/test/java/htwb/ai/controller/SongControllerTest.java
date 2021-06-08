@@ -5,14 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContext;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -26,14 +22,11 @@ class SongControllerTest {
 	
     private MockMvc mockMvc;
     private TestSongDAO songDAOMock;
-    @Autowired
-//    private SongController songControllerMock;
     private Gson gson;
     Song song1;
     Song song2;
     Song songNotFound;
 
-//    private ISongDAO iDAO;
     @BeforeEach
     public void setup() {
         this.gson = new Gson();
@@ -44,7 +37,6 @@ class SongControllerTest {
         		.withArtist("Frank Senatra")
         		.withAlbum("Dancing")
         		.withReleased(2021).build();
-        //        Song song2 = new Song(null,"new song","aaa", "bbb", 1999);
         song2 = Song.builder().withId(2).withTitle("new song").withArtist("aaa").withAlbum("bbb")
         		.withReleased(1999).build();
         songNotFound = Song.builder().withId(3).withTitle("update song").withArtist("the update").withAlbum("updateProcess")
@@ -63,9 +55,7 @@ class SongControllerTest {
 	//                "firstname":"bob",
 	//                "lastname":"smith",
 	//                "password":"secret" }
-   // 	song1 = songDAOMock.getById(1);
         System.out.println(song1);
-//        String payload = gson.toJson(song1);
         mockMvc.perform(get("/songs/{id}", 1).header("Content-Type","application/json"))
         	.andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -78,7 +68,6 @@ class SongControllerTest {
         System.out.println("###### TEST");
 	}
     @Test
-        // GET /auth/1
     void getSongShouldReturnOK() throws Exception {
         mockMvc.perform(get("/songs/1").header("Content-Type","application/json"))
                 .andExpect(status().isOk())
@@ -92,9 +81,7 @@ class SongControllerTest {
             	.andExpect(status().isNotFound());     
         System.out.println("###### TEST");
     }
-    @Test
-        // GET /auth/1
- 
+    @Test 
    void getAllUsersShouldReturnOK() throws Exception {
 
         mockMvc.perform(get("/songs/").header("Content-Type","application/json"))
@@ -133,9 +120,6 @@ class SongControllerTest {
                 .andExpect(jsonPath("$.released").value(song2.getReleased()))
                 .andExpect(status().isConflict());
         System.out.println("###### TEST " + song2);
-//    	mockMvc.perform(post("/songs/{id}", 1).header("Content-Type", "application/json"))
-//    		.andExpect(matcher)
-    		//.andExpect(status().is4xxClientError());
     }
     
     //bad request if i use song2
@@ -200,7 +184,7 @@ class SongControllerTest {
                 .andExpect(status().isBadRequest());
         System.out.println("###### TEST " + payload);
     }
-   
+  
     /*
      * POST schickt Statuscode 201 und URI (/rest/songs/) zur neuen Ressource im „Location“-Header zurück
 
@@ -209,23 +193,6 @@ class SongControllerTest {
      * DELETE songs/1: Statuscode 204 zurückschicken, ansonsten 400 bzw. 404
      */
     
-    
-    
-    
-    
-    
-    
-    
-    /*@Test
-    void deleteNoSongShouldReturn400() throws Exception {
-
-        mockMvc.perform(delete("/songs/2").header("Content-Type","application/json"))
-                .andExpect(status().isNoContent());
-        System.out.println("###### TEST");
-    }*/
-    // Weiter noch status von put checken und testen
-
-
     @Test
     void test() {
     }

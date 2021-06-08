@@ -125,7 +125,7 @@ public class DBUserDAO implements IUserDAO {
 
     public List<User> getAllUsers() {
         em = emf.createEntityManager();
-        String strQuery = "SELECT u FROM user u WHERE u.userId is NOT NULL";
+        String strQuery = "SELECT u FROM User u WHERE u.userId is NOT NULL";
         TypedQuery<User> tq = em.createQuery(strQuery, User.class);
         List<User> users;
         try {

@@ -30,7 +30,7 @@ public class SongController {
     }
 
 
-    @PostMapping(value = "/", consumes = {"application/json"}, produces = "application/json")
+    @PostMapping(value = "", consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<Song> add(@RequestBody Song song) {
 //    	if (song.get != null && ))
         try {
@@ -38,7 +38,7 @@ public class SongController {
             for (Song s : list) {
                 System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`` " + s.getId());
                 if (song.getId() != null
-                        && song.getId() < this.songDAO.generateId()
+                        && song.getId() < (this.songDAO.generateId()) 
                 ) return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
                 else if (song.getTitle() == null || song.getTitle().equals("")) {
                     return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
@@ -103,7 +103,7 @@ public class SongController {
         }
     }
 
-    @GetMapping(value = "/", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
+    @GetMapping(value = "", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
     public List<Song> getAll() {
         try{
             return songDAO.getAll();

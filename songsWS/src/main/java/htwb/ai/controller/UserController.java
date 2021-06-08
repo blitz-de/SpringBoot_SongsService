@@ -1,9 +1,11 @@
 package htwb.ai.controller;
 
 import htwb.ai.dao.IUserDAO;
+import htwb.ai.model.Song;
 import htwb.ai.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.NestedServletException;
@@ -29,7 +31,7 @@ public class UserController {
     }
 
     //GET http://localhost:8080/authSpring/rest/auth/eschuler
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<User> getUser(
             @PathVariable(value = "id") String username) throws IOException {
         try {
@@ -45,35 +47,36 @@ public class UserController {
 
     @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<String> authorize(@RequestBody User user) {
-    try {
-        if (user == null || user.getUserId().equals("") || user.getUserId() == null)
-            return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
-        User u = userDAO.getUserByUserId(user.getUserId());
-        if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
-
-        String sessionId = "not matched...";
-        if (u.getPassword().equals(user.getPassword())) {
-            sessionId = userDAO.generateToken();
-            return new ResponseEntity<String>(sessionId, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<String>(sessionId, HttpStatus.UNAUTHORIZED);
-    } catch (NullPointerException e){
-
-        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
-    } catch (Exception e){
-
-        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
+	    try {
+	        if (user == null || user.getUserId().equals("") || user.getUserId() == null)
+	            return new ResponseEntity<String>("something wrong with body probably...", HttpStatus.BAD_REQUEST);
+	        User u = userDAO.getUserByUserId(user.getUserId());
+	        if (u == null) return new ResponseEntity<String>("not found...", HttpStatus.NOT_FOUND);
+	
+	        String sessionId = "not matched...";
+	        if (u.getPassword().equals(user.getPassword())) {
+	            sessionId = userDAO.generateToken();
+	            return new ResponseEntity<String>(sessionId, HttpStatus.OK);
+	        }
+	
+	        return new ResponseEntity<String>(sessionId, HttpStatus.UNAUTHORIZED);
+	    } catch (NullPointerException e){
+	
+	        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
+	    } catch (Exception e){
+	
+	        return new ResponseEntity<String>("something wrong with body", HttpStatus.BAD_REQUEST);
+	    }
     }
 
-
-
-    }
-
-
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/users", consumes = {"application/json", "application/xml"}, produces = {"application/json", "application/xml"})
     public List<User> getUsers() {
-        return userDAO.getAllUsers();
+    	try {
+            return userDAO.getAllUsers();
+
+    	} catch (Exception e) {
+    		return null;
+    	}
     }
 
 }

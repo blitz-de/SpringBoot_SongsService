@@ -1,30 +1,25 @@
 package htwb.ai.controller;
 
-import htwb.ai.dao.DBUserDAO;
-import htwb.ai.dao.TestUserDAO;
-import htwb.ai.model.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.google.gson.Gson;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-
-import javax.servlet.ServletContext;
-
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.http.MediaType;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import htwb.ai.dao.TestSongDAO;
+import htwb.ai.dao.TestUserDAO;
+import htwb.ai.model.BadSong;
+import htwb.ai.model.Song;
+import htwb.ai.model.User;
+
+import com.google.gson.*;
 public class UserControllerTest {
     private MockMvc mockMvc;
     private TestUserDAO userDAOMock;
@@ -52,14 +47,14 @@ public class UserControllerTest {
         // GET /auth/finkin
     void getUserShouldReturnOKAndUserForExistingId() throws Exception {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/finkin")).andExpect(status().isOk());
+        mockMvc.perform(get("/auth/finkin")).andExpect(status().isOk());
 
     }
 
     @Test
         // GET /auth/finkin
     void getNotExistingUser400() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/abc")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/auth/abc")).andExpect(status().isNotFound());
     }
 
     @Test
@@ -113,18 +108,13 @@ public class UserControllerTest {
                     .andExpect(status().isInternalServerError());
         }
     }
+    
+
     // Einloggen -> PUT (useriD, pass) im body
 
     // Mit falschen Pass -> bad request
 
     // first und lasname -> was kommt zurueck
 
-    // sessionKey -> lange nicht null
-
-    // falsche Object schicken
-
-    // MediaType
-
-    // Header
 
 }
