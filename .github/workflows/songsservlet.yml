@@ -42,7 +42,7 @@ jobs:
           sleep 120
       - name: run TestScripts
         run: |
-          servletname=songsservlet-sakvis
+          servletname=songsservlet
           echo $servletname
           sh ./songsservlet/scripts/getTester.sh $servletname
           sh ./songsservlet/scripts/postTester.sh $servletname
