@@ -37,12 +37,12 @@ jobs:
         run: mvn -pl songsservlet clean package
       - name: move .war to Tomcat container
         run: |
-          docker cp ./songsservlet/target/songsservlet-*.war tomcat:/usr/local/tomcat/webapps
+          docker cp ./songsservlet/target/songsservlet.war tomcat:/usr/local/tomcat/webapps
           docker exec tomcat ls /usr/local/tomcat/webapps
           sleep 120
       - name: run TestScripts
         run: |
-          servletfile=$(ls ./songsservlet/target/songsservlet-*.war)
+          servletfile=$(ls ./songsservlet/target/songsservlet-sakvis.war)
           servletname=$(basename $servletfile .war)
           echo $servletname
           sh ./songsservlet/scripts/getTester.sh $servletname
