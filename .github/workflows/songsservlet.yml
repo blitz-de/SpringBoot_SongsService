@@ -42,8 +42,7 @@ jobs:
           sleep 120
       - name: run TestScripts
         run: |
-          servletfile=$(ls ./songsservlet/target/songsservlet-sakvis.war)
-          servletname=$(basename $servletfile .war)
+          servletname=songsservlet-sakvis
           echo $servletname
           sh ./songsservlet/scripts/getTester.sh $servletname
           sh ./songsservlet/scripts/postTester.sh $servletname
