@@ -18,6 +18,13 @@
         <module>songsservlet</module>
         <module>songsWS</module>
     </modules>
+<!-- Inherit defaults from Spring Boot -->
+<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.1.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
 
     <!-- deps, die alle sub modules brauchen -->
     <dependencies>

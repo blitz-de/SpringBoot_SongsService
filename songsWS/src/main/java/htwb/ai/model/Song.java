@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,16 +13,17 @@ import javax.persistence.Table;
 @Table(name="songs")
 public class Song implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUsongId = 1L;
 
     @Override
 	public String toString() {
-		return "Song [id=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
+		return "Song [songId=" + songId + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
 				+ released + "]";
 	}
     @Id
-    @Column(name = "songId", unique = true)
-    private Integer id;
+    @Column(unique = true)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer songId;
     @Column(name = "title", length = 100, nullable = false)
     private String title;
     @Column(name = "artist", length = 100)
@@ -32,14 +35,14 @@ public class Song implements Serializable {
 
 
     private Song(Builder builder) {
-        this.id = builder.id;
+        this.songId = builder.songId;
         this.title = builder.title;
         this.artist = builder.artist;
         this.album = builder.album;
         this.released = builder.released;
     }
-    public Song(Integer id, String title, String artist, String album, Integer released) {
-        this.id = id;
+    public Song(Integer songId, String title, String artist, String album, Integer released) {
+        this.songId = songId;
         this.title = title;
         this.artist = artist;
         this.album = album;
@@ -50,12 +53,12 @@ public class Song implements Serializable {
     }
 
 
-    public Integer getId() {
-        return id;
+    public Integer getSongId() {
+        return songId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setSongId(Integer songId) {
+        this.songId = songId;
     }
 
 
@@ -103,7 +106,7 @@ public class Song implements Serializable {
      * Builder to build {@link Song}.
      */
     public static final class Builder {
-        private Integer id;
+        private Integer songId;
         private String title;
         private String artist;
         private String album;
@@ -112,8 +115,8 @@ public class Song implements Serializable {
         private Builder() {
         }
 
-        public Song.Builder withId(Integer id) {
-            this.id = id;
+        public Song.Builder withSongId(Integer songId) {
+            this.songId = songId;
             return this;
         }
 
