@@ -1,6 +1,12 @@
 package htwb.ai.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(name = "users")
 @Entity
@@ -12,13 +18,45 @@ public class DAOUser {
     @Column(name = "username", length = 50, nullable = false)
     private String username;
     @Column(length = 50, nullable = false)
+    @JsonIgnore
     private String firstname;
     @Column(length = 50, nullable = false)
+    @JsonIgnore
     private String lastname;
     @Column(name = "password", length = 100, nullable = false)
     private String password;
 
-    private DAOUser(Builder builder) {
+    // Entity-Retaltionship
+    // One User can have multiple SongLists
+    // referec.. the same name as the pk column of the referenced table
+
+//  @JoinColumn(name="ownerid", referencedColumnName="id")//referencedColumnName is PK
+    @JsonIgnore
+    @OneToMany(mappedBy="owner", cascade  = CascadeType.ALL, orphanRemoval=true)
+    private List<SongList> songLists = new ArrayList<>();
+//    
+
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn (name = "id")
+    private Song song;
+    
+    public List<SongList> getSongLists() {
+		return songLists;
+	}
+
+	public void setSongLists(List<SongList> songLists) {
+		this.songLists = songLists;
+	}
+//
+//	public List<Song> getSongs() {
+//		return songs;
+//	}
+//
+//	public void setSongs(List<Song> songs) {
+//		this.songs = songs;
+//	}
+
+	private DAOUser(Builder builder) {
         this.username = builder.username;
         this.firstname = builder.firstname;
         this.lastname = builder.lastname;
@@ -33,6 +71,8 @@ public class DAOUser {
         this.password = password;
         this.lastname = lastname;
         this.firstname = firstname;
+//        this.songLists = songLists;
+//        this.songs = songs;
     }
 
     public DAOUser(String username, String password) {
@@ -74,9 +114,10 @@ public class DAOUser {
 
 
     @Override
-    public String toString() {
-        return "User [username=" + this.username + ", firstname=" + this.firstname + ", lastname=" + this.lastname + "]";
-    }
+	public String toString() {
+		return "DAOUser [username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", password="
+				+ password + "]";
+	}
 
     /**
      * Creates builder to build {@link DAOUser}.
@@ -126,4 +167,5 @@ public class DAOUser {
         }
 
     }
+
 }

@@ -1,6 +1,6 @@
 package htwb.ai.controller;
 
-import htwb.ai.dao.UserDao;
+import htwb.ai.dao.UserRepo;
 //import htwb.ai.dao.IUserDAO;
 import htwb.ai.model.DAOUser;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/rest")
 public class UserController {
-    private UserDao userDAO;
+    private UserRepo userDAO;
 
-    public UserController(UserDao dao) {
+    public UserController(UserRepo dao) {
         this.userDAO = dao;
 
     }

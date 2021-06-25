@@ -17,7 +17,7 @@ public class TestSongDAO  {
     
     public TestSongDAO() {
         Song song1 = Song.builder()
-                .withSongId(1)
+                .withId(1)
                 .withTitle("to the moon")
                 .withArtist("Frank Senatra")
                 .withAlbum("Dancing")

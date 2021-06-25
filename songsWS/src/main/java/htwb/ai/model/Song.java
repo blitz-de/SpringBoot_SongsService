@@ -1,29 +1,39 @@
 package htwb.ai.model;
 
-import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+
+//import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+//import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="songs")
-public class Song implements Serializable {
 
-    private static final long serialVersionUsongId = 1L;
+@Entity
+@Table(name="song")
+public class Song {
 
     @Override
 	public String toString() {
-		return "Song [songId=" + songId + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
+		return "Song [songId=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
 				+ released + "]";
 	}
     @Id
-    @Column(unique = true)
+    @Column(name="id", unique = true)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Integer songId;
+    private Integer id;
     @Column(name = "title", length = 100, nullable = false)
     private String title;
     @Column(name = "artist", length = 100)
@@ -32,21 +42,25 @@ public class Song implements Serializable {
     private String album;
     @Column(name = "released")
     private Integer released;
-
-
-    private Song(Builder builder) {
-        this.songId = builder.songId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "songList_id")
+    private SongList songList;
+    
+	private Song(Builder builder) {
+        this.id = builder.songId;
         this.title = builder.title;
         this.artist = builder.artist;
         this.album = builder.album;
         this.released = builder.released;
     }
     public Song(Integer songId, String title, String artist, String album, Integer released) {
-        this.songId = songId;
+        this.id = songId;
         this.title = title;
         this.artist = artist;
         this.album = album;
         this.released = released;
+//        this.songs = songs;
     }
 
     public Song() {
@@ -54,11 +68,11 @@ public class Song implements Serializable {
 
 
     public Integer getSongId() {
-        return songId;
+        return id;
     }
 
     public void setSongId(Integer songId) {
-        this.songId = songId;
+        this.id = songId;
     }
 
 
@@ -115,7 +129,7 @@ public class Song implements Serializable {
         private Builder() {
         }
 
-        public Song.Builder withSongId(Integer songId) {
+        public Song.Builder withId(Integer songId) {
             this.songId = songId;
             return this;
         }
@@ -144,4 +158,12 @@ public class Song implements Serializable {
             return new Song(this);
         }
     }
+
+	public void setSongList(SongList songList) {
+		this.songList = songList;
+	}
+	
+	public SongList getSongList() {
+		return this.songList;
+	}
 }

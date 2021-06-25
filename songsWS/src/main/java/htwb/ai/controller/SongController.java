@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/rest/songs")
@@ -23,12 +24,14 @@ public class SongController {
     // GET http://localhost:8080/authSpring/rest/songs/1
     @GetMapping(value = "/{id}", consumes = { "application/json", "application/xml" }, produces = { "application/json",
             "application/xml" })
-    public ResponseEntity<Song> getSong(@PathVariable(value = "id") Integer id) throws IOException {
-        Song song = songRepo.findBySongId(id);
+    public ResponseEntity<Optional> getSong(@PathVariable(value = "id") Integer id) throws IOException {
+        Optional<Song> song = songRepo.findById(id);
         		//songRepo.getById(id);
-        if (id > 0 && id < Integer.MAX_VALUE && song != null)
-            return new ResponseEntity<Song>(song, HttpStatus.OK);
-        return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);
+        
+        if (id > 0 && id < Integer.MAX_VALUE && song != null && !song.isEmpty()) {
+        	System.out.println("###################### " +song);
+            return new ResponseEntity<Optional>(song, HttpStatus.OK);}
+        return new ResponseEntity<Optional>(HttpStatus.NOT_FOUND);
     }
 
     /*

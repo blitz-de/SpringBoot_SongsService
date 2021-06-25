@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import htwb.ai.dao.UserDao;
+import htwb.ai.dao.UserRepo;
 import htwb.ai.model.DAOUser;
 import htwb.ai.model.UserDTO;
 
@@ -18,7 +18,7 @@ import htwb.ai.model.UserDTO;
 public class JwtUserDetailsService implements UserDetailsService {
 	
 	@Autowired
-	private UserDao userDao;
+	private UserRepo userDao;
 
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
@@ -38,6 +38,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		newUser.setUsername(user.getUsername());
 //		newUser.setUsername(user.getUsername());
 		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+//		newUser.setPassword(user.getPassword());
 		newUser.setFirstname(user.getFirstname());
 		newUser.setLastname(user.getLastname());
 		return userDao.save(newUser);
