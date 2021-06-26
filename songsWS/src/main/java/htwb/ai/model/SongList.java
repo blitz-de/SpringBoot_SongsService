@@ -34,7 +34,7 @@ public class SongList  {
 
 	@Id
 //	@Column(nullable=false)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name="id")
 	private Integer id;
 	@Column(length=50)
@@ -49,21 +49,7 @@ public class SongList  {
 	@ManyToOne() //many songlists to a user
 	@JoinColumn(name="owner")
     private DAOUser owner;
-
-//	@ManyToMany()
-//	@JoinTable(name="songlist_song",
-//	joinColumns = {@JoinColumn(name = "songListId", referencedColumnName = "id")}, 
-//	inverseJoinColumns = {@JoinColumn(name = "songId", referencedColumnName = "id")})
-//	private List<Song> songs;
-
-//	@ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY,
-//			mappedBy="songList")
-//	@JoinTable(
-//			name="added_songs",
-//			joinColumns = @JoinColumn(name="song_list_id"),
-//			inverseJoinColumns= @JoinColumn(name="song_id")
-//			)
-//	private List<Song> addedSongs = new ArrayList<>();
+	
 	  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
 	   @JoinTable(name = "songlists_songs",
 	            joinColumns = 
@@ -71,13 +57,15 @@ public class SongList  {
 	            inverseJoinColumns = 
 	        {@JoinColumn(name = "songId", referencedColumnName = "id")})
 	private List<Song> songList;
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-//    @JoinColumn(name="songLists")
-////	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "songList")
-//	private List<Song> songs = new ArrayList<>();
-    
-//	@ManyToMany()
-//	private List<Song> songs = new ArrayList<>();
+
+
+	public SongList() {}
+	
+	public SongList(String name, Boolean isPrivate) {
+//			this.id = id;
+		this.name = name;
+		this.isPrivate = isPrivate;
+	}
 
 	@JsonProperty(value = "isPrivate")
 	public Boolean getIsPrivate() {
@@ -97,23 +85,7 @@ public class SongList  {
 	public void setOwner(DAOUser owner) {
 		this.owner = owner;
 	}
-
-//	public List<Song> getSongList() {
-//		return songList;
-//	}
-
-//	public void setSongList(List<Song> songList) {
-//		this.songList = songList;
-//	}
-
-	public SongList() {}
-	
-	public SongList(String name, Boolean isPrivate) {
-//		this.id = id;
-		this.name = name;
-		this.isPrivate = isPrivate;
-	}
-
+//
 	public Integer getId() {
 		return id;
 	}

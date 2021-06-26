@@ -19,6 +19,7 @@ public interface SongListRepo extends JpaRepository<SongList, Integer> {
 //	@Query("from DAOUser u inner join fetch songLists where u.username = :owner")
 //	@Query("from SongList s inner join fetch s.owner where s.owner = :owner")
 	List<SongList> findByOwner(@Param("owner") String owner);
+	
 
 	
 }

@@ -35,7 +35,7 @@ public class Song {
 				+ released + "]";
 	}
     @Id
-    @Column(name="id", unique = true)
+    @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "title", length = 100, nullable = false)
