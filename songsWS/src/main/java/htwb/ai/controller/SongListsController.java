@@ -22,7 +22,7 @@ import htwb.ai.model.SongList;
 import htwb.ai.model.DAOUser;
 import htwb.ai.model.Song;
 @RestController
-@RequestMapping(value = "/rest/songLists")
+@RequestMapping(value = "songsWS/rest/songLists")
 public class SongListsController {
 
 	@Autowired
@@ -36,9 +36,9 @@ public class SongListsController {
     }
     
     @GetMapping(value="/{username}")
-    public List<SongList> getSongList(@PathVariable("username") String ownerid){
+    public List<SongList> getSongList(@PathVariable("username") String username){
     	//Optional<SongList> songlist = songListRepo.findByOwner(userId);
-    	List<SongList> songlists= (List<SongList>) songListRepo.findByOwner(ownerid);
+    	List<SongList> songlists= (List<SongList>) songListRepo.findByOwner(username);
     	return songlists;
     }
     
@@ -57,6 +57,7 @@ public class SongListsController {
     		@PathVariable(value="username") String username) {
     	
     	DAOUser user = userRepo.findByUsername(username);
+ 
     	songlist.setOwner(user);
     	SongList list =songListRepo.save(songlist);
     	
@@ -73,6 +74,7 @@ public class SongListsController {
 
     }
     
+//    @Transactional
     @GetMapping(value="/all")
     public List<SongList> getAllSongLists(){
     	return songListRepo.findAll();

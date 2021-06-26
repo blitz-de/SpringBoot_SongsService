@@ -1,7 +1,5 @@
 package htwb.ai.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+//import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,9 +31,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SongList  {
 
 	@Id
-//	@Column(nullable=false)
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Column(name="id")
+	@GeneratedValue
+	@Column(nullable =false, name="id",unique=true)
 	private Integer id;
 	@Column(length=50)
 	private String name;
@@ -46,11 +43,11 @@ public class SongList  {
 //	private DAOUser owner;
 	
 	@JsonBackReference
-	@ManyToOne() //many songlists to a user
+	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.ALL}) //was empty
 	@JoinColumn(name="owner")
     private DAOUser owner;
 	
-	  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+	  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
 	   @JoinTable(name = "songlists_songs",
 	            joinColumns = 
 	        {@JoinColumn(name = "songListId", referencedColumnName = "id")},
@@ -61,10 +58,12 @@ public class SongList  {
 
 	public SongList() {}
 	
-	public SongList(String name, Boolean isPrivate) {
+	public SongList(String name, Boolean isPrivate){//, DAOUser user, List<Song> songs) {
 //			this.id = id;
 		this.name = name;
 		this.isPrivate = isPrivate;
+//		this.owner = user;
+//		this.songList = songs;
 	}
 
 	@JsonProperty(value = "isPrivate")

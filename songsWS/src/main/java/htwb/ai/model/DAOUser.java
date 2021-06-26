@@ -30,9 +30,9 @@ public class DAOUser {
 //    @OneToMany(targetEntity = SongList.class, cascade= CascadeType.ALL)
 //    @JoinColumn(name="owner", referencedColumnName="username")
     @JsonManagedReference
-    @OneToMany(mappedBy="owner", fetch=FetchType.EAGER, cascade=CascadeType.ALL,
+    @OneToMany(mappedBy="owner", fetch=FetchType.LAZY, cascade=CascadeType.ALL,//WAS EAGER
     		orphanRemoval=true)
-    private List<SongList> songLists;
+    private List<SongList> songLists = new ArrayList<>();
     
     
     // Entity-Retaltionship
@@ -48,7 +48,7 @@ public class DAOUser {
 
     
 //    @ManyToOne()
-//    @JoinColumn (name = "id")
+//    @JoinColumn (name = "owner", referencedColumnName="id")
     public List<SongList> getSongLists() {
 		return songLists;
 	}

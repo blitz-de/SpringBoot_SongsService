@@ -36,7 +36,7 @@ public class Song {
 	}
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+//    @GeneratedValue//(strategy=GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "title", length = 100, nullable = false)
     private String title;
@@ -47,23 +47,9 @@ public class Song {
     @Column(name = "released")
     private Integer released;
     
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "songList_id")
-//    private SongList songList;
-    
-//	@ManyToOne() //many songlists to a user
-//	@JoinColumn(name="owner")
-//    private DAOUser owner;
-
-	//mappedBy corresponding to name of List in SongList
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<SongList> songList = new ArrayList<>(); 
 	
-//	@ManyToMany(targetEntity= SongList.class, cascade=CascadeType.ALL)
-//	@JoinColumn(name="songs", referencedColumnName="id")
-//	private List<SongList> songs;
-//	
-//	private SongList songList;
 	private Song(Builder builder) {
         this.id = builder.songId;
         this.title = builder.title;
