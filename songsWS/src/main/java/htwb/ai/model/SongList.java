@@ -22,10 +22,13 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
+//@JsonIgnoreProperties(value="songList")
 @Table(name="songList")
 public class SongList  {
 
@@ -39,22 +42,44 @@ public class SongList  {
 	@JsonProperty(value="isPrivate")
 	private Boolean isPrivate;
 	
-	@ManyToOne()
-	@JoinColumn(name="ownerid")
+	
+//	private DAOUser owner;
+	
+	@JsonBackReference
+	@ManyToOne() //many songlists to a user
+	@JoinColumn(name="owner")
     private DAOUser owner;
 
 //	@ManyToMany()
 //	@JoinTable(name="songlist_song",
 //	joinColumns = {@JoinColumn(name = "songListId", referencedColumnName = "id")}, 
 //	inverseJoinColumns = {@JoinColumn(name = "songId", referencedColumnName = "id")})
-//	private List<Song> songList;
+//	private List<Song> songs;
 
-
-  //  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "songList")
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "songList")
-	private List<Song> songs = new ArrayList<>();
+//	@ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY,
+//			mappedBy="songList")
+//	@JoinTable(
+//			name="added_songs",
+//			joinColumns = @JoinColumn(name="song_list_id"),
+//			inverseJoinColumns= @JoinColumn(name="song_id")
+//			)
+//	private List<Song> addedSongs = new ArrayList<>();
+	  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
+	   @JoinTable(name = "songlists_songs",
+	            joinColumns = 
+	        {@JoinColumn(name = "songListId", referencedColumnName = "id")},
+	            inverseJoinColumns = 
+	        {@JoinColumn(name = "songId", referencedColumnName = "id")})
+	private List<Song> songList;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    @JoinColumn(name="songLists")
+////	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "songList")
+//	private List<Song> songs = new ArrayList<>();
     
-    @JsonProperty(value = "isPrivate")
+//	@ManyToMany()
+//	private List<Song> songs = new ArrayList<>();
+
+	@JsonProperty(value = "isPrivate")
 	public Boolean getIsPrivate() {
 		return isPrivate;
 	}
@@ -110,9 +135,19 @@ public class SongList  {
 	public String toString() {
 		return "SongList [id=" + id + ", name=" + name + "]";
 	}
-	@Transient
-	public void addSong(Song song) {
-	    song.setSongList(this);
-	    songs.add(song);
+//	@Transient
+//	public void addSong(Song song) {
+//	    song.setSongList(this);
+//	    songs.add(song);
+//	}
+	
+	
+    public List<Song> getSongList() {
+		return songList;
 	}
+
+	public void setSongList(List<Song> songList) {
+		this.songList = songList;
+	}
+
 }

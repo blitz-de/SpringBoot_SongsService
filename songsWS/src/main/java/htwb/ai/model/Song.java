@@ -1,5 +1,6 @@
 package htwb.ai.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,8 +21,11 @@ import javax.persistence.ManyToOne;
 //import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
+//@JsonIgnoreProperties(value="addedSongs")
 @Table(name="song")
 public class Song {
 
@@ -43,10 +47,23 @@ public class Song {
     @Column(name = "released")
     private Integer released;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "songList_id")
-    private SongList songList;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "songList_id")
+//    private SongList songList;
     
+//	@ManyToOne() //many songlists to a user
+//	@JoinColumn(name="owner")
+//    private DAOUser owner;
+
+	//mappedBy corresponding to name of List in SongList
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<SongList> songList = new ArrayList<>(); 
+	
+//	@ManyToMany(targetEntity= SongList.class, cascade=CascadeType.ALL)
+//	@JoinColumn(name="songs", referencedColumnName="id")
+//	private List<SongList> songs;
+//	
+//	private SongList songList;
 	private Song(Builder builder) {
         this.id = builder.songId;
         this.title = builder.title;
@@ -159,11 +176,17 @@ public class Song {
         }
     }
 
-	public void setSongList(SongList songList) {
+//	public void setSongList(SongList songList) {
+//		this.songList = songList;
+//	}
+//	
+//	public SongList getSongList() {
+//		return this.songList;
+//	}
+	public void setSongList(List<SongList> songList) {
 		this.songList = songList;
 	}
-	
-	public SongList getSongList() {
-		return this.songList;
+	public List<SongList> getSongList() {
+		return songList;
 	}
 }

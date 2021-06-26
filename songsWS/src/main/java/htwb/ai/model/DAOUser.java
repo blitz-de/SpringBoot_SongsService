@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Table(name = "users")
 @Entity
@@ -26,20 +27,28 @@ public class DAOUser {
     @Column(name = "password", length = 100, nullable = false)
     private String password;
 
+//    @OneToMany(targetEntity = SongList.class, cascade= CascadeType.ALL)
+//    @JoinColumn(name="owner", referencedColumnName="username")
+    @JsonManagedReference
+    @OneToMany(mappedBy="owner", fetch=FetchType.EAGER, cascade=CascadeType.ALL,
+    		orphanRemoval=true)
+    private List<SongList> songLists;
+    
+    
     // Entity-Retaltionship
     // One User can have multiple SongLists
     // referec.. the same name as the pk column of the referenced table
 
 //  @JoinColumn(name="ownerid", referencedColumnName="id")//referencedColumnName is PK
-    @JsonIgnore
-    @OneToMany(mappedBy="owner", cascade  = CascadeType.ALL, orphanRemoval=true)
-    private List<SongList> songLists = new ArrayList<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy="owner", cascade  = CascadeType.ALL,
+//    orphanRemoval=true)
+//    private List<SongList> songLists = new ArrayList<>();
 //    
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn (name = "id")
-    private Song song;
     
+//    @ManyToOne()
+//    @JoinColumn (name = "id")
     public List<SongList> getSongLists() {
 		return songLists;
 	}
