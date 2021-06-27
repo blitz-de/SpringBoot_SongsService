@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 //import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -32,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SongList  {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	@Column(nullable =false, name="id",unique=true)
 	private Integer id;
 	@Column(length=50)
@@ -46,20 +47,22 @@ public class SongList  {
 	@JsonBackReference
 	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.ALL}) //was empty
 	@JoinColumn(name="owner")
-    private DAOUser owner;
+    private Users owner;
 	
+//	@JsonIgnore
 	  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
 	   @JoinTable(name = "songlists_songs",
-	            joinColumns = 
+	            joinColumns =	 
 	        {@JoinColumn(name = "songListId", referencedColumnName = "id")},
 	            inverseJoinColumns = 
-	        {@JoinColumn(name = "songId", referencedColumnName = "id")})
+	        {@JoinColumn(name = "songId", referencedColumnName = "id",
+	        nullable = false, updatable=false)})
 	private List<Song> songList = new ArrayList<>();
 
 
 	public SongList() {}
 	
-	public SongList(String name, Boolean isPrivate, DAOUser user){//, DAOUser user, List<Song> songs) {
+	public SongList(String name, Boolean isPrivate, Users user){//, DAOUser user, List<Song> songs) {
 //			this.id = id;
 		this.name = name;
 		this.isPrivate = isPrivate;
@@ -67,7 +70,7 @@ public class SongList  {
 //		this.songList = songs;
 	}
 
-	public SongList(Integer id, String name, Boolean isPrivate, DAOUser user){
+	public SongList(Integer id, String name, Boolean isPrivate, Users user){
 		this.id = id;
 		this.name = name;
 		this.isPrivate = isPrivate;
@@ -85,11 +88,11 @@ public class SongList  {
 	}
 
 	
-	public DAOUser getOwner() {
+	public Users getOwner() {
 		return owner;
 	}
 
-	public void setOwner(DAOUser owner) {
+	public void setOwner(Users owner) {
 		this.owner = owner;
 	}
 //

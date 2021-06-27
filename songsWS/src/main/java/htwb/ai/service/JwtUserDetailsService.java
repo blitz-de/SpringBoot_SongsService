@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import htwb.ai.dao.UserRepo;
-import htwb.ai.model.DAOUser;
+import htwb.ai.model.Users;
 import htwb.ai.model.UserDTO;
 
 @Service
@@ -25,7 +25,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		DAOUser user = userDao.findByUsername(username);
+		Users user = userDao.findByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found with username: " + username);
 		}
@@ -33,8 +33,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 				new ArrayList<>());
 	}
 	
-	public DAOUser save(UserDTO user) {
-		DAOUser newUser = new DAOUser();
+	public Users save(UserDTO user) {
+		Users newUser = new Users();
 		newUser.setUsername(user.getUsername());
 //		newUser.setUsername(user.getUsername());
 		newUser.setPassword(bcryptEncoder.encode(user.getPassword()));

@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import htwb.ai.dao.SongListRepo;
 import htwb.ai.dao.UserRepo;
 import htwb.ai.exception.ResourceNotFoundException;
 import htwb.ai.model.SongList;
-import htwb.ai.model.DAOUser;
+import htwb.ai.model.Users;
 import htwb.ai.model.Song;
 @RestController
 @RequestMapping(value = "songsWS/rest/songLists")
@@ -56,10 +58,11 @@ public class SongListsController {
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist,
     		@PathVariable(value="username") String username) {
     	
-    	DAOUser user = userRepo.findByUsername(username);
+    	Users user = userRepo.findByUsername(username);
  
     	songlist.setOwner(user);
     	SongList list =songListRepo.save(songlist);
+    	songListRepo.flush();
     	
     	return new ResponseEntity<SongList>(list,
     			HttpStatus.ACCEPTED);
@@ -75,6 +78,7 @@ public class SongListsController {
     }
     
 //    @Transactional
+    @JsonIgnore
     @GetMapping(value="/all")
     public List<SongList> getAllSongLists(){
     	return songListRepo.findAll();

@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -36,7 +37,7 @@ public class Song {
 	}
     @Id
     @Column(name="id")
-//    @GeneratedValue//(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)	
     private Integer id;
     @Column(name = "title", length = 100, nullable = false)
     private String title;
@@ -47,7 +48,8 @@ public class Song {
     @Column(name = "released")
     private Integer released;
     
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@ManyToMany(mappedBy= "songList", 
+			cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<SongList> songList = new ArrayList<>(); 
 	
 	private Song(Builder builder) {

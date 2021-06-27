@@ -20,7 +20,7 @@ import htwb.ai.controller.SongListsController;
 import htwb.ai.dao.SongListRepo;
 import htwb.ai.dao.SongRepo;
 import htwb.ai.dao.UserRepo;
-import htwb.ai.model.DAOUser;
+import htwb.ai.model.Users;
 import htwb.ai.model.Song;
 import htwb.ai.model.SongList;
 
@@ -48,10 +48,10 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 //		DAOUser user1 = new DAOUser("mmuster", "pass1234", "Max", "Muster");
-		DAOUser user1 = DAOUser.builder().withUsername("mmuster").withPassword("pass1234").withFirstname("Max").withLastname("Muster").build();
+		Users user1 = Users.builder().withUsername("mmuster").withPassword("pass1234").withFirstname("Max").withLastname("Muster").build();
 		user1.setPassword(bcryptEncoder.encode(user1.getPassword()));
 		
-		DAOUser user2 = new DAOUser("eschuler", "pass1235", "Elena", "Schuler");
+		Users user2 = new Users("eschuler", "pass1235", "Elena", "Schuler");
 		user2.setPassword(bcryptEncoder.encode(user2.getPassword()));
 //		
 		List<Song> songs = readJSONToSongs("src/main/resources/songs.json");

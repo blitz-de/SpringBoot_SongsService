@@ -2,7 +2,7 @@ package htwb.ai.controller;
 
 import htwb.ai.dao.UserRepo;
 //import htwb.ai.dao.IUserDAO;
-import htwb.ai.model.DAOUser;
+import htwb.ai.model.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +22,13 @@ public class UserController {
 
     // GET http://localhost:8080/authSpring/rest/auth/eschuler
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<DAOUser> getUser(@PathVariable(value = "id") String username) throws IOException {
-        DAOUser user = userDAO.findByUsername(username);
+    public ResponseEntity<Users> getUser(@PathVariable(value = "id") String username) throws IOException {
+        Users user = userDAO.findByUsername(username);
 //        		userDAO.getUserByUserId(username);
         if (user == null) {
-            return new ResponseEntity<DAOUser>(user, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Users>(user, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<DAOUser>(user, HttpStatus.OK);
+        return new ResponseEntity<Users>(user, HttpStatus.OK);
     }
 
 //    @PostMapping(value = "/", consumes = { "application/json" })
@@ -52,7 +52,7 @@ public class UserController {
 //    }
 
     @GetMapping(value = "/users")
-    public Iterable<DAOUser> getUsers() {
+    public Iterable<Users> getUsers() {
         return userDAO.findAll();
 //    	return userDAO.getAllUsers();
     }

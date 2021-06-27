@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Table(name = "users")
 @Entity
-public class DAOUser {
+public class Users {
 
 //    private static final long serialVersionUID = 1L;
 
@@ -65,17 +65,17 @@ public class DAOUser {
 //		this.songs = songs;
 //	}
 
-	private DAOUser(Builder builder) {
+	private Users(Builder builder) {
         this.username = builder.username;
         this.firstname = builder.firstname;
         this.lastname = builder.lastname;
         this.password = builder.password;
     }
 
-    public DAOUser() {
+    public Users() {
     }
 
-    public DAOUser(String username, String password, String firstname, String lastname) {
+    public Users(String username, String password, String firstname, String lastname) {
         this.username = username;
         this.password = password;
         this.lastname = lastname;
@@ -84,7 +84,7 @@ public class DAOUser {
 //        this.songs = songs;
     }
 
-    public DAOUser(String username, String password) {
+    public Users(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -129,7 +129,7 @@ public class DAOUser {
 	}
 
     /**
-     * Creates builder to build {@link DAOUser}.
+     * Creates builder to build {@link Users}.
      *
      * @return created builder
      */
@@ -138,7 +138,7 @@ public class DAOUser {
     }
 
     /**
-     * Builder to build {@link DAOUser}.
+     * Builder to build {@link Users}.
      */
     public static final class Builder {
 
@@ -171,8 +171,8 @@ public class DAOUser {
             return this;
         }
 
-        public DAOUser build() {
-            return new DAOUser(this);
+        public Users build() {
+            return new Users(this);
         }
 
     }
