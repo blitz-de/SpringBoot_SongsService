@@ -46,7 +46,7 @@ public class DAOUser {
 //    private List<SongList> songLists = new ArrayList<>();
 //    
 
-    
+//    
 //    @ManyToOne()
 //    @JoinColumn (name = "owner", referencedColumnName="id")
     public List<SongList> getSongLists() {

@@ -1,5 +1,6 @@
 package htwb.ai.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -53,19 +54,26 @@ public class SongList  {
 	        {@JoinColumn(name = "songListId", referencedColumnName = "id")},
 	            inverseJoinColumns = 
 	        {@JoinColumn(name = "songId", referencedColumnName = "id")})
-	private List<Song> songList;
+	private List<Song> songList = new ArrayList<>();
 
 
 	public SongList() {}
 	
-	public SongList(String name, Boolean isPrivate){//, DAOUser user, List<Song> songs) {
+	public SongList(String name, Boolean isPrivate, DAOUser user){//, DAOUser user, List<Song> songs) {
 //			this.id = id;
 		this.name = name;
 		this.isPrivate = isPrivate;
-//		this.owner = user;
+		this.owner = user;
 //		this.songList = songs;
 	}
 
+	public SongList(Integer id, String name, Boolean isPrivate, DAOUser user){
+		this.id = id;
+		this.name = name;
+		this.isPrivate = isPrivate;
+		this.owner = user;
+	//	this.songList = songs;
+}
 	@JsonProperty(value = "isPrivate")
 	public Boolean getIsPrivate() {
 		return isPrivate;

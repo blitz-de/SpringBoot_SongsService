@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import htwb.ai.controller.SongListsController;
 import htwb.ai.dao.SongListRepo;
 import htwb.ai.dao.SongRepo;
 import htwb.ai.dao.UserRepo;
@@ -37,6 +38,9 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 	private SongRepo songRepository;
 	
 	@Autowired
+	private SongListsController sc;
+	
+	@Autowired
 	private SongListRepo songlistRepository;
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
@@ -52,39 +56,29 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 //		
 		List<Song> songs = readJSONToSongs("src/main/resources/songs.json");
 		
-	
+//		List<SongList> songlistjson = readJSONToSongList("src/main/resources/songList.json");
+		
+		
 		songRepository.saveAll(songs);
 		this.userRepository.save(user1);
 		this.userRepository.save(user2);
-//		for (Song song: songs) {
-//			System.out.println();
-////			Integer jsonId = song.getSongId();
-//			
-//			
-//			songRepository.save(song);
-//			
-//			songRepository.saveAll(songs);
-//			System.out.println("########################" +song.getSongId());
-//			
-//		}
-//		// Init 10 songs from songs.json
-			SongList songlist1 = new SongList("Forro music", true);
-			SongList songlist2 = new SongList("Workout music", false);
-//////		SongList songlist3 = new SongList("Concentration music", false);
-//////		SongList songlist4 = new SongList("Pary music", false);
-//////		u
-//			songlistRepository.save(songlist1);
-//			songlistRepository.save(songlist2);
-//			user1.setSongLists(songlist1);
+		
+//		songlistRepository.saveAll(songlistjson);
+		
+			SongList songlist1 = new SongList("Forro music", false, user1);
+			SongList songlist2 = new SongList("Workout music", true, user1);
+			
+			SongList songlist3 = new SongList("Rock and roll", true, user2);
+			SongList songlist4 = new SongList("Salsa", false, user2);
+			
 			user1.getSongLists().add(songlist1);
 			user1.getSongLists().add(songlist2);
-			List<SongList> list = user1.getSongLists();
-//			songlistRepository.save(list);
 			
-//			user1.getSongLists().add(songlist2);
-////		user.getSongLists().add(songlist3);
-////		user.getSongLists().add(songlist4);
-		
+			user2.getSongLists().add(songlist3);
+			user2.getSongLists().add(songlist4);
+
+			this.userRepository.save(user1);
+			this.userRepository.save(user2);
 
 	}
 	
@@ -97,4 +91,12 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<SongList> readJSONToSongList(String filename) throws FileNotFoundException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+            return (List<SongList>) objectMapper.readValue(is, new TypeReference<List<SongList>>() {
+            });
+        }
+    }
 }

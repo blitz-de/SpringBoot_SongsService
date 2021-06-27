@@ -51,7 +51,7 @@ public class SongListsController {
 //    	return new ResponseEntity<SongList>((SongList) songList, HttpStatus.ACCEPTED);
 //    }
     
-//    @Transactional
+//    @Transactional/?isername=mmuster
     @PostMapping(value = "/{username}", consumes = { "application/json" }, produces = "application/json")
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist,
     		@PathVariable(value="username") String username) {
