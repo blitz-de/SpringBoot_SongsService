@@ -28,7 +28,7 @@ public class SongController {
         Optional<Song> song = songRepo.findById(id);
         		//songRepo.getById(id);
         
-        if (id > 0 && id < Integer.MAX_VALUE && song != null && !song.isEmpty()) {
+        if (id > 0 && id < Integer.MAX_VALUE && song != null ) {
         	System.out.println("###################### " +song);
             return new ResponseEntity<Optional>(song, HttpStatus.OK);}
         return new ResponseEntity<Optional>(HttpStatus.NOT_FOUND);
