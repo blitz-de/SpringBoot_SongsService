@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/rest/songs")
+@RequestMapping(value = "songsWS-sakvis/rest/songs")
 public class SongController {
     private SongRepo songRepo;
 
@@ -22,15 +22,16 @@ public class SongController {
     }
 
     // GET http://localhost:8080/authSpring/rest/songs/1
-    @GetMapping(value = "/{id}", consumes = { "application/json", "application/xml" }, produces = { "application/json",
-            "application/xml" })
+    @GetMapping(value = "/{id}", consumes = {"application/json", "application/xml"}, produces = {"application/json",
+            "application/xml"})
     public ResponseEntity<Optional> getSong(@PathVariable(value = "id") Integer id) throws IOException {
         Optional<Song> song = songRepo.findById(id);
-        		//songRepo.getById(id);
-        
-        if (id > 0 && id < Integer.MAX_VALUE && song != null ) {
-        	System.out.println("###################### " +song);
-            return new ResponseEntity<Optional>(song, HttpStatus.OK);}
+        //songRepo.getById(id);
+
+        if (id > 0 && id < Integer.MAX_VALUE && song != null) {
+            System.out.println("###################### " + song);
+            return new ResponseEntity<Optional>(song, HttpStatus.OK);
+        }
         return new ResponseEntity<Optional>(HttpStatus.NOT_FOUND);
     }
 
@@ -42,22 +43,22 @@ public class SongController {
      * request.getParameter("title"); String released =
      * request.getParameter("released"); System.out.println("released -> " +
      * released); if (title != null && !title.equals("")) {
-     * 
+     *
      * create(response, title, artist, label, released); } else {
      * sendResponse("set title to create new song", response,
      * HttpServletResponse.SC_NOT_ACCEPTABLE); }
-     * 
+     *
      * } catch (NumberFormatException | NullPointerException e) { // return bad
      * request 400 or something with wrong format sendResponse("", response,
      * HttpServletResponse.SC_BAD_REQUEST); e.printStackTrace(); } } else {
      * sendResponse("", response, HttpServletResponse.SC_BAD_REQUEST); }
      */
-    @PostMapping(value = "/", consumes = { "application/json" }, produces = "application/json")
+    @PostMapping(value = "/", consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<Song> add(@RequestBody Song song) {
         // if (song.get != null && ))
-    	songRepo.save(song);
-    	
-    	return new ResponseEntity<Song>(song, HttpStatus.OK);
+        songRepo.save(song);
+
+        return new ResponseEntity<Song>(song, HttpStatus.OK);
 //        Iterable<Song> list = songRepo.findAll();
 //        // songDAO.getById(song.getId());
 //        System.out.println("################################# " + song.getSongId());
@@ -80,57 +81,59 @@ public class SongController {
         // return new Resp;
     }
 
-    @PutMapping(value = "/{id}", consumes = { "application/json" }, produces = "application/json")
+    @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<Song> updateSong(@RequestBody Song song, @PathVariable(value = "id") Integer id) {
 
         // check songId !=null -> bad request
         // check song.id != null -> bad request
         // check songId == song.id -> continue update
         // PATHVARIABLE !=BODYVARIABLE
-        if (id == null) {
-            return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
+        try {
+            if (id == null) {
+                return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
+            }
+            //Prüfe ob id eine Integer ist
+            Integer _id = id;
+            Optional<Song> _song = songRepo.findById(_id);
+            if (_song == null)
+                return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);
+            else if (song.getTitle() == null || song.getTitle().equals(""))
+                return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
+            else {
+                Song songToUpdate = songRepo.getOne(id);
+                songToUpdate.setTitle(song.getTitle());
+                songToUpdate.setArtist(song.getArtist());
+                songToUpdate.setAlbum(song.getAlbum());
+                songToUpdate.setReleased(song.getReleased());
+                songRepo.save(songToUpdate);
+                return new ResponseEntity<Song>(songToUpdate, HttpStatus.ACCEPTED);
+            }
             // check songId !=null -> bad request
             // check song.id != null -> bad request
             // check songId == song.id -> continue update
-        }
-        if (song.getSongId() == null)
+        } catch (NumberFormatException e) {
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
-        if (song.getSongId() != Integer.valueOf(id))
+        } catch (Exception e) {
             return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
-        // songDAO.getById(song.getId());
-        System.out.println("[onUpdate]: " + song.getSongId());
-        if ((song.getSongId() == null || song.getSongId() < 1) && song.getSongId() < this.songRepo.count() ) //< this.songRepo.generateId()
-            return new ResponseEntity<Song>(song, HttpStatus.BAD_REQUEST);
-        // body and pathVar not equal -> 400 (should return 404)
-        // not found
-        if (songRepo.findById(id) == null) {
-//            System.out.println(
-//                    "################################################################" + songRepo.findAll());
-            return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);
-        } else if (song.getTitle() == null || song.getTitle().equals("")) {
-            return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
-        } else {
-            songRepo.save(song);
-            //.update(song);
-            return new ResponseEntity<Song>(HttpStatus.NO_CONTENT);
         }
     }
 
-    @DeleteMapping(value = "/{id}", consumes = { "application/json", "application/xml" }, produces = { "text/plain" })
+
+    @DeleteMapping(value = "/{id}", consumes = {"application/json", "application/xml"}, produces = {"text/plain"})
     public ResponseEntity<String> deleteSong(@PathVariable(value = "id") Integer id) throws IOException {
-
-        if (songRepo.findById(id) == null)
-            return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
-        if (id > 0 && id < Integer.MAX_VALUE && id != null) {
+        try {
+            if (songRepo.findById(id) == null)
+                return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
             songRepo.deleteById(id);
-            //.delete(id);
             return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/all", consumes = { "application/json", "application/xml" }, produces = { "application/json",
-            "application/xml" })
+    // just for check
+    @GetMapping(value = "/all", consumes = {"application/json", "application/xml"}, produces = {"application/json",
+            "application/xml"})
     public Iterable<Song> getAll() {
         return songRepo.findAll();
     }

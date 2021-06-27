@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/rest")
+@RequestMapping(value = "songsWS-sakvis/rest")
 public class UserController {
     private UserRepo userDAO;
 

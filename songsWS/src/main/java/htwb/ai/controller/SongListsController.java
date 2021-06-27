@@ -1,6 +1,8 @@
 package htwb.ai.controller;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,12 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,7 +23,7 @@ import htwb.ai.model.Users;
 import htwb.ai.model.Song;
 
 @RestController
-@RequestMapping(value = "songsWS/rest/songLists")
+@RequestMapping(value = "songsWS-sakvis/rest/songLists")
 public class SongListsController {
 
     @Autowired
@@ -36,18 +33,50 @@ public class SongListsController {
 
     public SongListsController(SongListRepo dao) {
         this.songListRepo = dao;
-
     }
 
-    @GetMapping(value = "/{username}")
-    public List<SongList> getSongList(@PathVariable("username") String username, Principal principal) {
+    @GetMapping
+    public ResponseEntity<List<SongList>> getSongListFromUserName(@RequestParam("username") String username, Principal principal) {
         //Optional<SongList> songlist = songListRepo.findByOwner(userId);
-		System.out.println("### username -> "+principal.getName());
-        List<SongList> songlists = (List<SongList>) songListRepo.findByOwner(userRepo.findByUsername(username));
+        try {
+            System.out.println("### username -> " + principal.getName());
+            Users u = userRepo.findByUsername(username);
 
+            List<SongList> songs = (List<SongList>) songListRepo.findByOwner(userRepo.findByUsername(username));
+            List<SongList> result = new ArrayList<>();
+            if (u == null) {
+                return new ResponseEntity<List<SongList>>(result,
+                        HttpStatus.NOT_FOUND);
+            }
+            for (SongList s : songs) {
+                System.out.println("###### -> " + s.getOwner().getUsername());
+                if (s.getOwner().getUsername().equals(principal.getName())) result.add(s);
+                else if (!s.getIsPrivate()) result.add(s);
+            }
 
-        return songlists;
+            return new ResponseEntity<List<SongList>>(result,
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<List<SongList>>(new ArrayList<SongList>(),
+                    HttpStatus.BAD_REQUEST);
+        }
     }
+
+    @GetMapping(value = "/{listId}")
+    public ResponseEntity<SongList> getSongList(@PathVariable("listId") String listId, Principal principal) {
+        //Optional<SongList> songlist = songListRepo.findByOwner(userId);
+        try {
+            System.out.println("### username -> " + principal.getName());
+            SongList sl = songListRepo.findById(Integer.parseInt(listId)).get();
+            if (sl.getOwner().getUsername().equals(principal.getName()))
+                return new ResponseEntity<SongList>(sl, HttpStatus.OK);
+            else if (!sl.getIsPrivate()) return new ResponseEntity<SongList>(sl, HttpStatus.OK);
+            else return new ResponseEntity<SongList>(new SongList(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<SongList>(new SongList(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 //    @GetMapping(value="/{username}")
 //    public ResponseEntity<SongList> getSongList (@PathVariable(value="username") String username){
@@ -59,11 +88,10 @@ public class SongListsController {
 //    }
 
     //    @Transactional/?isername=mmuster
-    @PostMapping(value = "/{username}", consumes = {"application/json"}, produces = "application/json")
-    public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist,
-                                                 @PathVariable(value = "username") String username) {
+    @PostMapping(consumes = {"application/json"}, produces = "application/json")
+    public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist, Principal principal) {
 
-        Users user = userRepo.findByUsername(username);
+        Users user = userRepo.findByUsername(principal.getName());
 
         songlist.setOwner(user);
         SongList list = songListRepo.save(songlist);
@@ -71,14 +99,30 @@ public class SongListsController {
 
         return new ResponseEntity<SongList>(list,
                 HttpStatus.ACCEPTED);
-//        return userRepo.findByUsername(username).map(user -> {
-//        	songlist.setOwner(user);;
-//            return songListRepo.save(songlist);
-//        }).orElseThrow(() -> new ResourceNotFoundException("username " + username + " not found"));
-        // if (song.get != null && ))
-//    	songListRepo.save(songlist);
-//    	
-//    	return new ResponseEntity<SongList>(songlist, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}", consumes = { "application/json", "application/xml" }, produces = { "text/plain" })
+    public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, Principal principal)
+            throws IOException {
+
+
+        System.out.println("###################### id "+id +"@@@@@ count: "+songListRepo.findAll().size());
+
+        try {
+            Users user = userRepo.findByUsername(principal.getName());
+
+            SongList sl = songListRepo.findById(id).get();
+            if (sl.getOwner().getUsername().equals(principal.getName())) {
+                songListRepo.deleteById(id);
+                return new ResponseEntity<String>("song list deleted", HttpStatus.NO_CONTENT);
+            } if (id > songListRepo.findAll().size() || sl == null) {
+                return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
+            }
+            else
+                return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+        }
 
     }
 

@@ -22,7 +22,7 @@ import htwb.ai.service.JwtUserDetailsService;
 
 
 @RestController
-@RequestMapping(value = "/rest")
+@RequestMapping(value = "songsWS-sakvis/rest")
 @CrossOrigin
 public class JwtAuthenticationController {
 
@@ -38,6 +38,7 @@ public class JwtAuthenticationController {
 	@PostMapping(value = "/auth")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
+		try{
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
 		final UserDetails userDetails = userDetailsService
@@ -46,6 +47,9 @@ public class JwtAuthenticationController {
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
 		return ResponseEntity.ok(new JwtResponse(token));
+		} catch (Exception e){
+			return ResponseEntity.badRequest().body("something is wrong with user");
+		}
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
