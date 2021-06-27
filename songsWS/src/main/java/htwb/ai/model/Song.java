@@ -47,8 +47,8 @@ public class Song {
     private String album;
     @Column(name = "released")
     private Integer released;
-    
-	@ManyToMany(mappedBy= "songList", 
+    @JsonIgnoreProperties({"songList"})
+    @ManyToMany(mappedBy= "songList",
 			cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<SongList> songList = new ArrayList<>(); 
 	

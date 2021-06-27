@@ -1,5 +1,6 @@
 package htwb.ai.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,27 +24,31 @@ import htwb.ai.exception.ResourceNotFoundException;
 import htwb.ai.model.SongList;
 import htwb.ai.model.Users;
 import htwb.ai.model.Song;
+
 @RestController
 @RequestMapping(value = "songsWS/rest/songLists")
 public class SongListsController {
 
-	@Autowired
-	private SongListRepo songListRepo;
-	@Autowired
-	private UserRepo userRepo;
-	
+    @Autowired
+    private SongListRepo songListRepo;
+    @Autowired
+    private UserRepo userRepo;
+
     public SongListsController(SongListRepo dao) {
         this.songListRepo = dao;
 
     }
-    
-    @GetMapping(value="/{username}")
-    public List<SongList> getSongList(@PathVariable("username") String username){
-    	//Optional<SongList> songlist = songListRepo.findByOwner(userId);
-    	List<SongList> songlists= (List<SongList>) songListRepo.findByOwner(username);
-    	return songlists;
+
+    @GetMapping(value = "/{username}")
+    public List<SongList> getSongList(@PathVariable("username") String username, Principal principal) {
+        //Optional<SongList> songlist = songListRepo.findByOwner(userId);
+		System.out.println("### username -> "+principal.getName());
+        List<SongList> songlists = (List<SongList>) songListRepo.findByOwner(userRepo.findByUsername(username));
+
+
+        return songlists;
     }
-    
+
 //    @GetMapping(value="/{username}")
 //    public ResponseEntity<SongList> getSongList (@PathVariable(value="username") String username){
 //    	
@@ -52,20 +57,20 @@ public class SongListsController {
 //    	
 //    	return new ResponseEntity<SongList>((SongList) songList, HttpStatus.ACCEPTED);
 //    }
-    
-//    @Transactional/?isername=mmuster
-    @PostMapping(value = "/{username}", consumes = { "application/json" }, produces = "application/json")
+
+    //    @Transactional/?isername=mmuster
+    @PostMapping(value = "/{username}", consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist,
-    		@PathVariable(value="username") String username) {
-    	
-    	Users user = userRepo.findByUsername(username);
- 
-    	songlist.setOwner(user);
-    	SongList list =songListRepo.save(songlist);
-    	songListRepo.flush();
-    	
-    	return new ResponseEntity<SongList>(list,
-    			HttpStatus.ACCEPTED);
+                                                 @PathVariable(value = "username") String username) {
+
+        Users user = userRepo.findByUsername(username);
+
+        songlist.setOwner(user);
+        SongList list = songListRepo.save(songlist);
+        songListRepo.flush();
+
+        return new ResponseEntity<SongList>(list,
+                HttpStatus.ACCEPTED);
 //        return userRepo.findByUsername(username).map(user -> {
 //        	songlist.setOwner(user);;
 //            return songListRepo.save(songlist);
@@ -76,13 +81,13 @@ public class SongListsController {
 //    	return new ResponseEntity<SongList>(songlist, HttpStatus.OK);
 
     }
-    
-//    @Transactional
+
+    //    @Transactional
     @JsonIgnore
-    @GetMapping(value="/all")
-    public List<SongList> getAllSongLists(){
-    	return songListRepo.findAll();
+    @GetMapping(value = "/all")
+    public List<SongList> getAllSongLists() {
+        return songListRepo.findAll();
     }
-    
+
 //    @PutMapping("/{username}/")
 }

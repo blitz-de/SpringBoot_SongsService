@@ -45,6 +45,7 @@ public class SongList  {
 //	private DAOUser owner;
 	
 	@JsonBackReference
+	@JsonIgnoreProperties({"songList", "songs"})
 	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.ALL}) //was empty
 	@JoinColumn(name="owner")
     private Users owner;

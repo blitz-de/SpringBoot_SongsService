@@ -51,7 +51,7 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 		Users user1 = Users.builder().withUsername("mmuster").withPassword("pass1234").withFirstname("Max").withLastname("Muster").build();
 		user1.setPassword(bcryptEncoder.encode(user1.getPassword()));
 		
-		Users user2 = new Users("eschuler", "pass1235", "Elena", "Schuler");
+		Users user2 = new Users("eschuler", "pass1234", "Elena", "Schuler");
 		user2.setPassword(bcryptEncoder.encode(user2.getPassword()));
 //		
 		List<Song> songs = readJSONToSongs("src/main/resources/songs.json");
