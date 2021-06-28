@@ -36,33 +36,33 @@ public class SongList  {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(nullable =false, name="id",unique=true)
 	private Integer id;
-	@Column(length=50)
+	@Column(length=50, nullable = false)
 	private String name;
 	@JsonProperty(value="isPrivate")
 	private Boolean isPrivate;
-	
-	
+
+
 //	private DAOUser owner;
-	
+
 	@JsonBackReference
 	@JsonIgnoreProperties({"songList", "songs"})
-	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.ALL}) //was empty
+	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.PERSIST}) //was empty
 	@JoinColumn(name="owner")
-    private Users owner;
-	
-//	@JsonIgnore
-	  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
-	   @JoinTable(name = "songlists_songs",
-	            joinColumns =	 
-	        {@JoinColumn(name = "songListId", referencedColumnName = "id")},
-	            inverseJoinColumns = 
-	        {@JoinColumn(name = "songId", referencedColumnName = "id",
-	        nullable = false, updatable=false)})
+	private Users owner;
+
+	//	@JsonIgnore
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
+	@JoinTable(name = "songlists_songs",
+			joinColumns =
+					{@JoinColumn(name = "songListId", referencedColumnName = "id")},
+			inverseJoinColumns =
+					{@JoinColumn(name = "songId", referencedColumnName = "id",
+							nullable = false, updatable=false)})
 	private List<Song> songList = new ArrayList<>();
 
 
 	public SongList() {}
-	
+
 	public SongList(String name, Boolean isPrivate, Users user){//, DAOUser user, List<Song> songs) {
 //			this.id = id;
 		this.name = name;
@@ -76,19 +76,19 @@ public class SongList  {
 		this.name = name;
 		this.isPrivate = isPrivate;
 		this.owner = user;
-	//	this.songList = songs;
-}
+		//	this.songList = songs;
+	}
 	@JsonProperty(value = "isPrivate")
 	public Boolean getIsPrivate() {
 		return isPrivate;
 	}
-	
-    @JsonProperty(value = "isPrivate")	
+
+	@JsonProperty(value = "isPrivate")
 	public void setIsPrivate(Boolean isPrivate) {
 		this.isPrivate = isPrivate;
 	}
 
-	
+
 	public Users getOwner() {
 		return owner;
 	}
@@ -96,7 +96,7 @@ public class SongList  {
 	public void setOwner(Users owner) {
 		this.owner = owner;
 	}
-//
+	//
 	public Integer getId() {
 		return id;
 	}
@@ -123,9 +123,9 @@ public class SongList  {
 //	    song.setSongList(this);
 //	    songs.add(song);
 //	}
-	
-	
-    public List<Song> getSongList() {
+
+
+	public List<Song> getSongList() {
 		return songList;
 	}
 

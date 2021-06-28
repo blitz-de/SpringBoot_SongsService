@@ -12,14 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import htwb.ai.controller.SongListsController;
-import htwb.ai.dao.SongListRepo;
-import htwb.ai.dao.SongRepo;
-import htwb.ai.dao.UserRepo;
+import htwb.ai.repository.SongListRepo;
+import htwb.ai.repository.SongRepo;
+import htwb.ai.repository.UserRepo;
 import htwb.ai.model.Users;
 import htwb.ai.model.Song;
 import htwb.ai.model.SongList;
@@ -31,7 +36,7 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 		SpringApplication.run(SpringBootHelloWorldApplication.class, args);
 	}
 
-	@Autowired
+	@Autowired(required = true)
 	private UserRepo userRepository;
 	@Autowired
 	private SongRepo songRepository;

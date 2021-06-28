@@ -1,6 +1,6 @@
 package htwb.ai.controller;
 
-import htwb.ai.dao.UserRepo;
+import htwb.ai.repository.UserRepo;
 //import htwb.ai.dao.IUserDAO;
 import htwb.ai.model.Users;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "songsWS-sakvis/rest")

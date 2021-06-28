@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import com.sun.istack.NotNull;
-import htwb.ai.dao.SongsDao;
+import htwb.ai.repository.SongsDao;
 import htwb.ai.model.Song;
 
 public class SongsServlet extends HttpServlet {

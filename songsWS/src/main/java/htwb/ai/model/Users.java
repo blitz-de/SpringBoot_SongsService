@@ -28,14 +28,14 @@ public class Users {
     @Column(name = "password", length = 100, nullable = false)
     private String password;
 
-//    @OneToMany(targetEntity = SongList.class, cascade= CascadeType.ALL)
+    //    @OneToMany(targetEntity = SongList.class, cascade= CascadeType.ALL)
 //    @JoinColumn(name="owner", referencedColumnName="username")
     @JsonManagedReference
-    @OneToMany(mappedBy="owner", fetch=FetchType.LAZY, cascade=CascadeType.ALL,//WAS EAGER
-    		orphanRemoval=true)
+    @OneToMany(mappedBy="owner", fetch=FetchType.LAZY, cascade=CascadeType.MERGE,//WAS EAGER
+            orphanRemoval=true)
     private List<SongList> songLists = new ArrayList<>();
-    
-    
+
+
     // Entity-Retaltionship
     // One User can have multiple SongLists
     // referec.. the same name as the pk column of the referenced table
@@ -45,18 +45,18 @@ public class Users {
 //    @OneToMany(mappedBy="owner", cascade  = CascadeType.ALL,
 //    orphanRemoval=true)
 //    private List<SongList> songLists = new ArrayList<>();
-//    
+//
 
-//    
+    //
 //    @ManyToOne()
 //    @JoinColumn (name = "owner", referencedColumnName="id")
     public List<SongList> getSongLists() {
-		return songLists;
-	}
+        return songLists;
+    }
 
-	public void setSongLists(List<SongList> songLists) {
-		this.songLists = songLists;
-	}
+    public void setSongLists(List<SongList> songLists) {
+        this.songLists = songLists;
+    }
 //
 //	public List<Song> getSongs() {
 //		return songs;
@@ -66,7 +66,7 @@ public class Users {
 //		this.songs = songs;
 //	}
 
-	private Users(Builder builder) {
+    private Users(Builder builder) {
         this.username = builder.username;
         this.firstname = builder.firstname;
         this.lastname = builder.lastname;
@@ -124,10 +124,10 @@ public class Users {
 
 
     @Override
-	public String toString() {
-		return "DAOUser [username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", password="
-				+ password + "]";
-	}
+    public String toString() {
+        return "DAOUser [username=" + username + ", firstname=" + firstname + ", lastname=" + lastname + ", password="
+                + password + "]";
+    }
 
     /**
      * Creates builder to build {@link Users}.

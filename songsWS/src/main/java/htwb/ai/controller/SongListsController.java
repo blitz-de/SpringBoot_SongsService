@@ -4,23 +4,19 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import htwb.ai.dao.SongListRepo;
-import htwb.ai.dao.UserRepo;
-import htwb.ai.exception.ResourceNotFoundException;
+import htwb.ai.repository.SongListRepo;
+import htwb.ai.repository.UserRepo;
 import htwb.ai.model.SongList;
 import htwb.ai.model.Users;
-import htwb.ai.model.Song;
 
 @RestController
 @RequestMapping(value = "songsWS-sakvis/rest/songLists")
@@ -71,7 +67,7 @@ public class SongListsController {
             if (sl.getOwner().getUsername().equals(principal.getName()))
                 return new ResponseEntity<SongList>(sl, HttpStatus.OK);
             else if (!sl.getIsPrivate()) return new ResponseEntity<SongList>(sl, HttpStatus.OK);
-            else return new ResponseEntity<SongList>(new SongList(), HttpStatus.UNAUTHORIZED);
+            else return new ResponseEntity<SongList>(new SongList(), HttpStatus.FORBIDDEN);
         } catch (Exception e) {
             return new ResponseEntity<SongList>(new SongList(), HttpStatus.NOT_FOUND);
         }
@@ -80,33 +76,40 @@ public class SongListsController {
 
 //    @GetMapping(value="/{username}")
 //    public ResponseEntity<SongList> getSongList (@PathVariable(value="username") String username){
-//    	
+//
 //    	// find by UserId and not by SongId
 //    	List<SongList> songList = songListRepo.findByOwner(username);
-//    	
+//
 //    	return new ResponseEntity<SongList>((SongList) songList, HttpStatus.ACCEPTED);
 //    }
 
     //    @Transactional/?isername=mmuster
     @PostMapping(consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist, Principal principal) {
+        try {
+            Users user = userRepo.findByUsername(principal.getName());
 
-        Users user = userRepo.findByUsername(principal.getName());
-
-        songlist.setOwner(user);
-        SongList list = songListRepo.save(songlist);
-        songListRepo.flush();
-
-        return new ResponseEntity<SongList>(list,
-                HttpStatus.ACCEPTED);
+            songlist.setOwner(user);
+            SongList list = songListRepo.save(songlist);
+            songListRepo.flush();
+            String path = "songsWS-sakvis/rest/songLists/" + list.getId();
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("Location",
+                    path);
+            return new ResponseEntity<SongList>(list, responseHeaders,
+                    HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<SongList>(new SongList(),
+                    HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @DeleteMapping(value = "/{id}", consumes = { "application/json", "application/xml" }, produces = { "text/plain" })
+    @DeleteMapping(value = "/{id}", consumes = {"application/json", "application/xml"}, produces = {"text/plain"})
     public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, Principal principal)
             throws IOException {
 
 
-        System.out.println("###################### id "+id +"@@@@@ count: "+songListRepo.findAll().size());
+        System.out.println("###################### id " + id + "@@@@@ count: " + songListRepo.findAll().size());
 
         try {
             Users user = userRepo.findByUsername(principal.getName());
@@ -115,11 +118,11 @@ public class SongListsController {
             if (sl.getOwner().getUsername().equals(principal.getName())) {
                 songListRepo.deleteById(id);
                 return new ResponseEntity<String>("song list deleted", HttpStatus.NO_CONTENT);
-            } if (id > songListRepo.findAll().size() || sl == null) {
-                return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
             }
-            else
-                return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+            if (id > songListRepo.findAll().size() || sl == null) {
+                return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
+            } else
+                return new ResponseEntity<String>("", HttpStatus.FORBIDDEN);
         } catch (Exception e) {
             return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
         }

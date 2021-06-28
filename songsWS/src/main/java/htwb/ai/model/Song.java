@@ -31,10 +31,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Song {
 
     @Override
-	public String toString() {
-		return "Song [songId=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
-				+ released + "]";
-	}
+    public String toString() {
+        return "Song [songId=" + id + ", title=" + title + ", artist=" + artist + ", album=" + album + ", released="
+                + released + "]";
+    }
     @Id
     @Column(name="id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,10 +49,10 @@ public class Song {
     private Integer released;
     @JsonIgnoreProperties({"songList"})
     @ManyToMany(mappedBy= "songList",
-			cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	private List<SongList> songList = new ArrayList<>(); 
-	
-	private Song(Builder builder) {
+            cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<SongList> songList = new ArrayList<>();
+
+    private Song(Builder builder) {
         this.id = builder.songId;
         this.title = builder.title;
         this.artist = builder.artist;
@@ -164,17 +164,17 @@ public class Song {
         }
     }
 
-//	public void setSongList(SongList songList) {
+    //	public void setSongList(SongList songList) {
 //		this.songList = songList;
 //	}
 //	
 //	public SongList getSongList() {
 //		return this.songList;
 //	}
-	public void setSongList(List<SongList> songList) {
-		this.songList = songList;
-	}
-	public List<SongList> getSongList() {
-		return songList;
-	}
+    public void setSongList(List<SongList> songList) {
+        this.songList = songList;
+    }
+    public List<SongList> getSongList() {
+        return songList;
+    }
 }

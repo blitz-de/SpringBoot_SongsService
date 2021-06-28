@@ -22,18 +22,18 @@
     <context:component-scan base-package="htwb.ai" />
 
     <!-- Es kann nur eine Implementierung von IUserDAO angegeben werden:-->
-    <!-- <bean id="userDAO" class="htwb.ai.dao.UserDAO"/> -->
+    <!-- <bean id="userDAO" class="htwb.ai.repository.UserDAO"/> -->
 
     <!--
-        <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO">
+        <bean id="dbUserDAO" class="htwb.ai.repository.DBUserDAO">
             <property name="persistenceUnit" value="PU-UserDB"></property>
         </bean>
      -->
-    <bean id="dbUserDAO" class="htwb.ai.dao.DBUserDAO" destroy-method="closeEMF">
+    <bean id="dbUserDAO" class="htwb.ai.repository.DBUserDAO" destroy-method="closeEMF">
         <constructor-arg value="PU-SongDB"/>
     </bean>
 
-    <bean id="dbSongDAO" class="htwb.ai.dao.DBSongDAO" destroy-method="closeEMF">
+    <bean id="dbSongDAO" class="htwb.ai.repository.DBSongDAO" destroy-method="closeEMF">
         <constructor-arg value="PU-SongDB"/>
     </bean>
 

@@ -6,7 +6,7 @@ public class UserDTO {
 
 	private String firstname;
 	private String lastname;
-	
+
 	public String getFirstname() {
 		return firstname;
 	}
