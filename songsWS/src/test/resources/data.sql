@@ -7,6 +7,4 @@ CREATE TABLE users (
   password VARCHAR(100) DEFAULT NULL
 );
 
-insert into USERS(username, firstname, lastname, password)
- values ('bsmith', 'Bobby', 'Smith', 'pass1234');
 

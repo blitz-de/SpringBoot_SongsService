@@ -35,6 +35,9 @@ public class JwtAuthenticationController {
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 
+	public JwtAuthenticationController(JwtUserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 	@PostMapping(value = "/auth")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -48,6 +51,8 @@ public class JwtAuthenticationController {
 
 			return ResponseEntity.ok(new JwtResponse(token));
 		} catch (Exception e){
+			System.out.println("username Controller: "+authenticationRequest.getUsername());
+			System.out.println("username Controller: "+authenticationRequest.getPassword());
 			return ResponseEntity.badRequest().body("something is wrong with user");
 		}
 	}
