@@ -12,15 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import htwb.ai.config.WebSecurityConfig;
 import htwb.ai.controller.SongListsController;
 import htwb.ai.repository.SongListRepo;
 import htwb.ai.repository.SongRepo;
@@ -29,7 +32,10 @@ import htwb.ai.model.Users;
 import htwb.ai.model.Song;
 import htwb.ai.model.SongList;
 
-@SpringBootApplication
+@EnableTransactionManagement
+@SpringBootApplication(scanBasePackages = {"htwb.ai"} , exclude = JpaRepositoriesAutoConfiguration.class)
+@EnableJpaRepositories({"htwb.ai.repository"})
+//@ComponentScan(basePackages= {"htwb.ai.*"})
 public class SpringBootHelloWorldApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
@@ -44,8 +50,11 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 	private SongListsController sc;
 	@Autowired
 	private SongListRepo songlistRepository;
+	//	@Autowired(required = true)
+//	private PasswordEncoder bcryptEncoder;
 	@Autowired
-	private PasswordEncoder bcryptEncoder;
+	WebSecurityConfig web;
+
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -54,9 +63,9 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 				.withPassword("pass1234")
 				.withFirstname("Max")
 				.withLastname("Muster").build();
-		user1.setPassword(bcryptEncoder.encode(user1.getPassword()));
+		user1.setPassword(web.passwordEncoder().encode(user1.getPassword()));
 		Users user2 = new Users("eschuler", "pass1234", "Elena", "Schuler");
-		user2.setPassword(bcryptEncoder.encode(user2.getPassword()));
+		user2.setPassword(web.passwordEncoder().encode(user2.getPassword()));
 //
 		List<Song> songs = readJSONToSongs("src/main/resources/songs.json");
 
