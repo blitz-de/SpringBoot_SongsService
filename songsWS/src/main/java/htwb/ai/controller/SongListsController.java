@@ -115,14 +115,16 @@ public class SongListsController {
             Users user = userRepo.findByUsername(principal.getName());
 
             SongList sl = songListRepo.findById(id).get();
+            if (sl == null) {
+                return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
+            }
             if (sl.getOwner().getUsername().equals(principal.getName())) {
                 songListRepo.deleteById(id);
                 return new ResponseEntity<String>("song list deleted", HttpStatus.NO_CONTENT);
-            }
-            if (id > songListRepo.findAll().size() || sl == null) {
-                return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
             } else
                 return new ResponseEntity<String>("", HttpStatus.FORBIDDEN);
+
+
         } catch (Exception e) {
             return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
         }

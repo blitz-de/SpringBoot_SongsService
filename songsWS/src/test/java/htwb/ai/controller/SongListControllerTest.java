@@ -69,7 +69,7 @@ public class SongListControllerTest {
     @Test
     @Order(1)
     public void postUserShouldSaveUserAndReturnNewId2() throws Exception {
-
+    /*
         System.out.println("$$$$$$$$$$$$$ "+ user1);
         String payload = gson.toJson(user1);
         System.out.println(payload);
@@ -96,7 +96,7 @@ public class SongListControllerTest {
                 .content(payload)).andReturn();
 
         System.out.println("######################################### "+ result3.getResponse().getContentAsString());
-        System.out.println("######################################### "+ result3.getResponse().getStatus());
+        System.out.println("######################################### "+ result3.getResponse().getStatus());*/
     }
 
 }
