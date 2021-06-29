@@ -1,7 +1,10 @@
 package htwb.ai.controller;
 
-
+import java.security.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.security.Principal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -11,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -21,6 +27,7 @@ import com.google.gson.Gson;
 
 import htwb.ai.model.JwtRequest;
 import htwb.ai.model.Song;
+import htwb.ai.model.SongList;
 import htwb.ai.model.UserDTO;
 import htwb.ai.model.Users;
 import htwb.ai.repository.SongListRepo;
@@ -47,17 +54,22 @@ public class SongListControllerTest {
 
     @Autowired
     private JwtUserDetailsService jwtUser;
-    private Gson gson;
-    private UserDTO user1 = new UserDTO();
 
+    SongList songlist1;
+    private Gson gson;
+    private Users user1 = new Users();
+
+    Principal securityUser;
     @BeforeEach
     public void setupMockMvc() {
         this.gson = new Gson();
+//        securityUser = getPrincipal();
 
         mockMvc = MockMvcBuilders.standaloneSetup(new UserController(uRepo)).build();
         mockMvc2 = MockMvcBuilders.standaloneSetup(new SongListsController(slRepo)).build();
         mockMvc3 = MockMvcBuilders.standaloneSetup(new SongController(sRepo)).build();
         mockMvc4 = MockMvcBuilders.standaloneSetup(new JwtAuthenticationController(jwtUser)).build();
+
 
 //        user1 = new UserDTO("mmuster","Bobby","Smith","pass1234");
         user1.setUsername("mmuster");
@@ -65,6 +77,58 @@ public class SongListControllerTest {
         user1.setLastname("Smith");
         user1.setPassword("pass1234");
 
+        songlist1 = new SongList("songlist no1", false, user1);
+
+    }
+
+    @Test
+    public void postSongListMethodNotFound() throws Exception {
+        String payload = gson.toJson(songlist1);
+        mockMvc2.perform(post("/songs/").header("Content-Type","application/json").content(payload))
+                .andExpect(status().isNotFound());
+    }
+
+//    @Test
+//    public void postSongListNotAuthorized() throws Exception {
+//
+//        User user = new User(user1.getUsername(),user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
+////    	songListRepo.findById(1);
+//        String payload = gson.toJson(songlist1);
+//        //Principal securityUser = "mmuster";
+//
+//        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user,null);
+//
+//
+//        mockMvc2.perform(post("/songsWS-sakvis/rest/songLists/").content(payload)
+//        		.principal(testingAuthenticationToken)
+//        		.contentType(MediaType.APPLICATION_JSON))
+//        		.andExpect(status().isForbidden());
+//
+////        mockMvc2.perform(post("/partner/notifications/activate")
+////                .content(payload)
+////                .principal(securityUser)
+////                .contentType(MediaType.APPLICATION_JSON))
+////                .andExpect(status().isOk());
+//    }
+
+    @Test
+    public void postSongListBadRequest() throws Exception {
+        String payload = gson.toJson(songlist1);
+        User user = new User(user1.getUsername(),user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
+
+        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user,null);
+
+
+        mockMvc2.perform(post("/songsWS-sakvis/rest/songLists").content(payload)
+                .principal(testingAuthenticationToken)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+//        mockMvc2.perform(post("/partner/notifications/activate")
+//                .content(payload)
+//                .principal(securityUser)
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk());
     }
     @Test
     @Order(1)

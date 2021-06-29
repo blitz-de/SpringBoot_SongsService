@@ -1,51 +1,36 @@
-package htwb.ai;
+package htwb.ai.helper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import htwb.ai.helper.Initer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import htwb.ai.config.WebSecurityConfig;
 import htwb.ai.controller.SongListsController;
+import htwb.ai.model.Song;
+import htwb.ai.model.SongList;
+import htwb.ai.model.Users;
 import htwb.ai.repository.SongListRepo;
 import htwb.ai.repository.SongRepo;
 import htwb.ai.repository.UserRepo;
-import htwb.ai.model.Users;
-import htwb.ai.model.Song;
-import htwb.ai.model.SongList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableTransactionManagement
-@SpringBootApplication(scanBasePackages = {"htwb.ai"}, exclude = JpaRepositoriesAutoConfiguration.class)
-@EnableJpaRepositories({"htwb.ai.repository"})
-//@ComponentScan(basePackages= {"htwb.ai.*"})
-public class SpringBootHelloWorldApplication implements CommandLineRunner {
+import java.io.*;
+import java.util.List;
+public class Initer {
 
-    public static void main(String[] args) {
-
-        SpringApplication.run(SpringBootHelloWorldApplication.class, args);
+    public Initer(){
+        try {
+            startHelper();
+        } catch(Exception e){
+            System.out.println("#############################");
+            System.out.println("#############################");
+            System.out.println("#############################");
+            System.out.println("#############################");
+            System.out.println("#############################");
+            System.out.println("#############################");
+            System.out.println("#############################");
+        }
     }
-
     @Autowired(required = true)
     private UserRepo userRepository;
     @Autowired
@@ -59,8 +44,7 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
     @Autowired
     WebSecurityConfig web;
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void startHelper() throws Exception {
 
         Users user1 = new Users("mmuster", "pass1234", "Max", "Muster");
         user1.setPassword(web.passwordEncoder().encode(user1.getPassword()));
@@ -73,9 +57,9 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
 
         int i = 1;
         for (SongList st : songlistjson) {
-                if(i==1 || i==2) st.setOwner(user1);
-                else st.setOwner(user2);
-                i++;
+            if(i==1 || i==2) st.setOwner(user1);
+            else st.setOwner(user2);
+            i++;
         }
         songlistjson.get(0).setIsPrivate(true);
         songlistjson.get(1).setIsPrivate(false);
