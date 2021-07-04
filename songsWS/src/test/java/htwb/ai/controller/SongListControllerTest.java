@@ -1,11 +1,11 @@
 package htwb.ai.controller;
 
-import java.security.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.security.Principal;
 
+import htwb.ai.config.JwtTokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -13,22 +13,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.google.gson.Gson;
 
-import htwb.ai.model.JwtRequest;
-import htwb.ai.model.Song;
 import htwb.ai.model.SongList;
-import htwb.ai.model.UserDTO;
 import htwb.ai.model.Users;
 import htwb.ai.repository.SongListRepo;
 import htwb.ai.repository.SongRepo;
@@ -40,10 +32,15 @@ import htwb.ai.service.JwtUserDetailsService;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SongListControllerTest {
 
-    private MockMvc mockMvc;
-    private MockMvc mockMvc2;
-    private MockMvc mockMvc3;
-    private MockMvc mockMvc4;
+    private MockMvc mockUserController;
+
+    private MockMvc mockSlController;
+    private MockMvc mockSongController;
+    private MockMvc mockAuthController;
+
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private UserRepo uRepo;
@@ -60,32 +57,45 @@ public class SongListControllerTest {
     private Users user1 = new Users();
 
     Principal securityUser;
+
+    String token = "";
+
     @BeforeEach
     public void setupMockMvc() {
         this.gson = new Gson();
 //        securityUser = getPrincipal();
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserController(uRepo)).build();
-        mockMvc2 = MockMvcBuilders.standaloneSetup(new SongListsController(slRepo)).build();
-        mockMvc3 = MockMvcBuilders.standaloneSetup(new SongController(sRepo)).build();
-        mockMvc4 = MockMvcBuilders.standaloneSetup(new JwtAuthenticationController(jwtUser)).build();
+        mockUserController = MockMvcBuilders.standaloneSetup(new UserController(uRepo)).build();
+        mockSlController = MockMvcBuilders.standaloneSetup(new SongListsController(slRepo)).build();
+        mockSongController = MockMvcBuilders.standaloneSetup(new SongController(sRepo)).build();
+        mockAuthController = MockMvcBuilders.standaloneSetup(new JwtAuthenticationController(jwtUser)).build();
 
 
 //        user1 = new UserDTO("mmuster","Bobby","Smith","pass1234");
-        user1.setUsername("mmuster");
+        user1.setUsername("helloWorld");
         user1.setFirstname("Bobby");
         user1.setLastname("Smith");
         user1.setPassword("pass1234");
 
         songlist1 = new SongList("songlist no1", false, user1);
+        try {
+            slRepo.save(songlist1);
+            token = jwtTokenUtil.createToken(user1.getUsername());
+            System.out.println("### token -->"+ token);
+
+        } catch (Exception e) {
+            System.out.println("### Save Exception -->" + e.getCause());
+        }
 
     }
 
     @Test
     public void postSongListMethodNotFound() throws Exception {
-        String payload = gson.toJson(songlist1);
-        mockMvc2.perform(post("/songs/").header("Content-Type","application/json").content(payload))
-                .andExpect(status().isNotFound());
+        String payload = gson.toJson(user1);
+        MvcResult result = mockSongController.perform(get("/songsWS-sakvis/rest/songs/1").header("Content-Type", "application/json").
+                header("Authorization", "Bearer "+token).
+                content(payload)).andReturn();
+        System.out.println("### result --> " + result.getResponse().getContentAsString());
     }
 
 //    @Test
@@ -113,23 +123,24 @@ public class SongListControllerTest {
 
     @Test
     public void postSongListBadRequest() throws Exception {
-        String payload = gson.toJson(songlist1);
-        User user = new User(user1.getUsername(),user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
+       /* String payload = gson.toJson(songlist1);
+        User user = new User(user1.getUsername(), user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
 
-        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user,null);
+        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user, null);
 
 
-        mockMvc2.perform(post("/songsWS-sakvis/rest/songLists").content(payload)
+        mockMvc.perform(post("/songsWS-sakvis/rest/songLists").content(payload)
                 .principal(testingAuthenticationToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-
+                */
 //        mockMvc2.perform(post("/partner/notifications/activate")
 //                .content(payload)
 //                .principal(securityUser)
 //                .contentType(MediaType.APPLICATION_JSON))
 //                .andExpect(status().isOk());
     }
+
     @Test
     @Order(1)
     public void postUserShouldSaveUserAndReturnNewId2() throws Exception {
