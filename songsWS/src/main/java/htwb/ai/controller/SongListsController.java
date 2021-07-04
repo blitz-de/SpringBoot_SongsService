@@ -91,12 +91,16 @@ public class SongListsController {
             Users user = userRepo.findByUsername(principal.getName());
 
             songlist.setOwner(user);
-            SongList list = songListRepo.save(songlist);
-            songListRepo.flush();
+            user.getSongLists().add(songlist);
+            userRepo.save(user);
+            userRepo.flush();
+            SongList list = user.getSongLists().get(user.getSongLists().size()-1);
+            //SongList list = songListRepo.save(songlist);
+            //songListRepo.flush();
             String path = "songsWS-sakvis/rest/songLists/" + list.getId();
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("Location",
-                    path);
+                   path);
             return new ResponseEntity<SongList>(list, responseHeaders,
                     HttpStatus.ACCEPTED);
         } catch (Exception e) {

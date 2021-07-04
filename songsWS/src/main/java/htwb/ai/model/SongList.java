@@ -49,9 +49,6 @@ public class SongList  {
 	@ManyToOne(fetch= FetchType.LAZY, cascade= {CascadeType.PERSIST}) //was empty
 	@JoinColumn(name="owner")
 	private Users owner;
-
-	//	@JsonIgnore
-
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})	//WAS EAGER, WAS CASCADEtYPE.MERGE
 	@JoinTable(name = "songlists_songs",
 			joinColumns =
