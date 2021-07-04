@@ -90,7 +90,7 @@ public class SongListControllerTest {
     }
 
     @Test
-    public void postSongListMethodNotFound() throws Exception {
+    public void getSongId1() throws Exception {
         String payload = gson.toJson(user1);
         MvcResult result = mockSongController.perform(get("/songsWS-sakvis/rest/songs/1").header("Content-Type", "application/json").
                 header("Authorization", "Bearer "+token).

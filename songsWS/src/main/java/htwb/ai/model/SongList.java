@@ -51,13 +51,13 @@ public class SongList  {
 	private Users owner;
 
 	//	@JsonIgnore
+
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
 	@JoinTable(name = "songlists_songs",
 			joinColumns =
-					{@JoinColumn(name = "songListId", referencedColumnName = "id")},
+					{@JoinColumn(name = "songListId", nullable = true,referencedColumnName = "id")},
 			inverseJoinColumns =
-					{@JoinColumn(name = "songId", referencedColumnName = "id",
-							nullable = false, updatable=false)})
+					{@JoinColumn(name = "songId", nullable = true, referencedColumnName = "id", updatable=true)})
 	private List<Song> songList = new ArrayList<>();
 
 
@@ -69,6 +69,13 @@ public class SongList  {
 		this.isPrivate = isPrivate;
 		this.owner = user;
 //		this.songList = songs;
+	}
+	public SongList(String name, Boolean isPrivate, Users user, List<Song> songList){//, DAOUser user, List<Song> songs) {
+//			this.id = id;
+		this.name = name;
+		this.isPrivate = isPrivate;
+		this.owner = user;
+		this.songList = songList;
 	}
 
 	public SongList(Integer id, String name, Boolean isPrivate, Users user){
@@ -116,7 +123,11 @@ public class SongList  {
 
 	@Override
 	public String toString() {
-		return "SongList [id=" + id + ", name=" + name + "]";
+		String songs = "";
+		for(Song s : this.songList){
+			songs += s.toString()+", ";
+		}
+		return "SongList [id=" + id + ", name=" + name + ", isPrivate="+isPrivate+", owner="+owner.getUsername()+", songs="+songList.toString()+"]";
 	}
 //	@Transient
 //	public void addSong(Song song) {
