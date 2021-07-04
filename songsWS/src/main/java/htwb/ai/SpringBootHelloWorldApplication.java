@@ -3,6 +3,7 @@ package htwb.ai;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -58,44 +59,43 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
             Users user2 = new Users("eschuler", "pass1234", "Elena", "Schuler");
             user2.setPassword(web.passwordEncoder().encode(user2.getPassword()));
             File resource = new File("src/main/resources/songs.json");
-            File resource2 = new File("src/main/resources/songList.json");
             String path = resource.getAbsolutePath();
-            String path2 = resource2.getAbsolutePath();
             String[] splitted = path.split("sakvis");
-            String[] splitted2 = path2.split("sakvis");
             if (!resource.getAbsolutePath().contains("songsWS")) path = splitted[0] + "sakvis/songsWS" + splitted[1];
-            if (!resource2.getAbsolutePath().contains("songsWS")) path2 = splitted[0] + "sakvis/songsWS" + splitted[1];
             List<Song> songs = readJSONToSongs(path);
-            List<SongList> songlistjson = readJSONToSongList(path2);
 
-            int i = 1;
-            for (SongList st : songlistjson) {
-                if (i == 1 || i == 2) st.setOwner(user1);
-                else st.setOwner(user2);
+            List<SongList> sLists = new ArrayList<>();
+
+            for (int i = 0; i < 35; i++) {
+                SongList st = new SongList();
+                if (i % 2 == 0) st.setIsPrivate(true);
+                else st.setIsPrivate(false);
+                st.setName("playlist " + (i + 1));
+                songs.get(0).setTitle("title " + i);
                 st.setSongList(songs);
-                st.setName("playlist "+i);
-                System.out.println(st.toString());
-                i++;
+                sLists.add(st);
+
+                if (i == 0 || i == 1) {
+                    st.setOwner(user1);
+                    user1.getSongLists().add(st);
+                } else if (i > 5 && i % 2 == 0) {
+                    st.setOwner(user1);
+                    user2.getSongLists().add(st);
+                } else {
+                    st.setOwner(user2);
+                    user2.getSongLists().add(st);
+                }
+
             }
-            songlistjson.get(0).setIsPrivate(true);
-            songlistjson.get(1).setIsPrivate(false);
-            songlistjson.get(2).setIsPrivate(true);
-            songlistjson.get(3).setIsPrivate(false);
-
-
-            // 1
-
-            //user.songlist1.setPassword(bcrypt);
-
-//		songRepository.saveAll(songs);
-            //this.userRepository.save(user1);
-            //this.userRepository.save(user2);
-
-            songlistRepository.saveAll(songlistjson);
-
-            SongList sl1 = songlistRepository.getById(1);
-
-            SongList songlist1 = new SongList("Forro music", false, user1);
+            // requirements
+            sLists.get(0).setIsPrivate(true);
+            sLists.get(1).setIsPrivate(false);
+            sLists.get(2).setIsPrivate(true);
+            sLists.get(3).setIsPrivate(false);
+            // save songlists and songs and users
+            //songlistRepository.saveAll(sLists);
+            // more songlists...
+            /*SongList songlist1 = new SongList("Forro music", false, user1);
             SongList songlist2 = new SongList("Workout music", true, user1);
 
             SongList songlist3 = new SongList("Rock and roll", true, user2);
@@ -105,7 +105,7 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
             user1.getSongLists().add(songlist2);
 
             user2.getSongLists().add(songlist3);
-            user2.getSongLists().add(songlist4);
+            user2.getSongLists().add(songlist4);*/
             // update
             this.userRepository.save(user1);
             this.userRepository.save(user2);

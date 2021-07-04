@@ -52,14 +52,13 @@ public class SongList  {
 
 	//	@JsonIgnore
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})	//WAS EAGER, WAS CASCADEtYPE.MERGE
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})	//WAS EAGER, WAS CASCADEtYPE.MERGE
 	@JoinTable(name = "songlists_songs",
 			joinColumns =
-					{@JoinColumn(name = "songListId", nullable = true,referencedColumnName = "id")},
+					{@JoinColumn(name = "songListId", referencedColumnName = "id")},
 			inverseJoinColumns =
-					{@JoinColumn(name = "songId", nullable = true, referencedColumnName = "id", updatable=true)})
+					{@JoinColumn(name = "songId", nullable = false, referencedColumnName = "id", updatable=false)})
 	private List<Song> songList = new ArrayList<>();
-
 
 	public SongList() {}
 

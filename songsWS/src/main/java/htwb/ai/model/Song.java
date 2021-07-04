@@ -50,8 +50,13 @@ public class Song {
     private Integer released;
     @JsonIgnore
     @JsonIgnoreProperties({"songList"})
-    @ManyToMany(mappedBy= "songList",
-            cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @ManyToMany(
+            cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable(name = "songlists_songs",
+            joinColumns =
+                    {@JoinColumn(name = "songId", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "songListId", nullable = false, referencedColumnName = "id", updatable=false)})
     private List<SongList> songList = new ArrayList<>();
 
     private Song(Builder builder) {

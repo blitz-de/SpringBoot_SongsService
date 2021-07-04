@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -84,7 +85,7 @@ public class SongListsController {
 //    }
 
     //    @Transactional/?isername=mmuster
-    @PostMapping(consumes = {"application/json"}, produces = "application/json")
+    @PostMapping(value="/",consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist, Principal principal) {
         try {
             Users user = userRepo.findByUsername(principal.getName());
@@ -107,26 +108,20 @@ public class SongListsController {
     @DeleteMapping(value = "/{id}", consumes = {"application/json", "application/xml"}, produces = {"text/plain"})
     public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, Principal principal)
             throws IOException {
-
-
-        System.out.println("###################### id " + id + "@@@@@ count: " + songListRepo.findAll().size());
-
         try {
-            Users user = userRepo.findByUsername(principal.getName());
-
-            SongList sl = songListRepo.findById(id).get();
-            if (sl == null) {
+            Optional<SongList> sl = songListRepo.findById(id);
+            if (!sl.isPresent()) {
                 return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
             }
-            if (sl.getOwner().getUsername().equals(principal.getName())) {
+            if (sl.get().getOwner().getUsername().equals(principal.getName())) {
                 songListRepo.deleteById(id);
                 return new ResponseEntity<String>("song list deleted", HttpStatus.NO_CONTENT);
             } else
-                return new ResponseEntity<String>("", HttpStatus.FORBIDDEN);
+                return new ResponseEntity<String>("forbidden", HttpStatus.FORBIDDEN);
 
 
         } catch (Exception e) {
-            return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("resource not found", HttpStatus.NOT_FOUND);
         }
 
     }
