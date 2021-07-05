@@ -53,8 +53,12 @@ public class SongListControllerTest {
     private JwtUserDetailsService jwtUser;
 
     SongList songlist1;
+    SongList songlist2;
+    SongList songlist3;
+    SongList songlist4;
     private Gson gson;
     private Users user1 = new Users();
+    private Users user2= new Users();
 
     Principal securityUser;
 
@@ -77,9 +81,29 @@ public class SongListControllerTest {
         user1.setLastname("Smith");
         user1.setPassword("pass1234");
 
+
+        user2.setUsername("worldHello");
+        user2.setFirstname("Bobby");
+        user2.setLastname("Smith");
+        user2.setPassword("pass1234");
+
+
         songlist1 = new SongList("songlist no1", false, user1);
+        songlist2 = new SongList("songlist no2", true, user1);
+
+        //songlist3 = new SongList("songlist no3", false, user2);
+        //songlist4 = new SongList("songlist no4", true, user2);
+
         try {
-            slRepo.save(songlist1);
+            //slRepo.save(songlist1);
+            //slRepo.save(songlist2);
+
+            Users u1 = uRepo.save(user1);
+            uRepo.flush();
+            u1.getSongLists().add(songlist1);
+            u1.getSongLists().add(songlist2);
+            uRepo.save(u1);
+            uRepo.flush();
             token = jwtTokenUtil.createToken(user1.getUsername());
             System.out.println("### token -->"+ token);
 
@@ -90,88 +114,22 @@ public class SongListControllerTest {
     }
 
     @Test
-    public void getSongId1() throws Exception {
+    public void getForbiddenSongList() throws Exception {
         String payload = gson.toJson(user1);
-        MvcResult result = mockSongController.perform(get("/songsWS-sakvis/rest/songs/1").header("Content-Type", "application/json").
+        // get songlist:
+        MvcResult result = mockSlController.perform(get("/songsWS-sakvis/rest/songLists/1").header("Content-Type", "application/json").
                 header("Authorization", "Bearer "+token).
                 content(payload)).andReturn();
+
+        // get song:
+        /*MvcResult result = mockSongController.perform(get("/songsWS-sakvis/rest/songs/1").header("Content-Type", "application/json").
+                header("Authorization", "Bearer "+token).
+                content(payload)).andReturn();*/
         System.out.println("### result --> " + result.getResponse().getContentAsString());
+        // ToDo: check status forbidden
     }
 
-//    @Test
-//    public void postSongListNotAuthorized() throws Exception {
-//
-//        User user = new User(user1.getUsername(),user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
-////    	songListRepo.findById(1);
-//        String payload = gson.toJson(songlist1);
-//        //Principal securityUser = "mmuster";
-//
-//        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user,null);
-//
-//
-//        mockMvc2.perform(post("/songsWS-sakvis/rest/songLists/").content(payload)
-//        		.principal(testingAuthenticationToken)
-//        		.contentType(MediaType.APPLICATION_JSON))
-//        		.andExpect(status().isForbidden());
-//
-////        mockMvc2.perform(post("/partner/notifications/activate")
-////                .content(payload)
-////                .principal(securityUser)
-////                .contentType(MediaType.APPLICATION_JSON))
-////                .andExpect(status().isOk());
-//    }
-
-    @Test
-    public void postSongListBadRequest() throws Exception {
-       /* String payload = gson.toJson(songlist1);
-        User user = new User(user1.getUsername(), user1.getPassword(), AuthorityUtils.createAuthorityList("USER"));
-
-        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(user, null);
 
 
-        mockMvc.perform(post("/songsWS-sakvis/rest/songLists").content(payload)
-                .principal(testingAuthenticationToken)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-                */
-//        mockMvc2.perform(post("/partner/notifications/activate")
-//                .content(payload)
-//                .principal(securityUser)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Order(1)
-    public void postUserShouldSaveUserAndReturnNewId2() throws Exception {
-    /*
-        System.out.println("$$$$$$$$$$$$$ "+ user1);
-        String payload = gson.toJson(user1);
-        System.out.println(payload);
-        MvcResult result = mockMvc4.perform(MockMvcRequestBuilders.post("/songsWS-sakvis/rest/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload)).andReturn();
-
-        System.out.println("######################################### "+ result.getResponse().getContentAsString());
-        System.out.println("######################################### "+ result.getResponse().getStatus());
-        user1.setPassword("pass1234");
-        System.out.println("User -> "+user1.toString());
-        String payload2 = gson.toJson(user1);
-        System.out.println(payload2);
-        MvcResult result2 = mockMvc4.perform(MockMvcRequestBuilders.post("/songsWS-sakvis/rest/auth")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload2)).andReturn();
-
-        System.out.println("######################################### "+ result2.getResponse().getContentAsString());
-        System.out.println("######################################### "+ result2.getResponse().getStatus());
-
-
-        MvcResult result3 = mockMvc.perform(MockMvcRequestBuilders.post("/songsWS-sakvis/rest/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(payload)).andReturn();
-
-        System.out.println("######################################### "+ result3.getResponse().getContentAsString());
-        System.out.println("######################################### "+ result3.getResponse().getStatus());*/
-    }
 
 }
