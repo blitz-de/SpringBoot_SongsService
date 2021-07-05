@@ -31,7 +31,7 @@ public class Users {
     //    @OneToMany(targetEntity = SongList.class, cascade= CascadeType.ALL)
 //    @JoinColumn(name="owner", referencedColumnName="username")
     @JsonManagedReference
-    @OneToMany(mappedBy="owner", fetch=FetchType.LAZY, cascade=CascadeType.MERGE,//WAS EAGER
+    @OneToMany(mappedBy="owner", fetch=FetchType.EAGER, cascade=CascadeType.MERGE,//WAS EAGER
             orphanRemoval=true)
     private List<SongList> songLists = new ArrayList<>();
 

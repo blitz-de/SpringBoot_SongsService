@@ -77,7 +77,7 @@ public class SongController {
             Optional<Song> _song = songRepo.findById(_id);
             if (!_song.isPresent())
                 return new ResponseEntity<Song>(song, HttpStatus.NOT_FOUND);
-            else if (song.getTitle() == null || song.getTitle().equals(""))
+            else if (song.getTitle() == null || song.getTitle().replace(" ", "").equals(""))
                 return new ResponseEntity<Song>(song, HttpStatus.CONFLICT);
             else {
                 Song songToUpdate = songRepo.getById(id);

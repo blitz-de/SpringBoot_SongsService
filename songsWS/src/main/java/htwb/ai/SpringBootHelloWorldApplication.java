@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import htwb.ai.helper.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -54,9 +55,9 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
 
-            Users user1 = new Users("mmuster", "pass1234", "Max", "Muster");
+            Users user1 = new Users(AppConstants.USER_1, AppConstants.DEFAULT_PASSWORD, "Max", "Muster");
             user1.setPassword(web.passwordEncoder().encode(user1.getPassword()));
-            Users user2 = new Users("eschuler", "pass1234", "Elena", "Schuler");
+            Users user2 = new Users(AppConstants.USER_2, AppConstants.DEFAULT_PASSWORD, "Elena", "Schuler");
             user2.setPassword(web.passwordEncoder().encode(user2.getPassword()));
             File resource = new File("src/main/resources/songs.json");
             String path = resource.getAbsolutePath();
@@ -92,27 +93,12 @@ public class SpringBootHelloWorldApplication implements CommandLineRunner {
             sLists.get(1).setIsPrivate(false);
             sLists.get(2).setIsPrivate(true);
             sLists.get(3).setIsPrivate(false);
-            // save songlists and songs and users
-            //songlistRepository.saveAll(sLists);
-            // more songlists...
-            /*SongList songlist1 = new SongList("Forro music", false, user1);
-            SongList songlist2 = new SongList("Workout music", true, user1);
-
-            SongList songlist3 = new SongList("Rock and roll", true, user2);
-            SongList songlist4 = new SongList("Salsa", false, user2);
-
-            user1.getSongLists().add(songlist1);
-            user1.getSongLists().add(songlist2);
-
-            user2.getSongLists().add(songlist3);
-            user2.getSongLists().add(songlist4);*/
             // update
             this.userRepository.save(user1);
             this.userRepository.save(user2);
         } catch (Exception e) {
             System.out.println("Spring boot run exception -> " + e.getMessage());
-
-            System.out.println("################### cause -> " + e.getStackTrace().toString());
+            System.out.println("################### stack -> " + e.getStackTrace().toString());
         }
 
     }

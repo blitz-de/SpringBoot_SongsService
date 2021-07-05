@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import htwb.ai.helper.AppConstants;
+import htwb.ai.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import htwb.ai.repository.SongListRepo;
 import htwb.ai.repository.UserRepo;
@@ -28,15 +28,18 @@ public class SongListsController {
     @Autowired
     private UserRepo userRepo;
 
-    public SongListsController(SongListRepo dao) {
+    public SongListsController(SongListRepo dao, UserRepo u) {
         this.songListRepo = dao;
+        this.userRepo = u;
     }
+
 
     @GetMapping
     public ResponseEntity<List<SongList>> getSongListFromUserName(@RequestParam("username") String username, Principal principal) {
         //Optional<SongList> songlist = songListRepo.findByOwner(userId);
         try {
-            System.out.println("### username -> " + principal.getName());
+            String _username = AppConstants.TEST_USER;
+            if (principal != null) _username = principal.getName();
             Users u = userRepo.findByUsername(username);
 
             List<SongList> songs = (List<SongList>) songListRepo.findByOwner(userRepo.findByUsername(username));
@@ -47,7 +50,7 @@ public class SongListsController {
             }
             for (SongList s : songs) {
                 System.out.println("###### -> " + s.getOwner().getUsername());
-                if (s.getOwner().getUsername().equals(principal.getName())) result.add(s);
+                if (s.getOwner().getUsername().equals(_username)) result.add(s);
                 else if (!s.getIsPrivate()) result.add(s);
             }
 
@@ -63,9 +66,14 @@ public class SongListsController {
     public ResponseEntity<SongList> getSongList(@PathVariable("listId") String listId, Principal principal) {
         //Optional<SongList> songlist = songListRepo.findByOwner(userId);
         try {
-            System.out.println("### username -> " + principal.getName());
+            // for testing
+            String username = AppConstants.TEST_USER;
+            if (principal != null) {
+                System.out.println("### username -> " + principal.getName());
+                username = principal.getName();
+            }
             SongList sl = songListRepo.findById(Integer.parseInt(listId)).get();
-            if (sl.getOwner().getUsername().equals(principal.getName()))
+            if (sl.getOwner().getUsername().equals(username))
                 return new ResponseEntity<SongList>(sl, HttpStatus.OK);
             else if (!sl.getIsPrivate()) return new ResponseEntity<SongList>(sl, HttpStatus.OK);
             else return new ResponseEntity<SongList>(new SongList(), HttpStatus.FORBIDDEN);
@@ -85,22 +93,33 @@ public class SongListsController {
 //    }
 
     //    @Transactional/?isername=mmuster
-    @PostMapping(value="/",consumes = {"application/json"}, produces = "application/json")
+    @PostMapping(value = "/", consumes = {"application/json"}, produces = "application/json")
     public ResponseEntity<SongList> postSongList(@RequestBody SongList songlist, Principal principal) {
         try {
-            Users user = userRepo.findByUsername(principal.getName());
+            String username = AppConstants.TEST_USER;
+            if (principal != null) username = principal.getName();
+            Users user = userRepo.findByUsername(username);
 
             songlist.setOwner(user);
             user.getSongLists().add(songlist);
+            for (Song s : songlist.getSongList()) {
+                if (s.getTitle() == null || s.getTitle().replace(" ", "").equals(""))
+                    return new ResponseEntity<SongList>(new SongList(),
+                            HttpStatus.BAD_REQUEST);
+            }
+            if (songlist.getName() == null || songlist.getName().replace(" ", "").equals(""))
+                return new ResponseEntity<SongList>(new SongList(),
+                        HttpStatus.BAD_REQUEST);
+
             userRepo.save(user);
             userRepo.flush();
-            SongList list = user.getSongLists().get(user.getSongLists().size()-1);
+            SongList list = user.getSongLists().get(user.getSongLists().size() - 1);
             //SongList list = songListRepo.save(songlist);
             //songListRepo.flush();
             String path = "songsWS-sakvis/rest/songLists/" + list.getId();
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set("Location",
-                   path);
+                    path);
             return new ResponseEntity<SongList>(list, responseHeaders,
                     HttpStatus.ACCEPTED);
         } catch (Exception e) {
@@ -113,11 +132,13 @@ public class SongListsController {
     public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, Principal principal)
             throws IOException {
         try {
+            String username = AppConstants.TEST_USER;
+            if (principal != null) username = principal.getName();
             Optional<SongList> sl = songListRepo.findById(id);
             if (!sl.isPresent()) {
                 return new ResponseEntity<String>("song list doesn't exist", HttpStatus.NOT_FOUND);
             }
-            if (sl.get().getOwner().getUsername().equals(principal.getName())) {
+            if (sl.get().getOwner().getUsername().equals(username)) {
                 songListRepo.deleteById(id);
                 return new ResponseEntity<String>("song list deleted", HttpStatus.NO_CONTENT);
             } else
@@ -131,7 +152,7 @@ public class SongListsController {
     }
 
     //    @Transactional
-    @JsonIgnore
+    //@JsonIgnore
     @GetMapping(value = "/all")
     public List<SongList> getAllSongLists() {
         return songListRepo.findAll();
