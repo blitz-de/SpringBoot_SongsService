@@ -142,8 +142,10 @@ public class SongListControllerTest {
             check = false;
         }
 
-    }/*
+    }
+
     @Test
+    @Order(1)
     public void getAPublicForeignSongLists() throws Exception {
         String payload = gson.toJson(user1);
         MvcResult result = mockSlController.perform(get("/songsWS-sakvis/rest/songLists?username=" + AppConstants.TEST_USER_2).header("Content-Type", "application/json").
@@ -157,6 +159,7 @@ public class SongListControllerTest {
         check=false;
     }
     @Test
+    @Order(2)
     public void getAOwnSongLists() throws Exception {
         String payload = gson.toJson(user1);
         MvcResult result = mockSlController.perform(get("/songsWS-sakvis/rest/songLists?username=" + AppConstants.TEST_USER).header("Content-Type", "application/json").
@@ -165,11 +168,11 @@ public class SongListControllerTest {
         Type listType = new TypeToken<ArrayList<SongList>>() {
         }.getType();
         List<SongList> list = gson.fromJson(result.getResponse().getContentAsString(), listType);
-        assertEquals(list.size(), 2);
+        // 4 weil before each 2x ausgeführt wird
+        assertEquals(list.size(), 4);
 
         check=false;
     }
-    */
 
 
     @Test
