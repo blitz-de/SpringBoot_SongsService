@@ -18,6 +18,8 @@ import htwb.ai.config.JwtTokenUtil;
 import htwb.ai.model.JwtRequest;
 import htwb.ai.model.JwtResponse;
 import htwb.ai.model.UserDTO;
+import htwb.ai.repository.SongListRepo;
+import htwb.ai.repository.SongRepo;
 import htwb.ai.service.JwtUserDetailsService;
 
 
@@ -25,6 +27,7 @@ import htwb.ai.service.JwtUserDetailsService;
 @RequestMapping(value = "songsWS-sakvis/rest")
 @CrossOrigin
 public class JwtAuthenticationController {
+
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -37,13 +40,20 @@ public class JwtAuthenticationController {
 
 	public JwtAuthenticationController(JwtUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
+
 	}
 	@PostMapping(value = "/auth")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		try{
-			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-
+//			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+			try {
+				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+			} catch (DisabledException e) {
+				throw new Exception("USER_DISABLED", e);
+			} catch (BadCredentialsException e) {
+				throw new Exception("INVALID_CREDENTIALS", e);
+			}
 			final UserDetails userDetails = userDetailsService
 					.loadUserByUsername(authenticationRequest.getUsername());
 
