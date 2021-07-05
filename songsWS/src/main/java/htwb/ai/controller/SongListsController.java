@@ -128,7 +128,7 @@ public class SongListsController {
         }
     }
 
-    @DeleteMapping(value = "/{id}", consumes = {"application/json", "application/xml"}, produces = {"text/plain"})
+    @DeleteMapping(value = "/{id}", produces = {"text/plain"})
     public ResponseEntity<String> deleteSongList(@PathVariable(value = "id") Integer id, Principal principal)
             throws IOException {
         try {
