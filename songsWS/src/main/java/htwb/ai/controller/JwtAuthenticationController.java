@@ -38,15 +38,19 @@ public class JwtAuthenticationController {
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 
-	public JwtAuthenticationController(JwtUserDetailsService userDetailsService) {
+	public JwtAuthenticationController(JwtUserDetailsService userDetailsService,
+									   AuthenticationManager authenticationManager, JwtTokenUtil
+											   jwtTokenUtil) {
 		this.userDetailsService = userDetailsService;
+		this.authenticationManager = authenticationManager;
+		this.jwtTokenUtil = jwtTokenUtil;
 
 	}
 	@PostMapping(value = "/auth")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
 		try{
-//			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+//            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 			try {
 				authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 			} catch (DisabledException e) {
