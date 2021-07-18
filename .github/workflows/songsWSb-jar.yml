@@ -1,0 +1,50 @@
+name: songsWSb (Spring Boot) clean, build, test, package & run scripts
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      
+    
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-18.04]
+        java: [11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+          architecture: x64
+      - name: songsWS clean, build, test & package
+        run: mvn -pl songsWS clean package
+      - name: run TestScripts
+        run: |
+          servletfile=$(ls ./songsWS/target/songsWS-*.jar)
+          servletname=$(basename $servletfile .jar)
+          echo $servletname
+          
+          nohup java -jar ./songsWS/target/$servletname.jar &
+          sleep 180
+          
+          endpoint=http://localhost:8080/$servletname
+          echo $endpoint          
+          token=$(curl -X POST -H "Content-Type: application/json" -d '{"userId":"mmuster","password":"pass1234"}' -v $endpoint/rest/auth)
+          echo $token
+          
+          sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token mmuster 
+          sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token eschuler
+          sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token hamwanich
+          sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 1
+          sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 2
+          sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 3
+          sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 4
+          sh ./songsWS/scripts/POSTsongListTester.sh $endpoint $token
+          sh ./songsWS/scripts/DELETEsongListTester.sh $endpoint $token 1
+          sh ./songsWS/scripts/DELETEsongListTester.sh $endpoint $token 3

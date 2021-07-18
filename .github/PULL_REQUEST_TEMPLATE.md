@@ -1,18 +1,22 @@
 # Pull Request 
 
 ## Checklist
-- [ ] Ist **htwb-steven** als Reviewer eingetragen?
-- [ ] Ist der Workflow `projects.yml` erfolgreich?
-- [ ] Hiermit versichere ich, dass ich die vorliegende Arbeit selbstständig und nur unter Verwendung der angegebenen Quellen und Hilfsmittel verfasst habe. 
+- [x] Ist **htwb-steven** als Reviewer eingetragen?
+- [x] Ist der Workflow `projects.yml` erfolgreich?
+- [x] Hiermit versichere ich, dass ich die vorliegende Arbeit selbstständig und nur unter Verwendung der angegebenen Quellen und Hilfsmittel verfasst habe. 
 
 
 ## Für Beleg 2, 3, 4
 
 ### Datenbank
 
-- Username:
-- Passwort:
-- JDBC URL: 
+### Heroku ClearDB (mySQL) Database
+
+| url      | jdbc:mysql://b0f25133578286:e925dc8e@eu-cdbr-west-01.cleardb.com/ |
+|----------|--------|
+| username | b0f25133578286    |
+| password | e925dc8e   | 
+
 
 ### Anwendung
 
