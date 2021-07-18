@@ -41,10 +41,13 @@ jobs:
           sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token mmuster 
           sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token eschuler
           sh ./songsWS/scripts/GETALLsongListTester.sh $endpoint $token hamwanich
+
           sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 1
           sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 2
           sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 3
           sh ./songsWS/scripts/GETsongListTester.sh $endpoint $token 4
+
           sh ./songsWS/scripts/POSTsongListTester.sh $endpoint $token
+
           sh ./songsWS/scripts/DELETEsongListTester.sh $endpoint $token 1
           sh ./songsWS/scripts/DELETEsongListTester.sh $endpoint $token 3
