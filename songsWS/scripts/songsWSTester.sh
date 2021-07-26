@@ -89,4 +89,3 @@ echo "--- DELETING SONG 2 AGAIN: SHOULD PRODUCE 404 --"
 curl -X DELETE \
      -v "http://localhost:8080/$1/rest/songs/2"
 echo "------------------------------------------------"
-
