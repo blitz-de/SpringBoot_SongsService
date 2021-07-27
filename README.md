@@ -1,6 +1,6 @@
 	# KBE Projekt Template
 
-| Name          | Matrikelnummer  |
+| Name          | Matrikelnummerr  |
 | :------------ | --------------- |
 | Davis  | 570978 |
 | Sakhr Al-absi | 562218 |
