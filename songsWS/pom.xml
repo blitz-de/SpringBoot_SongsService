@@ -169,7 +169,7 @@
 
     </dependencies>
     <build>
-        <finalName>songsWS-sakvis</finalName>
+        <finalName>songsWS</finalName>
         <plugins>
 
         </plugins>
